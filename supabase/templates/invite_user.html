@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>You have been invited</title>
+</head>
+<body style="background-color: #0D0D0D; color: #E8E8E8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; margin: 0; padding: 40px 20px; line-height: 1.6; text-align: center;">
+  
+  <div style="background-color: #1A1A1A; border: 1px solid #333333; border-radius: 12px; padding: 32px; max-width: 480px; margin: 0 auto; text-align: left;">
+    <div style="font-size: 10px; font-weight: 700; color: #666666; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;">Gnote</div>
+    
+    <h2 style="font-size: 20px; font-weight: 700; letter-spacing: -0.5px; margin: 0 0 16px 0; color: #E8E8E8;">You have been invited</h2>
+    
+    <p style="font-size: 15px; margin: 0 0 32px 0; color: #E8E8E8;">You have been invited to create an account on {{ .SiteURL }}. Enter the code below in the app to accept the invite.</p>
+    
+    <div style="background-color: #0D0D0D; border: 1px solid #333333; border-radius: 8px; padding: 24px; font-size: 32px; font-weight: 800; color: #F0A500; text-align: center; letter-spacing: 8px;">
+      {{ .Token }}
+    </div>
+  </div>
+
+</body>
+</html>

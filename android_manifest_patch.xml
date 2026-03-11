@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  GNOTE — AndroidManifest.xml PATCH
+  
+  Add the following to your android/app/src/main/AndroidManifest.xml:
+  
+  1. INTERNET permission (required for Supabase sync):
+     Add inside <manifest> before <application>:
+  
+  2. WAKE_LOCK + RECEIVE_BOOT (required for awesome_notifications scheduled reminders):
+     Also inside <manifest>
+  
+  3. WhatsApp intent-filter (required for wa.me URL scheme):
+     Inside <application>
+  
+  The full manifest below shows WHERE each addition goes.
+  Only the lines marked with ← ADD are new.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- ← ADD: Internet for Supabase -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!-- ← ADD: Notifications (awesome_notifications) -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <!-- ← ADD: Wake lock for scheduled notifications while idle -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <application
+        android:label="gnote"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher">
+
+        <!-- ← ADD: WhatsApp URL scheme (url_launcher) -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+
+            <meta-data
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme"/>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
+        </activity>
+
+        <!-- awesome_notifications receiver ← ADD -->
+        <receiver
+            android:name="me.carda.awesome_notifications.core.broadcasters.receivers.NotificationActionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="me.carda.awesomeNotifications.NOTIFICATION_ACTION"/>
+            </intent-filter>
+        </receiver>
+
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2"/>
+
+    </application>
+
+    <!-- ← ADD: WhatsApp query (Android 11+ package visibility) -->
+    <queries>
+        <package android:name="com.whatsapp"/>
+        <package android:name="com.whatsapp.w4b"/>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+    </queries>
+
+</manifest>

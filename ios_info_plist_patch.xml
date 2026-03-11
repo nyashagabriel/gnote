@@ -1,0 +1,21 @@
+<!--
+  GNOTE — Info.plist PATCH (iOS)
+  
+  Add the following keys to ios/Runner/Info.plist
+  inside the root <dict>.
+  
+  Required for:
+  - url_launcher to open WhatsApp (canLaunchUrl check)
+  - awesome_notifications permission request
+-->
+
+<!-- ← ADD: WhatsApp URL scheme (url_launcher canLaunchUrl) -->
+<key>LSApplicationQueriesSchemes</key>
+<array>
+    <string>whatsapp</string>
+    <string>https</string>
+</array>
+
+<!-- ← ADD: Notification permission description (iOS will show this text) -->
+<key>NSUserNotificationUsageDescription</key>
+<string>Gnote sends daily reminders for your anchor, tasks, habit, and responsibility practice.</string>
