@@ -11,7 +11,7 @@ create table public.profiles (
   id            uuid primary key references auth.users on delete cascade,
   email         text not null,
   display_name  text not null,
-  timezone      text default 'Africa/Harare',
+  timezone      text default 'UTC',
   created_at    timestamptz default now(),
   last_seen     timestamptz default now()
 );

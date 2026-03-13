@@ -35,7 +35,7 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
   }
 
   String? _countdown() {
-    final now = DateTime.now().toUtc().add(const Duration(hours: 2));
+    final now = DateTime.now();
     if (now.hour >= 9) return null;
 
     final lockTime = DateTime(now.year, now.month, now.day, 9, 0);
@@ -168,47 +168,51 @@ class _TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final catColor = GColors.category[task.category.toLowerCase()] ?? GColors.textMuted;
-    return GestureDetector(
-      onTap: onToggle,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(GSpacing.md),
-        decoration: BoxDecoration(
-          color: task.isDone ? GColors.successDim : GColors.surface,
-          borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-          border: Border.all(
-            color: task.isDone ? GColors.success.withAlpha(80) : GColors.border,
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
-              color: task.isDone ? GColors.success : GColors.textMuted,
-              size: 22,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onToggle,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.all(GSpacing.md),
+          decoration: BoxDecoration(
+            color: task.isDone ? GColors.successDim : GColors.surface,
+            borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+            border: Border.all(
+              color: task.isDone ? GColors.success.withAlpha(80) : GColors.border,
             ),
-            const SizedBox(width: GSpacing.md),
-            Expanded(
-              child: Text(
-                task.what,
-                style: GText.body.copyWith(
-                  decoration: task.isDone ? TextDecoration.lineThrough : null,
-                  color: task.isDone ? GColors.textMuted : GColors.textPrimary,
+          ),
+          child: Row(
+            children: [
+              Icon(
+                task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
+                color: task.isDone ? GColors.success : GColors.textMuted,
+                size: 22,
+              ),
+              const SizedBox(width: GSpacing.md),
+              Expanded(
+                child: Text(
+                  task.what,
+                  style: GText.body.copyWith(
+                    decoration: task.isDone ? TextDecoration.lineThrough : null,
+                    color: task.isDone ? GColors.textMuted : GColors.textPrimary,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-              decoration: BoxDecoration(
-                color: catColor.withAlpha(40),
-                borderRadius: BorderRadius.circular(4),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: catColor.withAlpha(40),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  task.category.toUpperCase(),
+                  style: GText.label.copyWith(fontSize: 9, color: catColor),
+                ),
               ),
-              child: Text(
-                task.category.toUpperCase(),
-                style: GText.label.copyWith(fontSize: 9, color: catColor),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -223,24 +227,28 @@ class _GhostSlot extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedOpacity(
-        opacity: locked ? 0.35 : 1.0,
-        duration: const Duration(milliseconds: 200),
-        child: Container(
-          padding: const EdgeInsets.all(GSpacing.md),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-            border: Border.all(color: GColors.border),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.add_circle_outline, color: GColors.textMuted, size: 20),
-              const SizedBox(width: GSpacing.sm),
-              Text(label, style: GText.muted),
-            ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        child: AnimatedOpacity(
+          opacity: locked ? 0.35 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          child: Container(
+            padding: const EdgeInsets.all(GSpacing.md),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+              border: Border.all(color: GColors.border),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.add_circle_outline, color: GColors.textMuted, size: 20),
+                const SizedBox(width: GSpacing.sm),
+                Text(label, style: GText.muted),
+              ],
+            ),
           ),
         ),
       ),

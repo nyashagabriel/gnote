@@ -83,6 +83,13 @@ class NotificationService {
     return AwesomeNotifications().isNotificationAllowed();
   }
 
+  // ── Ensure permission before scheduling/updating notifications ──
+  static Future<bool> ensurePermission() async {
+    if (kIsWeb) return false;
+    if (await isAllowed()) return true;
+    return requestPermission();
+  }
+
   // ─────────────────────────────────────────────────────────────
   // SCHEDULE — all daily repeating notifications
   // Call after login once. They persist until cancelled.
@@ -105,6 +112,16 @@ class NotificationService {
     } catch (_) {
       // Notification scheduling is non-critical — app continues without it
     }
+  }
+
+  static Future<void> ensurePermissionAndScheduleAll({
+    int habitHour = 20,
+    int habitMinute = 0,
+  }) async {
+    if (kIsWeb) return;
+    final allowed = await ensurePermission();
+    if (!allowed) return;
+    await scheduleAll(habitHour: habitHour, habitMinute: habitMinute);
   }
 
   // ── 1. Morning Anchor — 08:00 daily ──────────────────────────
@@ -214,13 +231,18 @@ class NotificationService {
   }
 
   // ── Update habit reminder time ────────────────────────────────
-  static Future<void> updateHabitTime(int hour, int minute) async {
-    if (kIsWeb) return;
+  static Future<bool> updateHabitTime(int hour, int minute) async {
+    if (kIsWeb) return false;
     try {
+      final allowed = await ensurePermission();
+      if (!allowed) return false;
       await AwesomeNotifications()
           .cancelNotificationsByChannelKey(GChannels.habit);
       await _scheduleHabitReminder(hour, minute);
-    } catch (_) {}
+      return true;
+    } catch (_) {
+      return false;
+    }
   }
 
   // ── Cancel all — call on sign out ────────────────────────────

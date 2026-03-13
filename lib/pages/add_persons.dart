@@ -212,9 +212,12 @@ class _RoleChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+        child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
         padding: const EdgeInsets.symmetric(horizontal: GSpacing.lg, vertical: GSpacing.sm),
         decoration: BoxDecoration(
@@ -223,6 +226,7 @@ class _RoleChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
         ),
         child: Text(label, style: GText.body.copyWith(color: selected ? color : GColors.textMuted, fontWeight: selected ? FontWeight.w700 : FontWeight.w400)),
+        ),
       ),
     );
   }

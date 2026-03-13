@@ -1,0 +1,31 @@
+{
+  "@@locale": "es",
+  "appName": "Gnote",
+  "appTagline": "Domina tu día.",
+  "syncOfflineSaved": "Sin conexión: cambios guardados localmente.",
+  "syncPending": "Sincronización pendiente ({count})",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncFailed": "Falló la sincronización ({count}). Toca para reintentar.",
+  "@syncFailed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPendingWithCount": "Sincronización pendiente ({count})",
+  "@syncPendingWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncRetrying": "Reintentando sincronización..."
+}

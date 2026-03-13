@@ -2,11 +2,15 @@
 // FILE: ./services/providers.dart
 // ==========================================
 
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../core/timezone.dart';
 import '../models/task.dart';
 import '../models/anchor.dart';
 import '../models/habit.dart';
@@ -26,7 +30,52 @@ const _uuid = Uuid();
 
 final localDbProvider = Provider<LocalDb>((ref) => LocalDb.instance);
 final syncServiceProvider = Provider<SyncService>((ref) => SyncService.instance);
+final syncStatusProvider = StreamProvider<SyncStatusSnapshot>((ref) {
+  final status = ref.watch(syncServiceProvider).status;
+  final controller = StreamController<SyncStatusSnapshot>();
+
+  void emit() => controller.add(status.value);
+
+  status.addListener(emit);
+  emit();
+
+  ref.onDispose(() {
+    status.removeListener(emit);
+    controller.close();
+  });
+
+  return controller.stream;
+});
 final authServiceProvider = Provider<AuthService>((ref) => AuthService.instance);
+
+class ThemeModeNotifier extends StateNotifier<ThemeMode> {
+  ThemeModeNotifier(this._db) : super(_read(_db));
+
+  final LocalDb _db;
+
+  static ThemeMode _read(LocalDb db) {
+    return switch (db.getThemeMode()) {
+      'light' => ThemeMode.light,
+      'dark' => ThemeMode.dark,
+      _ => ThemeMode.system,
+    };
+  }
+
+  Future<void> setThemeMode(ThemeMode mode) async {
+    state = mode;
+    final raw = switch (mode) {
+      ThemeMode.light => 'light',
+      ThemeMode.dark => 'dark',
+      ThemeMode.system => 'system',
+    };
+    await _db.saveThemeMode(raw);
+  }
+}
+
+final themeModeProvider =
+    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+  return ThemeModeNotifier(ref.watch(localDbProvider));
+});
 
 // ─────────────────────────────────────────────────────────────
 // AUTH ERROR CLASSIFIER
@@ -126,7 +175,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
         id: sessionUser.id,
         email: sessionUser.email ?? '',
         displayName: sessionUser.userMetadata?['display_name'] as String? ?? '',
-        timezone: 'Africa/Harare',
+        timezone: deviceTimezone(),
         createdAt: DateTime.now(),
         lastSeen: DateTime.now(),
       );
@@ -308,8 +357,7 @@ class Daily3Notifier extends StateNotifier<Daily3State> {
   }
 
   bool _isLockedTime() {
-    final harare = DateTime.now().toUtc().add(const Duration(hours: 2));
-    return harare.hour >= 9;
+    return localNow().hour >= 9;
   }
 
   Future<String?> addTask({
@@ -395,6 +443,14 @@ class CaptureNotifier extends StateNotifier<List<GTask>> {
     await _db.deleteTask(taskId);
     try {
       await _sync.deleteTask(taskId);
+    } catch (_) {}
+    _load();
+  }
+
+  Future<void> restoreItem(GTask task) async {
+    await _db.saveTask(task);
+    try {
+      await _sync.pushTask(task);
     } catch (_) {}
     _load();
   }

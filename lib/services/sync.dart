@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 import '../models/task.dart';
 import '../models/anchor.dart';
 import '../models/habit.dart';
@@ -25,8 +26,39 @@ class SyncService {
 
   final _client = Supabase.instance.client;
   final _db     = LocalDb.instance;
+  final List<_PendingSyncOp> _pending = [];
+
+  final ValueNotifier<SyncStatusSnapshot> status =
+      ValueNotifier<SyncStatusSnapshot>(const SyncStatusSnapshot());
 
   String? get _userId => _client.auth.currentUser?.id;
+
+  void _setStatus({
+    SyncPhase? phase,
+    String? error,
+  }) {
+    status.value = status.value.copyWith(
+      phase: phase ?? status.value.phase,
+      pendingCount: _pending.length,
+      lastError: error,
+      lastSyncedAt: (phase == SyncPhase.synced) ? DateTime.now() : status.value.lastSyncedAt,
+    );
+  }
+
+  Future<void> _runRemote(
+    String name,
+    Future<void> Function() op,
+  ) async {
+    if (_userId == null) return;
+    try {
+      _setStatus(phase: SyncPhase.syncing, error: null);
+      await op();
+      _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.syncing);
+    } catch (e) {
+      _pending.add(_PendingSyncOp(name: name, run: op));
+      _setStatus(phase: SyncPhase.error, error: e.toString());
+    }
+  }
 
   // ─────────────────────────────────────────────────────────
   // PUSH — Local → Supabase
@@ -35,44 +67,44 @@ class SyncService {
 
   Future<void> pushAnchor(GAnchor anchor) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('pushAnchor:${anchor.id}', () async {
       await _client.from(GTables.anchors).upsert(anchor.toJson());
-    } catch (_) {}
+    });
   }
 
   Future<void> pushTask(GTask task) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('pushTask:${task.id}', () async {
       await _client.from(GTables.tasks).upsert(task.toJson());
-    } catch (_) {}
+    });
   }
 
   Future<void> deleteTask(String taskId) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('deleteTask:$taskId', () async {
       await _client.from(GTables.tasks).delete().eq('id', taskId);
-    } catch (_) {}
+    });
   }
 
   Future<void> pushHabit(GHabit habit) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('pushHabit:${habit.id}', () async {
       await _client.from(GTables.habits).upsert(habit.toJson());
-    } catch (_) {}
+    });
   }
 
   Future<void> pushPerson(GPerson person) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('pushPerson:${person.id}', () async {
       await _client.from(GTables.people).upsert(person.toJson());
-    } catch (_) {}
+    });
   }
 
   Future<void> deletePerson(String personId) async {
     if (_userId == null) return;
-    try {
+    await _runRemote('deletePerson:$personId', () async {
       await _client.from(GTables.people).delete().eq('id', personId);
-    } catch (_) {}
+    });
   }
 
   // ─────────────────────────────────────────────────────────
@@ -82,16 +114,38 @@ class SyncService {
 
   Future<void> pullAll() async {
     if (_userId == null) return;
+    _setStatus(phase: SyncPhase.syncing, error: null);
     try {
+      await retryPending();
       await Future.wait([
         _pullAnchors(),
         _pullTasks(),
         _pullHabits(),
         _pullPeople(),
       ]);
-    } catch (_) {
-      // Pull failed — Hive data from last session is used
+      _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.error);
+    } catch (e) {
+      _setStatus(phase: SyncPhase.error, error: e.toString());
     }
+  }
+
+  Future<void> retryPending() async {
+    if (_userId == null || _pending.isEmpty) return;
+    _setStatus(phase: SyncPhase.syncing, error: null);
+
+    final snapshot = List<_PendingSyncOp>.from(_pending);
+    _pending.clear();
+
+    for (final op in snapshot) {
+      try {
+        await op.run();
+      } catch (e) {
+        _pending.add(op);
+        _setStatus(phase: SyncPhase.error, error: e.toString());
+      }
+    }
+
+    _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.error);
   }
 
   // BUG FIX: was `GAnchor.fromJson(row)` with no protection.
@@ -155,4 +209,45 @@ class SyncService {
       } catch (_) {}
     }
   }
+}
+
+enum SyncPhase { idle, syncing, synced, error }
+
+@immutable
+class SyncStatusSnapshot {
+  const SyncStatusSnapshot({
+    this.phase = SyncPhase.idle,
+    this.pendingCount = 0,
+    this.lastError,
+    this.lastSyncedAt,
+  });
+
+  final SyncPhase phase;
+  final int pendingCount;
+  final String? lastError;
+  final DateTime? lastSyncedAt;
+
+  SyncStatusSnapshot copyWith({
+    SyncPhase? phase,
+    int? pendingCount,
+    String? lastError,
+    DateTime? lastSyncedAt,
+  }) {
+    return SyncStatusSnapshot(
+      phase: phase ?? this.phase,
+      pendingCount: pendingCount ?? this.pendingCount,
+      lastError: lastError,
+      lastSyncedAt: lastSyncedAt ?? this.lastSyncedAt,
+    );
+  }
+}
+
+class _PendingSyncOp {
+  const _PendingSyncOp({
+    required this.name,
+    required this.run,
+  });
+
+  final String name;
+  final Future<void> Function() run;
 }

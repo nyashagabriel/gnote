@@ -34,8 +34,8 @@ class GColors {
 
   // Text
   static const Color textPrimary  = Color(0xFFE8E8E8);
-  static const Color textMuted    = Color(0xFF666666);
-  static const Color textDisabled = Color(0xFF3A3A3A);
+  static const Color textMuted    = Color(0xFF9A9A9A);
+  static const Color textDisabled = Color(0xFF6A6A6A);
 
   // Category colours
   static const Map<String, Color> category = {
@@ -91,14 +91,14 @@ class GText {
   );
 
   static const TextStyle label = TextStyle(
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: FontWeight.w700,
     color: GColors.textMuted,
     letterSpacing: 1.5,
   );
 
   static const TextStyle muted = TextStyle(
-    fontSize: 12,
+    fontSize: 13,
     color: GColors.textMuted,
     height: 1.5,
   );
@@ -110,7 +110,7 @@ class GText {
   );
 
   static const TextStyle danger = TextStyle(
-    fontSize: 12,
+    fontSize: 13,
     color: GColors.danger,
   );
 }
@@ -192,7 +192,7 @@ class GStrings {
   static const String habitSetBtn        = 'Set habit';
   static const String habitMakeItCount   = 'One habit. Make it count.';
   static const String habitHint          = 'e.g. Read 20 minutes';
-  static const String habitReplaceWarn   = 'This replaces thy current habit and resets the streak.';
+  static const String habitReplaceWarn   = 'This replaces your current habit and resets the streak.';
   static const String habitBeginAgain    = 'Begin again';
   static const String habitDidItToday    = 'I did it today';
   static const String habitDoneForToday  = 'Done for today ✓';
@@ -204,7 +204,7 @@ class GStrings {
   // Responsibility
   static const String respHeader           = 'RESPONSIBILITY';
   static const String respTitle            = 'Responsibility';
-  static const String respSub              = 'Thou appoints. App reminds.';
+  static const String respSub              = 'Choose your people. We remind you daily.';
   static const String respPickBtn          = 'Pick today\'s person';
   static const String respEmpty            = 'No people added yet.';
   static const String respAddPerson        = 'Add person';
@@ -228,7 +228,7 @@ class GStrings {
 
   // Add Person
   static const String addPersonHeader     = 'NEW PERSON';
-  static const String addPersonTitle      = 'Thou appoints.';
+  static const String addPersonTitle      = 'Build your support circle.';
   static const String addPersonNameLabel  = 'Full name';
   static const String addPersonNameHint   = 'Alex Rivers';
   static const String addPersonPhoneLabel = 'WhatsApp number';
@@ -236,7 +236,7 @@ class GStrings {
   static const String addPersonPhoneHint2 = '+263712345678';
   static const String addPersonRoleLabel  = 'ROLE';
   static const String addPersonMsgLabel   = 'Message';
-  static const String addPersonMsgSub     = 'This is what thou sendeth via WhatsApp.';
+  static const String addPersonMsgSub     = 'This message will be sent via WhatsApp.';
   static const String addPersonMsgHint    = 'Write a personal message...';
   static const String addPersonSaveBtn    = 'Add person';
   static const String errPhoneRequired    = 'Phone number is required.';
@@ -288,6 +288,7 @@ class GStrings {
   // OTP
   static const String otpCheckInbox  = 'CHECK YOUR INBOX';
   static const String otpEnterCode   = 'Enter 8-digit code';
+  static const String otpCodeHint    = '12345678';
   static const String otpSentCode    = 'We sent a secure code to\n';
   static const String otpReqCode     = 'Please enter the 8-digit code.';
   static const String otpNewCodeSent = 'A new code has been sent to your email.';
@@ -301,6 +302,10 @@ class GStrings {
   static const String profileEmail          = 'Email';
   static const String profileTimezone       = 'Timezone';
   static const String profileSecPrefs       = 'Preferences';
+  static const String profileThemeMode      = 'Theme mode';
+  static const String profileThemeSystem    = 'System';
+  static const String profileThemeLight     = 'Light';
+  static const String profileThemeDark      = 'Dark';
   static const String profileHabitRem       = 'Habit reminder';
   static const String profileSecSession     = 'Session';
   static const String profileSignOutBtn     = 'Sign out';

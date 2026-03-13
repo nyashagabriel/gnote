@@ -123,9 +123,12 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
               children: GCategories.defaults.map((cat) {
                 final selected = cat == _category;
                 final color    = GColors.category[cat] ?? GColors.textMuted;
-                return GestureDetector(
-                  onTap: () => setState(() => _category = cat),
-                  child: AnimatedContainer(
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => setState(() => _category = cat),
+                    borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+                    child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
                     padding: const EdgeInsets.symmetric(horizontal: GSpacing.md, vertical: GSpacing.sm),
                     decoration: BoxDecoration(
@@ -134,6 +137,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                       borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
                     ),
                     child: Text(cat[0].toUpperCase() + cat.substring(1), style: GText.body.copyWith(color: selected ? color : GColors.textMuted)),
+                    ),
                   ),
                 );
               }).toList(),
@@ -200,9 +204,12 @@ class _PickerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GSpacing.inputRadius),
+        child: Container(
         padding: const EdgeInsets.all(GSpacing.md),
         decoration: BoxDecoration(color: GColors.surface, borderRadius: BorderRadius.circular(GSpacing.inputRadius), border: Border.all(color: GColors.border)),
         child: Row(
@@ -219,6 +226,7 @@ class _PickerTile extends StatelessWidget {
             Icon(icon, color: GColors.textMuted, size: 16),
           ],
         ),
+      ),
       ),
     );
   }

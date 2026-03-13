@@ -1,6 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
 import '../core/constants.dart';
+import '../core/timezone.dart';
 import '../models/anchor.dart';
 import '../models/habit.dart';
 import '../models/person.dart';
@@ -19,29 +20,17 @@ class LocalDb {
   Box<dynamic> get _selections => Hive.box<dynamic>(GBoxes.selections);
 
   static const String _draftDateKey = 'anchor_draft_date';
-
-  DateTime _harareNow() {
-    return DateTime.now().toUtc().add(const Duration(hours: 2));
-  }
-
-  bool _isSameHarareDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
-  }
-
-  DateTime _asHarare(DateTime value) {
-    if (value.isUtc) {
-      return value.add(const Duration(hours: 2));
-    }
-    return value.toUtc().add(const Duration(hours: 2));
-  }
+  static const String _habitReminderHourKey = 'habit_reminder_hour';
+  static const String _habitReminderMinuteKey = 'habit_reminder_minute';
+  static const String _themeModeKey = 'theme_mode';
 
   // ANCHOR
 
   GAnchor? getTodayAnchor() {
-    final today = _harareNow();
+    final today = localNow();
     for (final anchor in _anchors.values) {
-      final anchorDate = _asHarare(anchor.date);
-      if (_isSameHarareDay(anchorDate, today)) {
+      final anchorDate = asLocal(anchor.date);
+      if (isSameLocalDay(anchorDate, today)) {
         return anchor;
       }
     }
@@ -61,12 +50,12 @@ class LocalDb {
   // TASKS — Daily 3 + Capture
 
   List<GTask> getTodayTasks() {
-    final today = _harareNow();
+    final today = localNow();
 
     final list = _tasks.values.where((task) {
       if (task.isCapture) return false;
-      final createdAt = _asHarare(task.createdAt);
-      return _isSameHarareDay(createdAt, today);
+      final createdAt = asLocal(task.createdAt);
+      return isSameLocalDay(createdAt, today);
     }).toList();
 
     list.sort((a, b) => a.createdAt.compareTo(b.createdAt));
@@ -88,7 +77,7 @@ class LocalDb {
     if (task == null) return;
 
     task.isDone = !task.isDone;
-    task.completedAt = task.isDone ? _harareNow() : null;
+    task.completedAt = task.isDone ? localNow() : null;
 
     await task.save();
   }
@@ -124,7 +113,7 @@ class LocalDb {
     if (habit == null || habit.doneToday) return;
 
     habit.streak = habit.streakAlive ? habit.streak + 1 : 1;
-    habit.lastChecked = _harareNow();
+    habit.lastChecked = localNow();
 
     await habit.save();
   }
@@ -165,7 +154,7 @@ class LocalDb {
     final person = _people.get(personId);
     if (person == null) return;
 
-    person.lastSelectedAt = _harareNow();
+    person.lastSelectedAt = localNow();
     person.timesSelected = person.timesSelected + 1;
 
     await person.save();
@@ -186,7 +175,7 @@ class LocalDb {
 
   Future<void> saveAnchorDraft(String text) async {
     await _meta.put(GBoxes.anchorDraftKey, text);
-    await _meta.put(_draftDateKey, _harareNow().toIso8601String());
+    await _meta.put(_draftDateKey, localNow().toIso8601String());
   }
 
   Future<void> saveDraftDate(DateTime date) async {
@@ -198,14 +187,42 @@ class LocalDb {
     await _meta.delete(_draftDateKey);
   }
 
+  ({int hour, int minute}) getHabitReminderTime() {
+    final hour = _meta.get(_habitReminderHourKey);
+    final minute = _meta.get(_habitReminderMinuteKey);
+
+    final h = (hour is int && hour >= 0 && hour <= 23) ? hour : 20;
+    final m = (minute is int && minute >= 0 && minute <= 59) ? minute : 0;
+    return (hour: h, minute: m);
+  }
+
+  Future<void> saveHabitReminderTime(int hour, int minute) async {
+    await _meta.put(_habitReminderHourKey, hour);
+    await _meta.put(_habitReminderMinuteKey, minute);
+  }
+
+  String getThemeMode() {
+    final value = _meta.get(_themeModeKey);
+    if (value is! String) return 'system';
+    return switch (value) {
+      'light' => 'light',
+      'dark' => 'dark',
+      _ => 'system',
+    };
+  }
+
+  Future<void> saveThemeMode(String mode) async {
+    await _meta.put(_themeModeKey, mode);
+  }
+
   // ANCHOR EXISTS TODAY — used by router nav lock
 
   bool get hasAnchorToday {
-    final today = _harareNow();
+    final today = localNow();
 
     for (final anchor in _anchors.values) {
-      final anchorDate = _asHarare(anchor.date);
-      if (_isSameHarareDay(anchorDate, today)) {
+      final anchorDate = asLocal(anchor.date);
+      if (isSameLocalDay(anchorDate, today)) {
         return true;
       }
     }

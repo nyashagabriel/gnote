@@ -48,8 +48,7 @@ String? _authGuard(GoRouterState state) {
   // Only applies to logged-in users, before 9am, on gated routes.
   if (loggedIn &&
       _gatedRoutes.any((r) => path == r || path.startsWith('$r/'))) {
-    final now = DateTime.now();
-    final before9am = now.hour < 9;
+    final before9am = DateTime.now().hour < 9;
     if (before9am && !LocalDb.instance.hasAnchorToday) {
       return GRoutes.anchor;
     }

@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
 import '../services/notification_service.dart';
+import '../services/local_db.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -47,7 +48,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     setState(() => _loading = false);
 
     if (error == null) {
-      await NotificationService.scheduleAll();
+      final reminder = LocalDb.instance.getHabitReminderTime();
+      await NotificationService.ensurePermissionAndScheduleAll(
+        habitHour: reminder.hour,
+        habitMinute: reminder.minute,
+      );
       if (!mounted) return;
       context.go(GRoutes.anchor);
       return;
@@ -151,10 +156,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(GStrings.authNoAccountPrompt, style: GText.muted),
-                      GestureDetector(
+                      TextButton(
                         key: const Key('login_to_signup_link'),
-                        onTap: () => context.go(GRoutes.signup),
-                        child: Text(GStrings.authSignUp, style: GText.muted.copyWith(color: GColors.orange)),
+                        onPressed: () => context.go(GRoutes.signup),
+                        style: TextButton.styleFrom(
+                          minimumSize: Size.zero,
+                          padding: EdgeInsets.zero,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          GStrings.authSignUp,
+                          style: GText.muted.copyWith(color: GColors.orange),
+                        ),
                       ),
                     ],
                   ),

@@ -21,12 +21,21 @@ import 'constants.dart';
 //    • #E8E8E8 on #0D0D0D → 17.5:1 ✅ (body text)
 //    • #F0A500 on #0D0D0D → 7.2:1  ✅ (orange accent)
 //    • #3FA9F5 on #0D0D0D → 6.1:1  ✅ (azure accent)
-//    • #666666 on #0D0D0D → 3.1:1  ✅ (muted — large text only)
+      //    • #9A9A9A on #0D0D0D → improved readability for muted text
 //    • #E8E8E8 on #1A1A1A → 14.9:1 ✅ (cards)
 // ─────────────────────────────────────────────────────────────
 
 class GTheme {
   GTheme._();
+
+  static ThemeData get light => ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: GColors.orange,
+          brightness: Brightness.light,
+        ),
+      );
 
   static ThemeData get dark => ThemeData(
     useMaterial3: true,
@@ -98,10 +107,10 @@ class GTheme {
         height: 1.6,
       ),
       bodySmall: TextStyle(
-        fontSize: 12,
+        fontSize: 13,
         color: GColors.textMuted,
         height: 1.5,
-        // CONTRAST: 3.1:1 on #0D0D0D — used ONLY at 12px+ ✅
+        // Muted copy uses larger size + improved contrast for readability.
         // HIERARCHY: Muted colour signals lowest importance
       ),
       labelLarge: TextStyle(
@@ -111,7 +120,7 @@ class GTheme {
         letterSpacing: 0.3,
       ),
       labelSmall: TextStyle(
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: FontWeight.w700,
         color: GColors.textMuted,
         letterSpacing: 1.5,
@@ -265,7 +274,7 @@ class GTheme {
       backgroundColor: GColors.surfaceHigh,
       selectedColor: GColors.orangeDim,
       labelStyle: const TextStyle(
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: FontWeight.w700,
         color: GColors.textPrimary,
       ),

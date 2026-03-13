@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
 import '../services/notification_service.dart';
+import '../services/local_db.dart';
 
 class VerifyOtpPage extends ConsumerStatefulWidget {
   final String email;
@@ -43,7 +44,11 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
     if (!mounted) return;
     setState(() => _loading = false);
     if (error == null) {
-      await NotificationService.scheduleAll();
+      final reminder = LocalDb.instance.getHabitReminderTime();
+      await NotificationService.ensurePermissionAndScheduleAll(
+        habitHour: reminder.hour,
+        habitMinute: reminder.minute,
+      );
       if (!mounted) return;
       context.go(GRoutes.anchor);
     } else {
@@ -77,13 +82,13 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: GSpacing.md),
-              GestureDetector(
-                onTap: () => context.go(GRoutes.login),
-                child: Container(
-                  padding: const EdgeInsets.all(GSpacing.sm),
-                  decoration: const BoxDecoration(shape: BoxShape.circle, color: GColors.surface),
-                  child: const Icon(Icons.arrow_back, color: GColors.textPrimary, size: 18),
+              IconButton(
+                onPressed: () => context.go(GRoutes.login),
+                style: IconButton.styleFrom(
+                  backgroundColor: GColors.surface,
                 ),
+                icon: const Icon(Icons.arrow_back,
+                    color: GColors.textPrimary, size: 18),
               ),
               const SizedBox(height: GSpacing.xl),
               
@@ -115,7 +120,7 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
                 },
                 decoration: InputDecoration(
                   counterText: '',
-                  hintText: GStrings.authPasswordHint,
+                  hintText: GStrings.otpCodeHint,
                   hintStyle: GText.heading.copyWith(fontSize: 32, letterSpacing: 16.0, color: GColors.surfaceHigh),
                   filled: true,
                   fillColor: GColors.surface,

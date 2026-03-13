@@ -1,4 +1,4 @@
-package com.example.gnote
+package com.gnote.app
 
 import io.flutter.embedding.android.FlutterActivity
 

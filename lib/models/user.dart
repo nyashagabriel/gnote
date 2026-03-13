@@ -26,7 +26,7 @@ class GUser extends HiveObject {
 
   @HiveField(3)
   final String? timezone;       // for accurate notification timing
-                                // e.g. 'Africa/Harare'
+                                // e.g. 'UTC' or device timezone label
 
   @HiveField(4)
   final DateTime createdAt;

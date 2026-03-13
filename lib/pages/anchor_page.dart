@@ -285,14 +285,19 @@ class _ProfileAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: CircleAvatar(
-        radius: 16,
-        backgroundColor: GColors.orange,
-        child: Text(
-          initial,
-          style: GText.label.copyWith(color: GColors.background, fontSize: 12),
+    return Material(
+      color: Colors.transparent,
+      shape: const CircleBorder(),
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: CircleAvatar(
+          radius: 16,
+          backgroundColor: GColors.orange,
+          child: Text(
+            initial,
+            style: GText.label.copyWith(color: GColors.background, fontSize: 12),
+          ),
         ),
       ),
     );

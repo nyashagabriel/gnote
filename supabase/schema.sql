@@ -15,7 +15,7 @@ create table if not exists public.profiles (
   id            uuid        primary key references auth.users(id) on delete cascade,
   email         text        not null,
   display_name  text        not null default '',
-  timezone      text        not null default 'Africa/Harare',
+  timezone      text        not null default 'UTC',
   created_at    timestamptz not null default now(),
   last_seen     timestamptz not null default now()
 );

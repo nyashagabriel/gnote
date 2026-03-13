@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
 import '../services/notification_service.dart';
+import '../services/local_db.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -80,7 +81,11 @@ class _SignupPageState extends ConsumerState<SignupPage> {
     setState(() => _loading = false);
 
     if (result == null) {
-      await NotificationService.scheduleAll();
+      final reminder = LocalDb.instance.getHabitReminderTime();
+      await NotificationService.ensurePermissionAndScheduleAll(
+        habitHour: reminder.hour,
+        habitMinute: reminder.minute,
+      );
       if (!mounted) return;
       context.go(GRoutes.anchor);
       return;
@@ -108,13 +113,14 @@ class _SignupPageState extends ConsumerState<SignupPage> {
               const SizedBox(height: GSpacing.md),
               Row(
                 children: [
-                  GestureDetector(
-                    onTap: () => context.canPop() ? context.pop() : context.go(GRoutes.login),
-                    child: Container(
-                      padding: const EdgeInsets.all(GSpacing.sm),
-                      decoration: const BoxDecoration(shape: BoxShape.circle, color: GColors.surface),
-                      child: const Icon(Icons.arrow_back, color: GColors.textPrimary, size: 18),
+                  IconButton(
+                    onPressed: () =>
+                        context.canPop() ? context.pop() : context.go(GRoutes.login),
+                    style: IconButton.styleFrom(
+                      backgroundColor: GColors.surface,
                     ),
+                    icon: const Icon(Icons.arrow_back,
+                        color: GColors.textPrimary, size: 18),
                   ),
                   const SizedBox(width: GSpacing.sm),
                   Text(GStrings.authSignUp, style: GText.label.copyWith(fontSize: 14, color: GColors.textPrimary)),
@@ -204,9 +210,17 @@ class _SignupPageState extends ConsumerState<SignupPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(GStrings.authHasAccountPrompt, style: GText.muted),
-                    GestureDetector(
-                      onTap: () => context.go(GRoutes.login),
-                      child: Text(GStrings.authSignIn, style: GText.muted.copyWith(color: GColors.orange)),
+                    TextButton(
+                      onPressed: () => context.go(GRoutes.login),
+                      style: TextButton.styleFrom(
+                        minimumSize: Size.zero,
+                        padding: EdgeInsets.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        GStrings.authSignIn,
+                        style: GText.muted.copyWith(color: GColors.orange),
+                      ),
                     ),
                   ],
                 ),

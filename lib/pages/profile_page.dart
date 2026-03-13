@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/constants.dart';
+import '../core/timezone.dart';
+import '../services/local_db.dart';
 import '../services/notification_service.dart';
 import '../services/providers.dart';
 
@@ -19,7 +21,15 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   bool _signingOut = false;
+  final _db = LocalDb.instance;
   TimeOfDay _habitTime = const TimeOfDay(hour: 20, minute: 0);
+
+  @override
+  void initState() {
+    super.initState();
+    final reminder = _db.getHabitReminderTime();
+    _habitTime = TimeOfDay(hour: reminder.hour, minute: reminder.minute);
+  }
 
   Future<void> _pickHabitTime() async {
     try {
@@ -45,14 +55,20 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       if (picked == null || !mounted) return;
 
       setState(() => _habitTime = picked);
-      await NotificationService.updateHabitTime(picked.hour, picked.minute);
+      await _db.saveHabitReminderTime(picked.hour, picked.minute);
+      final updated = await NotificationService.updateHabitTime(
+        picked.hour,
+        picked.minute,
+      );
 
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          backgroundColor: GColors.surface,
+          backgroundColor: updated ? GColors.surface : GColors.danger,
           content: Text(
-            '${GStrings.profileHabitSetSnack}${picked.format(context)}',
+            updated
+                ? '${GStrings.profileHabitSetSnack}${picked.format(context)}'
+                : GStrings.profileHabitErrSnack,
             style: GText.body,
           ),
         ),
@@ -97,6 +113,46 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         ),
       );
     }
+  }
+
+  Future<void> _pickThemeMode() async {
+    final current = ref.read(themeModeProvider);
+    final selected = await showModalBottomSheet<ThemeMode>(
+      context: context,
+      backgroundColor: GColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: const Text(GStrings.profileThemeSystem),
+            trailing: current == ThemeMode.system
+                ? const Icon(Icons.check, color: GColors.orange)
+                : null,
+            onTap: () => Navigator.pop(context, ThemeMode.system),
+          ),
+          ListTile(
+            title: const Text(GStrings.profileThemeLight),
+            trailing: current == ThemeMode.light
+                ? const Icon(Icons.check, color: GColors.orange)
+                : null,
+            onTap: () => Navigator.pop(context, ThemeMode.light),
+          ),
+          ListTile(
+            title: const Text(GStrings.profileThemeDark),
+            trailing: current == ThemeMode.dark
+                ? const Icon(Icons.check, color: GColors.orange)
+                : null,
+            onTap: () => Navigator.pop(context, ThemeMode.dark),
+          ),
+          const SizedBox(height: GSpacing.md),
+        ],
+      ),
+    );
+    if (selected == null) return;
+    await ref.read(themeModeProvider.notifier).setThemeMode(selected);
   }
 
   Future<bool> _confirmSignOut() async {
@@ -164,9 +220,15 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final email = _safeText(user?.email);
     final timezone = _safeText(
       user?.timezone,
-      fallback: 'Africa/Harare',
+      fallback: deviceTimezone(),
     );
     final initials = _buildInitials(displayName);
+    final themeMode = ref.watch(themeModeProvider);
+    final themeLabel = switch (themeMode) {
+      ThemeMode.light => GStrings.profileThemeLight,
+      ThemeMode.dark => GStrings.profileThemeDark,
+      ThemeMode.system => GStrings.profileThemeSystem,
+    };
 
     return Scaffold(
       backgroundColor: GColors.background,
@@ -225,6 +287,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   const SizedBox(height: GSpacing.sm),
                   _CardSection(
                     children: [
+                      _ActionRow(
+                        icon: Icons.palette_outlined,
+                        label: GStrings.profileThemeMode,
+                        value: themeLabel,
+                        accent: GColors.azure,
+                        onTap: _pickThemeMode,
+                      ),
+                      const _SectionDivider(),
                       _ActionRow(
                         icon: Icons.access_time_rounded,
                         label: GStrings.profileHabitRem,

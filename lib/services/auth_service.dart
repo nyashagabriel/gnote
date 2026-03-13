@@ -1,4 +1,5 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../core/timezone.dart';
 import '../models/user.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -88,7 +89,7 @@ class AuthService {
       id:          response.user!.id,
       email:       email,
       displayName: displayName,
-      timezone:    'Africa/Harare',
+      timezone:    deviceTimezone(),
       createdAt:   DateTime.now(),
       lastSeen:    DateTime.now(),
     );
@@ -130,7 +131,7 @@ class AuthService {
       id:          response.user!.id,
       email:       email,
       displayName: response.user!.userMetadata?['display_name'] as String? ?? '',
-      timezone:    'Africa/Harare',
+      timezone:    deviceTimezone(),
       createdAt:   DateTime.now(),
       lastSeen:    DateTime.now(),
     );

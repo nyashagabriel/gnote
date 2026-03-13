@@ -141,8 +141,13 @@ class _EmptySection extends StatelessWidget {
         children: [
           Text(label, style: GText.muted),
           const Spacer(),
-          GestureDetector(
-            onTap: onAdd,
+          TextButton(
+            onPressed: onAdd,
+            style: TextButton.styleFrom(
+              minimumSize: Size.zero,
+              padding: EdgeInsets.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
             child: Text(
               GStrings.respAddOne,
               style: GText.muted.copyWith(color: GColors.orange, fontSize: 13),
@@ -185,9 +190,12 @@ class _PersonCard extends StatelessWidget {
         .join()
         .toUpperCase();
 
-    return GestureDetector(
-      onTap: isPicked ? onSend : null,
-      child: AnimatedContainer(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isPicked ? onSend : null,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         margin: const EdgeInsets.only(bottom: GSpacing.sm),
         padding: const EdgeInsets.all(GSpacing.md),
@@ -249,6 +257,7 @@ class _PersonCard extends StatelessWidget {
               ),
           ],
         ),
+        ),
       ),
     );
   }
@@ -273,9 +282,12 @@ class _PickButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final enabled = onTap != null;
 
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+        child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
@@ -298,6 +310,7 @@ class _PickButton extends StatelessWidget {
               letterSpacing: picked ? 0.5 : 1.5,
             ),
           ),
+        ),
         ),
       ),
     );

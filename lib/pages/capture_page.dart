@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../core/constants.dart';
+import '../models/task.dart';
 import '../services/providers.dart';
 
 class CapturePage extends ConsumerStatefulWidget {
@@ -126,7 +127,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     );
   }
 
-  Widget _buildList(List items) {
+  Widget _buildList(List<GTask> items) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(
           horizontal: GSpacing.pagePadding, vertical: GSpacing.md),
@@ -138,8 +139,23 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         return Dismissible(
           key: Key(item.id),
           direction: DismissDirection.endToStart,
-          onDismissed: (_) =>
-              ref.read(captureProvider.notifier).deleteItem(item.id),
+          onDismissed: (_) async {
+            final messenger = ScaffoldMessenger.of(context);
+            await ref.read(captureProvider.notifier).deleteItem(item.id);
+            if (!mounted) return;
+            messenger.clearSnackBars();
+            messenger.showSnackBar(
+              SnackBar(
+                content: const Text('Item deleted'),
+                action: SnackBarAction(
+                  label: 'UNDO',
+                  onPressed: () {
+                    ref.read(captureProvider.notifier).restoreItem(item);
+                  },
+                ),
+              ),
+            );
+          },
           background: Container(
             alignment: Alignment.centerRight,
             padding: const EdgeInsets.only(right: GSpacing.md),

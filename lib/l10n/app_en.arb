@@ -1,0 +1,31 @@
+{
+  "@@locale": "en",
+  "appName": "Gnote",
+  "appTagline": "Own your day.",
+  "syncOfflineSaved": "Offline - changes saved locally.",
+  "syncPending": "Sync pending ({count})",
+  "@syncPending": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncFailed": "Sync failed ({count}). Tap to retry.",
+  "@syncFailed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncPendingWithCount": "Sync pending ({count})",
+  "@syncPendingWithCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncRetrying": "Retrying sync..."
+}

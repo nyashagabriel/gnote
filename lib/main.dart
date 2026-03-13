@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'l10n/app_localizations.dart';
 import 'models/task.dart';
 import 'models/anchor.dart';
 import 'models/habit.dart';
@@ -16,6 +17,7 @@ import 'core/theme.dart';
 import 'core/router.dart';
 import 'services/notification_service.dart';
 import 'services/providers.dart';
+import 'services/sync.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,12 +102,81 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
 
   @override
   Widget build(BuildContext context) {
+    final syncStatus = ref.watch(syncStatusProvider).valueOrNull ??
+        const SyncStatusSnapshot();
+    final themeMode = ref.watch(themeModeProvider);
+
     return MaterialApp.router(
-      title: GStrings.appName,
+      theme: GTheme.light,
+      onGenerateTitle: (context) => AppLocalizations.of(context).appName,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       debugShowCheckedModeBanner: false,
-      theme: GTheme.dark,
-      themeMode: ThemeMode.dark,
+      darkTheme: GTheme.dark,
+      themeMode: themeMode,
       routerConfig: goRouter,
+      builder: (context, child) {
+        return Stack(
+          children: [
+            if (child != null) child,
+            _SyncBanner(
+              status: syncStatus,
+              onRetry: () => ref.read(syncServiceProvider).retryPending(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _SyncBanner extends StatelessWidget {
+  const _SyncBanner({
+    required this.status,
+    required this.onRetry,
+  });
+
+  final SyncStatusSnapshot status;
+  final Future<void> Function() onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    if (status.phase == SyncPhase.idle || status.pendingCount == 0) {
+      return const SizedBox.shrink();
+    }
+
+    final l10n = AppLocalizations.of(context);
+    final isError = status.phase == SyncPhase.error;
+    final label = isError
+        ? l10n.syncFailed(status.pendingCount)
+        : l10n.syncPendingWithCount(status.pendingCount);
+
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: SafeArea(
+        top: false,
+        child: Material(
+          color: isError ? GColors.dangerDim : GColors.azureDim,
+          child: InkWell(
+            onTap: isError ? () => onRetry() : null,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: GSpacing.pagePadding,
+                vertical: GSpacing.sm,
+              ),
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                style: GText.muted.copyWith(
+                  color: isError ? GColors.danger : GColors.azure,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
