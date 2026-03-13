@@ -58,6 +58,9 @@ dependencies:
   # WhatsApp bridge
   url_launcher: ^6.2.0
 
+  # Cupertino icons font for release builds
+  cupertino_icons: ^1.0.8
+
   # UUID generation
   uuid: ^4.4.0
 
