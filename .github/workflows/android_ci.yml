@@ -43,7 +43,12 @@ jobs:
         run: flutter analyze
 
       - name: Run Tests
-        run: flutter test
+        run: |
+          if [ -d test ]; then
+            flutter test
+          else
+            echo "No test directory found. Skipping tests."
+          fi
 
   build_signed_aab:
     name: Build Signed AAB
