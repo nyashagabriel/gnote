@@ -14,7 +14,6 @@ part 'anchor.g.dart';
 
 @HiveType(typeId: 2)
 class GAnchor extends HiveObject {
-
   @HiveField(0)
   final String id;
 
@@ -22,10 +21,10 @@ class GAnchor extends HiveObject {
   final String userId;
 
   @HiveField(2)
-  final String content;       // max 160 chars
+  final String content; // max 160 chars
 
   @HiveField(3)
-  final DateTime date;        // one anchor per calendar day
+  final DateTime date; // one anchor per calendar day
 
   @HiveField(4)
   final DateTime createdAt;
@@ -41,26 +40,26 @@ class GAnchor extends HiveObject {
   bool get isToday {
     final now = DateTime.now();
     return date.year == now.year &&
-           date.month == now.month &&
-           date.day == now.day;
+        date.month == now.month &&
+        date.day == now.day;
   }
 
   // ── fromJson — null-safe via GJson ────────────────────────
   // BUG FIX: was `json['id'] as String` etc — crashes if Supabase
   // returns null for any column. GJson.str falls back to '' safely.
   factory GAnchor.fromJson(Map<String, dynamic> json) => GAnchor(
-    id:        GJson.str(json, 'id'),
-    userId:    GJson.str(json, 'user_id'),
-    content:   GJson.str(json, 'content'),
-    date:      GJson.dateTime(json, 'date'),
-    createdAt: GJson.dateTime(json, 'created_at'),
-  );
+        id: GJson.str(json, 'id'),
+        userId: GJson.str(json, 'user_id'),
+        content: GJson.str(json, 'content'),
+        date: GJson.dateTime(json, 'date'),
+        createdAt: GJson.dateTime(json, 'created_at'),
+      );
 
   Map<String, dynamic> toJson() => {
-    'id':         id,
-    'user_id':    userId,
-    'content':    content,
-    'date':       date.toIso8601String(),
-    'created_at': createdAt.toIso8601String(),
-  };
+        'id': id,
+        'user_id': userId,
+        'content': content,
+        'date': date.toIso8601String(),
+        'created_at': createdAt.toIso8601String(),
+      };
 }

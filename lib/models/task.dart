@@ -21,36 +21,35 @@ part 'task.g.dart';
 
 @HiveType(typeId: 1)
 class GTask extends HiveObject {
-
   @HiveField(0)
-  final String id;              // UUID
+  final String id; // UUID
 
   @HiveField(1)
-  final String userId;          // ties to GUser.id
+  final String userId; // ties to GUser.id
 
   @HiveField(2)
-  final String what;            // SMART: Specific — what exactly
+  final String what; // SMART: Specific — what exactly
 
   @HiveField(3)
-  final String doneWhen;        // SMART: Measurable — how you know it's done
+  final String doneWhen; // SMART: Measurable — how you know it's done
 
   @HiveField(4)
-  final DateTime by;            // SMART: Time-bound — deadline today
+  final DateTime by; // SMART: Time-bound — deadline today
 
   @HiveField(5)
-  final String category;        // SMART: Relevant — from GCategories
+  final String category; // SMART: Relevant — from GCategories
 
   @HiveField(6)
-  bool isDone;                  // mutable — toggled on completion
+  bool isDone; // mutable — toggled on completion
 
   @HiveField(7)
-  final bool isCapture;         // true = capture list, false = Daily 3
+  final bool isCapture; // true = capture list, false = Daily 3
 
   @HiveField(8)
   final DateTime createdAt;
 
   @HiveField(9)
-  DateTime? completedAt;        // null until done — tells you when, not just if
+  DateTime? completedAt; // null until done — tells you when, not just if
 
   GTask({
     required this.id,
@@ -68,31 +67,31 @@ class GTask extends HiveObject {
   // ── fromJson ──────────────────────────────────────────────
   // ── fromJson — null-safe via GJson ────────────────────────
   factory GTask.fromJson(Map<String, dynamic> json) => GTask(
-    id:          GJson.str(json, 'id'),
-    userId:      GJson.str(json, 'user_id'),
-    what:        GJson.str(json, 'what'),
-    doneWhen:    GJson.str(json, 'done_when'),
-    by:          GJson.dateTime(json, 'by'),
-    category:    GJson.str(json, 'category', fallback: 'other'),
-    isDone:      GJson.boolean(json, 'is_done'),
-    isCapture:   GJson.boolean(json, 'is_capture'),
-    createdAt:   GJson.dateTime(json, 'created_at'),
-    completedAt: GJson.dateTimeOrNull(json, 'completed_at'),
-  );
+        id: GJson.str(json, 'id'),
+        userId: GJson.str(json, 'user_id'),
+        what: GJson.str(json, 'what'),
+        doneWhen: GJson.str(json, 'done_when'),
+        by: GJson.dateTime(json, 'by'),
+        category: GJson.str(json, 'category', fallback: 'other'),
+        isDone: GJson.boolean(json, 'is_done'),
+        isCapture: GJson.boolean(json, 'is_capture'),
+        createdAt: GJson.dateTime(json, 'created_at'),
+        completedAt: GJson.dateTimeOrNull(json, 'completed_at'),
+      );
 
   // ── toJson ────────────────────────────────────────────────
   Map<String, dynamic> toJson() => {
-    'id':           id,
-    'user_id':      userId,
-    'what':         what,
-    'done_when':    doneWhen,
-    'by':           by.toIso8601String(),
-    'category':     category,
-    'is_done':      isDone,
-    'is_capture':   isCapture,
-    'created_at':   createdAt.toIso8601String(),
-    'completed_at': completedAt?.toIso8601String(),
-  };
+        'id': id,
+        'user_id': userId,
+        'what': what,
+        'done_when': doneWhen,
+        'by': by.toIso8601String(),
+        'category': category,
+        'is_done': isDone,
+        'is_capture': isCapture,
+        'created_at': createdAt.toIso8601String(),
+        'completed_at': completedAt?.toIso8601String(),
+      };
 
   // ── copyWith ──────────────────────────────────────────────
   GTask copyWith({
@@ -101,15 +100,15 @@ class GTask extends HiveObject {
     String? category,
   }) =>
       GTask(
-        id:          id,
-        userId:      userId,
-        what:        what,
-        doneWhen:    doneWhen,
-        by:          by,
-        category:    category   ?? this.category,
-        isDone:      isDone     ?? this.isDone,
-        isCapture:   isCapture,
-        createdAt:   createdAt,
+        id: id,
+        userId: userId,
+        what: what,
+        doneWhen: doneWhen,
+        by: by,
+        category: category ?? this.category,
+        isDone: isDone ?? this.isDone,
+        isCapture: isCapture,
+        createdAt: createdAt,
         completedAt: completedAt ?? this.completedAt,
       );
 }

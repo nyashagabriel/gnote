@@ -25,7 +25,7 @@ class SyncService {
   static final SyncService instance = SyncService._();
 
   final _client = Supabase.instance.client;
-  final _db     = LocalDb.instance;
+  final _db = LocalDb.instance;
   final List<_PendingSyncOp> _pending = [];
 
   final ValueNotifier<SyncStatusSnapshot> status =
@@ -41,7 +41,9 @@ class SyncService {
       phase: phase ?? status.value.phase,
       pendingCount: _pending.length,
       lastError: error,
-      lastSyncedAt: (phase == SyncPhase.synced) ? DateTime.now() : status.value.lastSyncedAt,
+      lastSyncedAt: (phase == SyncPhase.synced)
+          ? DateTime.now()
+          : status.value.lastSyncedAt,
     );
   }
 
@@ -53,7 +55,8 @@ class SyncService {
     try {
       _setStatus(phase: SyncPhase.syncing, error: null);
       await op();
-      _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.syncing);
+      _setStatus(
+          phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.syncing);
     } catch (e) {
       _pending.add(_PendingSyncOp(name: name, run: op));
       _setStatus(phase: SyncPhase.error, error: e.toString());
@@ -153,10 +156,8 @@ class SyncService {
   // entire _pullAnchors() call failed with no recovery.
   // Now: bad rows are skipped individually — good rows still save.
   Future<void> _pullAnchors() async {
-    final rows = await _client
-        .from(GTables.anchors)
-        .select()
-        .eq('user_id', _userId!);
+    final rows =
+        await _client.from(GTables.anchors).select().eq('user_id', _userId!);
 
     for (final row in rows) {
       try {
@@ -169,10 +170,8 @@ class SyncService {
   }
 
   Future<void> _pullTasks() async {
-    final rows = await _client
-        .from(GTables.tasks)
-        .select()
-        .eq('user_id', _userId!);
+    final rows =
+        await _client.from(GTables.tasks).select().eq('user_id', _userId!);
 
     for (final row in rows) {
       try {
@@ -183,10 +182,8 @@ class SyncService {
   }
 
   Future<void> _pullHabits() async {
-    final rows = await _client
-        .from(GTables.habits)
-        .select()
-        .eq('user_id', _userId!);
+    final rows =
+        await _client.from(GTables.habits).select().eq('user_id', _userId!);
 
     for (final row in rows) {
       try {
@@ -197,10 +194,8 @@ class SyncService {
   }
 
   Future<void> _pullPeople() async {
-    final rows = await _client
-        .from(GTables.people)
-        .select()
-        .eq('user_id', _userId!);
+    final rows =
+        await _client.from(GTables.people).select().eq('user_id', _userId!);
 
     for (final row in rows) {
       try {

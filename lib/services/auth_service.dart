@@ -54,10 +54,9 @@ class AuthService {
 
   // ── Current session user ───────────────────────────────────
   User? get currentUser => _client.auth.currentUser;
-  bool  get isLoggedIn  => currentUser != null;
+  bool get isLoggedIn => currentUser != null;
 
-  Stream<AuthState> get authStateChanges =>
-      _client.auth.onAuthStateChange;
+  Stream<AuthState> get authStateChanges => _client.auth.onAuthStateChange;
 
   // ── Sign Up ────────────────────────────────────────────────
   Future<SignUpOutcome> signUp({
@@ -66,9 +65,9 @@ class AuthService {
     required String displayName,
   }) async {
     final response = await _client.auth.signUp(
-      email:    email,
+      email: email,
       password: password,
-      data:     {'display_name': displayName},
+      data: {'display_name': displayName},
     );
 
     // No user at all → Supabase rejected the signup outright
@@ -86,12 +85,12 @@ class AuthService {
     // session != null → confirmation disabled, user is fully logged in.
     // Upsert profile manually (trigger may not have run yet on some configs).
     final gUser = GUser(
-      id:          response.user!.id,
-      email:       email,
+      id: response.user!.id,
+      email: email,
       displayName: displayName,
-      timezone:    deviceTimezone(),
-      createdAt:   DateTime.now(),
-      lastSeen:    DateTime.now(),
+      timezone: deviceTimezone(),
+      createdAt: DateTime.now(),
+      lastSeen: DateTime.now(),
     );
 
     try {
@@ -128,12 +127,13 @@ class AuthService {
 
     // Fallback if the database trigger didn't run in time
     final fallback = GUser(
-      id:          response.user!.id,
-      email:       email,
-      displayName: response.user!.userMetadata?['display_name'] as String? ?? '',
-      timezone:    deviceTimezone(),
-      createdAt:   DateTime.now(),
-      lastSeen:    DateTime.now(),
+      id: response.user!.id,
+      email: email,
+      displayName:
+          response.user!.userMetadata?['display_name'] as String? ?? '',
+      timezone: deviceTimezone(),
+      createdAt: DateTime.now(),
+      lastSeen: DateTime.now(),
     );
 
     try {
@@ -157,7 +157,7 @@ class AuthService {
     required String password,
   }) async {
     final response = await _client.auth.signInWithPassword(
-      email:    email,
+      email: email,
       password: password,
     );
 
@@ -173,8 +173,8 @@ class AuthService {
     try {
       await _client
           .from('profiles')
-          .update({'last_seen': DateTime.now().toIso8601String()})
-          .eq('id', response.user!.id);
+          .update({'last_seen': DateTime.now().toIso8601String()}).eq(
+              'id', response.user!.id);
     } catch (_) {}
 
     return GUser.fromJson(data);
@@ -190,8 +190,7 @@ class AuthService {
     if (currentUser == null) return;
     await _client
         .from('profiles')
-        .update({'display_name': name})
-        .eq('id', currentUser!.id);
+        .update({'display_name': name}).eq('id', currentUser!.id);
   }
 
   // ── Update timezone ────────────────────────────────────────
@@ -199,8 +198,7 @@ class AuthService {
     if (currentUser == null) return;
     await _client
         .from('profiles')
-        .update({'timezone': timezone})
-        .eq('id', currentUser!.id);
+        .update({'timezone': timezone}).eq('id', currentUser!.id);
   }
 
   // ── Fetch profile ──────────────────────────────────────────

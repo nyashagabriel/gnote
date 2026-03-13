@@ -31,40 +31,40 @@ class NotificationService {
       null, // use default app icon
       [
         NotificationChannel(
-          channelKey:         GChannels.anchor,
-          channelName:        'Morning Anchor',
+          channelKey: GChannels.anchor,
+          channelName: 'Morning Anchor',
           channelDescription: 'Daily reminder to set your anchor',
-          defaultColor:       const Color(0xFFF0A500),
-          ledColor:           const Color(0xFFF0A500),
-          importance:         NotificationImportance.High,
-          channelShowBadge:   true,
+          defaultColor: const Color(0xFFF0A500),
+          ledColor: const Color(0xFFF0A500),
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
         ),
         NotificationChannel(
-          channelKey:         GChannels.tasks,
-          channelName:        'Daily 3',
+          channelKey: GChannels.tasks,
+          channelName: 'Daily 3',
           channelDescription: 'Reminder before task lock at 9am',
-          defaultColor:       const Color(0xFFF0A500),
-          ledColor:           const Color(0xFFF0A500),
-          importance:         NotificationImportance.High,
-          channelShowBadge:   true,
+          defaultColor: const Color(0xFFF0A500),
+          ledColor: const Color(0xFFF0A500),
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
         ),
         NotificationChannel(
-          channelKey:         GChannels.habit,
-          channelName:        'Habit',
+          channelKey: GChannels.habit,
+          channelName: 'Habit',
           channelDescription: 'Daily habit reminder',
-          defaultColor:       const Color(0xFF52E0A0),
-          ledColor:           const Color(0xFF52E0A0),
-          importance:         NotificationImportance.Default,
-          channelShowBadge:   false,
+          defaultColor: const Color(0xFF52E0A0),
+          ledColor: const Color(0xFF52E0A0),
+          importance: NotificationImportance.Default,
+          channelShowBadge: false,
         ),
         NotificationChannel(
-          channelKey:         GChannels.responsibility,
-          channelName:        'Responsibility',
+          channelKey: GChannels.responsibility,
+          channelName: 'Responsibility',
           channelDescription: 'Reminder to pick and message someone',
-          defaultColor:       const Color(0xFF3FA9F5),
-          ledColor:           const Color(0xFF3FA9F5),
-          importance:         NotificationImportance.Default,
-          channelShowBadge:   false,
+          defaultColor: const Color(0xFF3FA9F5),
+          ledColor: const Color(0xFF3FA9F5),
+          importance: NotificationImportance.Default,
+          channelShowBadge: false,
         ),
       ],
       debug: false,
@@ -97,7 +97,7 @@ class NotificationService {
 
   /// Call after login to set all daily reminders.
   static Future<void> scheduleAll({
-    int habitHour   = 20,
+    int habitHour = 20,
     int habitMinute = 0,
   }) async {
     if (kIsWeb) return;
@@ -128,18 +128,18 @@ class NotificationService {
   static Future<void> _scheduleMorningAnchor() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id:         GNotifIds.morningAnchor,
+        id: GNotifIds.morningAnchor,
         channelKey: GChannels.anchor,
-        title:      '☀️ Good morning',
-        body:       'Why did you wake up today? Set your anchor.',
+        title: '☀️ Good morning',
+        body: 'Why did you wake up today? Set your anchor.',
         notificationLayout: NotificationLayout.Default,
-        payload:    {'route': GRoutes.anchor},
+        payload: {'route': GRoutes.anchor},
       ),
       schedule: NotificationCalendar(
-        hour:       8,
-        minute:     0,
-        second:     0,
-        repeats:    true,
+        hour: 8,
+        minute: 0,
+        second: 0,
+        repeats: true,
         allowWhileIdle: true,
       ),
     );
@@ -149,18 +149,18 @@ class NotificationService {
   static Future<void> _scheduleDaily3Reminder() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id:         GNotifIds.daily3Reminder,
+        id: GNotifIds.daily3Reminder,
         channelKey: GChannels.tasks,
-        title:      '⏰ Tasks lock in 15 minutes',
-        body:       'Set your Daily 3 before 9am. Three tasks. No more.',
+        title: '⏰ Tasks lock in 15 minutes',
+        body: 'Set your Daily 3 before 9am. Three tasks. No more.',
         notificationLayout: NotificationLayout.Default,
-        payload:    {'route': GRoutes.daily3},
+        payload: {'route': GRoutes.daily3},
       ),
       schedule: NotificationCalendar(
-        hour:       8,
-        minute:     45,
-        second:     0,
-        repeats:    true,
+        hour: 8,
+        minute: 45,
+        second: 0,
+        repeats: true,
         allowWhileIdle: true,
       ),
     );
@@ -170,17 +170,17 @@ class NotificationService {
   static Future<void> _scheduleHabitReminder(int hour, int minute) async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id:         GNotifIds.habitReminder,
+        id: GNotifIds.habitReminder,
         channelKey: GChannels.habit,
-        title:      '🔥 Habit check-in',
-        body:       'Did you do it today? Keep the streak alive.',
+        title: '🔥 Habit check-in',
+        body: 'Did you do it today? Keep the streak alive.',
         notificationLayout: NotificationLayout.Default,
-        payload:    {'route': GRoutes.habit},
+        payload: {'route': GRoutes.habit},
       ),
       schedule: NotificationCalendar(
-        hour:    hour,
-        minute:  minute,
-        second:  0,
+        hour: hour,
+        minute: minute,
+        second: 0,
         repeats: true,
         allowWhileIdle: true,
       ),
@@ -191,17 +191,17 @@ class NotificationService {
   static Future<void> _scheduleResponsibilityPick() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id:         GNotifIds.responsibilityPick,
+        id: GNotifIds.responsibilityPick,
         channelKey: GChannels.responsibility,
-        title:      GStrings.respNotifTitle,
-        body:       'Open Gnote to pick today\'s person and send them a message.',
+        title: GStrings.respNotifTitle,
+        body: 'Open Gnote to pick today\'s person and send them a message.',
         notificationLayout: NotificationLayout.Default,
-        payload:    {'route': GRoutes.responsibility},
+        payload: {'route': GRoutes.responsibility},
       ),
       schedule: NotificationCalendar(
-        hour:    9,
-        minute:  0,
-        second:  0,
+        hour: 9,
+        minute: 0,
+        second: 0,
         repeats: true,
         allowWhileIdle: true,
       ),
@@ -212,18 +212,18 @@ class NotificationService {
   static Future<void> _scheduleCaptureReview() async {
     await AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id:         GNotifIds.captureReview,
+        id: GNotifIds.captureReview,
         channelKey: GChannels.tasks,
-        title:      '📋 Sunday review',
-        body:       'Open your Capture list. Process what matters. Clear the rest.',
+        title: '📋 Sunday review',
+        body: 'Open your Capture list. Process what matters. Clear the rest.',
         notificationLayout: NotificationLayout.Default,
-        payload:    {'route': GRoutes.capture},
+        payload: {'route': GRoutes.capture},
       ),
       schedule: NotificationCalendar(
         weekday: DateTime.sunday,
-        hour:    19,
-        minute:  0,
-        second:  0,
+        hour: 19,
+        minute: 0,
+        second: 0,
         repeats: true,
         allowWhileIdle: true,
       ),

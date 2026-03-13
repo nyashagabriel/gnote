@@ -38,8 +38,13 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
       return;
     }
 
-    setState(() { _loading = true; _error = null; _successMsg = null; });
-    final error = await ref.read(authProvider.notifier).verifyOTP(widget.email, code);
+    setState(() {
+      _loading = true;
+      _error = null;
+      _successMsg = null;
+    });
+    final error =
+        await ref.read(authProvider.notifier).verifyOTP(widget.email, code);
 
     if (!mounted) return;
     setState(() => _loading = false);
@@ -57,9 +62,13 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
   }
 
   Future<void> _resend() async {
-    setState(() { _resending = true; _error = null; _successMsg = null; });
+    setState(() {
+      _resending = true;
+      _error = null;
+      _successMsg = null;
+    });
     final error = await ref.read(authProvider.notifier).resendOTP(widget.email);
-    
+
     if (!mounted) return;
     setState(() {
       _resending = false;
@@ -91,8 +100,8 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
                     color: GColors.textPrimary, size: 18),
               ),
               const SizedBox(height: GSpacing.xl),
-              
-              Text(GStrings.otpCheckInbox, style: GText.label.copyWith(color: GColors.orange)),
+              Text(GStrings.otpCheckInbox,
+                  style: GText.label.copyWith(color: GColors.orange)),
               const SizedBox(height: GSpacing.sm),
               Text(GStrings.otpEnterCode, style: GText.heading),
               const SizedBox(height: GSpacing.sm),
@@ -101,19 +110,23 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
                   style: GText.body.copyWith(color: GColors.textMuted),
                   children: [
                     const TextSpan(text: GStrings.otpSentCode),
-                    TextSpan(text: widget.email, style: const TextStyle(color: GColors.textPrimary, fontWeight: FontWeight.bold)),
+                    TextSpan(
+                        text: widget.email,
+                        style: const TextStyle(
+                            color: GColors.textPrimary,
+                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
               const SizedBox(height: GSpacing.xxl),
-
               TextField(
                 controller: _otpCtrl,
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 maxLength: 8,
                 textAlign: TextAlign.center,
-                style: GText.heading.copyWith(fontSize: 32, letterSpacing: 16.0, color: GColors.orange),
+                style: GText.heading.copyWith(
+                    fontSize: 32, letterSpacing: 16.0, color: GColors.orange),
                 onChanged: (val) {
                   if (val.length == 8) _verify();
                   if (_error != null) setState(() => _error = null);
@@ -121,29 +134,37 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
                 decoration: InputDecoration(
                   counterText: '',
                   hintText: GStrings.otpCodeHint,
-                  hintStyle: GText.heading.copyWith(fontSize: 32, letterSpacing: 16.0, color: GColors.surfaceHigh),
+                  hintStyle: GText.heading.copyWith(
+                      fontSize: 32,
+                      letterSpacing: 16.0,
+                      color: GColors.surfaceHigh),
                   filled: true,
                   fillColor: GColors.surface,
-                  contentPadding: const EdgeInsets.symmetric(vertical: GSpacing.lg),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(GSpacing.inputRadius), borderSide: BorderSide.none),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: GSpacing.lg),
+                  border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(GSpacing.inputRadius),
+                      borderSide: BorderSide.none),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(GSpacing.inputRadius),
-                    borderSide: const BorderSide(color: GColors.orange, width: 2.0),
+                    borderSide:
+                        const BorderSide(color: GColors.orange, width: 2.0),
                   ),
                 ),
               ),
-
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 height: (_error != null || _successMsg != null) ? 40 : 16,
                 padding: const EdgeInsets.only(top: GSpacing.sm),
                 child: _error != null
-                    ? Text(_error!, textAlign: TextAlign.center, style: GText.danger)
+                    ? Text(_error!,
+                        textAlign: TextAlign.center, style: GText.danger)
                     : _successMsg != null
-                        ? Text(_successMsg!, textAlign: TextAlign.center, style: GText.body.copyWith(color: GColors.success))
+                        ? Text(_successMsg!,
+                            textAlign: TextAlign.center,
+                            style: GText.body.copyWith(color: GColors.success))
                         : const SizedBox.shrink(),
               ),
-
               const SizedBox(height: GSpacing.xl),
               SizedBox(
                 width: double.infinity,
@@ -153,21 +174,34 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
                     backgroundColor: GColors.orange,
                     disabledBackgroundColor: GColors.surfaceHigh,
                     padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(GSpacing.buttonRadius)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(GSpacing.buttonRadius)),
                   ),
                   child: _loading
-                      ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: GColors.background, strokeWidth: 2))
-                      : Text(GStrings.otpVerifyBtn, style: GText.subheading.copyWith(color: GColors.background, fontWeight: FontWeight.bold)),
+                      ? const SizedBox(
+                          height: 18,
+                          width: 18,
+                          child: CircularProgressIndicator(
+                              color: GColors.background, strokeWidth: 2))
+                      : Text(GStrings.otpVerifyBtn,
+                          style: GText.subheading.copyWith(
+                              color: GColors.background,
+                              fontWeight: FontWeight.bold)),
                 ),
               ),
               const SizedBox(height: GSpacing.xl),
-              
               Center(
                 child: _resending
-                    ? const SizedBox(height: 16, width: 16, child: CircularProgressIndicator(color: GColors.azure, strokeWidth: 2))
+                    ? const SizedBox(
+                        height: 16,
+                        width: 16,
+                        child: CircularProgressIndicator(
+                            color: GColors.azure, strokeWidth: 2))
                     : TextButton(
                         onPressed: _resend,
-                        child: Text(GStrings.otpResendBtn, style: GText.label.copyWith(color: GColors.azure)),
+                        child: Text(GStrings.otpResendBtn,
+                            style: GText.label.copyWith(color: GColors.azure)),
                       ),
               ),
             ],

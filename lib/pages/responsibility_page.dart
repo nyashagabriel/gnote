@@ -14,11 +14,11 @@ class ResponsibilityPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state      = ref.watch(responsibilityProvider);
+    final state = ref.watch(responsibilityProvider);
     final motivators = state.motivators;
     final meditators = state.meditators;
-    final pickedMot  = state.selectedMotivator;
-    final pickedMed  = state.selectedMeditator;
+    final pickedMot = state.selectedMotivator;
+    final pickedMed = state.selectedMeditator;
 
     return Scaffold(
       backgroundColor: GColors.background,
@@ -28,7 +28,8 @@ class ResponsibilityPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(GStrings.respHeader, style: GText.label.copyWith(fontSize: 14)),
+              Text(GStrings.respHeader,
+                  style: GText.label.copyWith(fontSize: 14)),
               const SizedBox(height: GSpacing.xs),
               Text(GStrings.respSub, style: GText.muted),
               const SizedBox(height: GSpacing.xl),
@@ -47,17 +48,23 @@ class ResponsibilityPage extends ConsumerWidget {
                 )
               else
                 ...motivators.map((p) => _PersonCard(
-                  person:    p,
-                  isPicked:  pickedMot?.id == p.id,
-                  roleColor: GColors.orange,
-                  onSend:    () => ref.read(responsibilityProvider.notifier).sendWhatsApp(p),
-                )),
+                      person: p,
+                      isPicked: pickedMot?.id == p.id,
+                      roleColor: GColors.orange,
+                      onSend: () => ref
+                          .read(responsibilityProvider.notifier)
+                          .sendWhatsApp(p),
+                    )),
               const SizedBox(height: GSpacing.sm),
               _PickButton(
-                label:      GStrings.respPickMotivatorBtn,
-                color:      GColors.orange,
-                onTap:      motivators.isEmpty ? null : () => ref.read(responsibilityProvider.notifier).pickMotivator(),
-                picked:     pickedMot != null,
+                label: GStrings.respPickMotivatorBtn,
+                color: GColors.orange,
+                onTap: motivators.isEmpty
+                    ? null
+                    : () => ref
+                        .read(responsibilityProvider.notifier)
+                        .pickMotivator(),
+                picked: pickedMot != null,
                 pickedName: pickedMot?.name,
               ),
               const SizedBox(height: GSpacing.xl),
@@ -76,17 +83,23 @@ class ResponsibilityPage extends ConsumerWidget {
                 )
               else
                 ...meditators.map((p) => _PersonCard(
-                  person:    p,
-                  isPicked:  pickedMed?.id == p.id,
-                  roleColor: GColors.azure,
-                  onSend:    () => ref.read(responsibilityProvider.notifier).sendWhatsApp(p),
-                )),
+                      person: p,
+                      isPicked: pickedMed?.id == p.id,
+                      roleColor: GColors.azure,
+                      onSend: () => ref
+                          .read(responsibilityProvider.notifier)
+                          .sendWhatsApp(p),
+                    )),
               const SizedBox(height: GSpacing.sm),
               _PickButton(
-                label:      GStrings.respPickMeditatorBtn,
-                color:      GColors.azure,
-                onTap:      meditators.isEmpty ? null : () => ref.read(responsibilityProvider.notifier).pickMeditator(),
-                picked:     pickedMed != null,
+                label: GStrings.respPickMeditatorBtn,
+                color: GColors.azure,
+                onTap: meditators.isEmpty
+                    ? null
+                    : () => ref
+                        .read(responsibilityProvider.notifier)
+                        .pickMeditator(),
+                picked: pickedMed != null,
                 pickedName: pickedMed?.name,
               ),
 
@@ -112,8 +125,8 @@ class _SectionHeader extends StatelessWidget {
   });
 
   final String label;
-  final int    count;
-  final Color  color;
+  final int count;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -130,8 +143,8 @@ class _SectionHeader extends StatelessWidget {
 class _EmptySection extends StatelessWidget {
   const _EmptySection({required this.label, required this.onAdd});
 
-  final String        label;
-  final VoidCallback  onAdd;
+  final String label;
+  final VoidCallback onAdd;
 
   @override
   Widget build(BuildContext context) {
@@ -167,9 +180,9 @@ class _PersonCard extends StatelessWidget {
     required this.onSend,
   });
 
-  final GPerson      person;
-  final bool         isPicked;
-  final Color        roleColor;
+  final GPerson person;
+  final bool isPicked;
+  final Color roleColor;
   final VoidCallback onSend;
 
   String get _recencyLabel {
@@ -196,67 +209,74 @@ class _PersonCard extends StatelessWidget {
         onTap: isPicked ? onSend : null,
         borderRadius: BorderRadius.circular(GSpacing.cardRadius),
         child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        margin: const EdgeInsets.only(bottom: GSpacing.sm),
-        padding: const EdgeInsets.all(GSpacing.md),
-        decoration: BoxDecoration(
-          color: GColors.surface,
-          borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-          border: Border.all(
-            color:  isPicked ? roleColor.withAlpha(200) : GColors.border,
-            width:  isPicked ? 1.5 : 1.0,
+          duration: const Duration(milliseconds: 250),
+          margin: const EdgeInsets.only(bottom: GSpacing.sm),
+          padding: const EdgeInsets.all(GSpacing.md),
+          decoration: BoxDecoration(
+            color: GColors.surface,
+            borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+            border: Border.all(
+              color: isPicked ? roleColor.withAlpha(200) : GColors.border,
+              width: isPicked ? 1.5 : 1.0,
+            ),
+            boxShadow: isPicked
+                ? [
+                    BoxShadow(
+                        color: roleColor.withAlpha(50),
+                        blurRadius: 12,
+                        spreadRadius: 2)
+                  ]
+                : null,
           ),
-          boxShadow: isPicked
-              ? [BoxShadow(color: roleColor.withAlpha(50), blurRadius: 12, spreadRadius: 2)]
-              : null,
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 22,
-              backgroundColor: roleColor.withAlpha(40),
-              child: Text(
-                initials,
-                style: GText.label.copyWith(color: roleColor, fontSize: 13),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 22,
+                backgroundColor: roleColor.withAlpha(40),
+                child: Text(
+                  initials,
+                  style: GText.label.copyWith(color: roleColor, fontSize: 13),
+                ),
               ),
-            ),
-            const SizedBox(width: GSpacing.md),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(person.name, style: GText.subheading),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: roleColor.withAlpha(40),
-                          borderRadius: BorderRadius.circular(4),
+              const SizedBox(width: GSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(person.name, style: GText.subheading),
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: roleColor.withAlpha(40),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            person.role.toUpperCase(),
+                            style: GText.label
+                                .copyWith(fontSize: 9, color: roleColor),
+                          ),
                         ),
-                        child: Text(
-                          person.role.toUpperCase(),
-                          style: GText.label.copyWith(fontSize: 9, color: roleColor),
+                        const SizedBox(width: GSpacing.sm),
+                        Text(
+                          _recencyLabel,
+                          style: GText.muted.copyWith(fontSize: 11),
                         ),
-                      ),
-                      const SizedBox(width: GSpacing.sm),
-                      Text(
-                        _recencyLabel,
-                        style: GText.muted.copyWith(fontSize: 11),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            if (isPicked)
-              Padding(
-                padding: const EdgeInsets.only(left: GSpacing.sm),
-                child: Icon(Icons.send_rounded, color: roleColor, size: 18),
-              ),
-          ],
-        ),
+              if (isPicked)
+                Padding(
+                  padding: const EdgeInsets.only(left: GSpacing.sm),
+                  child: Icon(Icons.send_rounded, color: roleColor, size: 18),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -272,11 +292,11 @@ class _PickButton extends StatelessWidget {
     this.pickedName,
   });
 
-  final String        label;
-  final Color         color;
+  final String label;
+  final Color color;
   final VoidCallback? onTap;
-  final bool          picked;
-  final String?       pickedName;
+  final bool picked;
+  final String? pickedName;
 
   @override
   Widget build(BuildContext context) {
@@ -288,29 +308,31 @@ class _PickButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
         child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
-        decoration: BoxDecoration(
-          color: picked ? color.withAlpha(30) : Colors.transparent,
-          border: Border.all(
-            color: enabled ? color.withAlpha(picked ? 200 : 140) : GColors.border,
-            width: picked ? 1.5 : 1.0,
+          duration: const Duration(milliseconds: 200),
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
+          decoration: BoxDecoration(
+            color: picked ? color.withAlpha(30) : Colors.transparent,
+            border: Border.all(
+              color: enabled
+                  ? color.withAlpha(picked ? 200 : 140)
+                  : GColors.border,
+              width: picked ? 1.5 : 1.0,
+            ),
+            borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
           ),
-          borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
-        ),
-        child: Center(
-          child: Text(
-            (picked && pickedName != null)
-                ? '${GStrings.respPickedPrefix}$pickedName${GStrings.respPickedSuffix}'
-                : label,
-            style: GText.label.copyWith(
-              fontSize: 12,
-              color: enabled ? color : GColors.textMuted,
-              letterSpacing: picked ? 0.5 : 1.5,
+          child: Center(
+            child: Text(
+              (picked && pickedName != null)
+                  ? '${GStrings.respPickedPrefix}$pickedName${GStrings.respPickedSuffix}'
+                  : label,
+              style: GText.label.copyWith(
+                fontSize: 12,
+                color: enabled ? color : GColors.textMuted,
+                letterSpacing: picked ? 0.5 : 1.5,
+              ),
             ),
           ),
-        ),
         ),
       ),
     );

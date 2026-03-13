@@ -16,15 +16,15 @@ class AddTaskPage extends ConsumerStatefulWidget {
 }
 
 class _AddTaskPageState extends ConsumerState<AddTaskPage> {
-  final _whatCtrl     = TextEditingController();
+  final _whatCtrl = TextEditingController();
   final _doneWhenCtrl = TextEditingController();
 
-  DateTime  _byDate   = DateTime.now();
-  TimeOfDay _byTime   = TimeOfDay.now();
-  String    _category = GCategories.career;
+  DateTime _byDate = DateTime.now();
+  TimeOfDay _byTime = TimeOfDay.now();
+  String _category = GCategories.career;
 
-  bool      _loading  = false;
-  String?   _error;
+  bool _loading = false;
+  String? _error;
 
   @override
   void dispose() {
@@ -39,7 +39,10 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       initialDate: _byDate,
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
-      builder: (context, child) => Theme(data: ThemeData.dark().copyWith(colorScheme: const ColorScheme.dark(primary: GColors.orange)), child: child!),
+      builder: (context, child) => Theme(
+          data: ThemeData.dark().copyWith(
+              colorScheme: const ColorScheme.dark(primary: GColors.orange)),
+          child: child!),
     );
     if (picked != null) setState(() => _byDate = picked);
   }
@@ -48,30 +51,54 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     final picked = await showTimePicker(
       context: context,
       initialTime: _byTime,
-      builder: (context, child) => Theme(data: ThemeData.dark().copyWith(colorScheme: const ColorScheme.dark(primary: GColors.orange)), child: child!),
+      builder: (context, child) => Theme(
+          data: ThemeData.dark().copyWith(
+              colorScheme: const ColorScheme.dark(primary: GColors.orange)),
+          child: child!),
     );
     if (picked != null) setState(() => _byTime = picked);
   }
 
   Future<void> _save() async {
-    final what     = _whatCtrl.text.trim();
+    final what = _whatCtrl.text.trim();
     final doneWhen = _doneWhenCtrl.text.trim();
 
-    if (what.isEmpty)     { setState(() => _error = GStrings.addTaskErrWhat); return; }
-    if (doneWhen.isEmpty) { setState(() => _error = GStrings.addTaskErrDone); return; }
+    if (what.isEmpty) {
+      setState(() => _error = GStrings.addTaskErrWhat);
+      return;
+    }
+    if (doneWhen.isEmpty) {
+      setState(() => _error = GStrings.addTaskErrDone);
+      return;
+    }
 
     final user = ref.read(currentUserProvider);
-    if (user == null) { setState(() => _error = GStrings.errNotSignedIn); return; }
+    if (user == null) {
+      setState(() => _error = GStrings.errNotSignedIn);
+      return;
+    }
 
-    setState(() { _loading = true; _error = null; });
-    final by = DateTime(_byDate.year, _byDate.month, _byDate.day, _byTime.hour, _byTime.minute);
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    final by = DateTime(
+        _byDate.year, _byDate.month, _byDate.day, _byTime.hour, _byTime.minute);
 
     final err = await ref.read(daily3Provider.notifier).addTask(
-      what: what, doneWhen: doneWhen, by: by, category: _category, userId: user.id,
-    );
+          what: what,
+          doneWhen: doneWhen,
+          by: by,
+          category: _category,
+          userId: user.id,
+        );
     if (!mounted) return;
     setState(() => _loading = false);
-    if (err != null) { setState(() => _error = err); } else { context.pop(); }
+    if (err != null) {
+      setState(() => _error = err);
+    } else {
+      context.pop();
+    }
   }
 
   @override
@@ -82,91 +109,132 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Scaffold(
       backgroundColor: GColors.background,
       appBar: AppBar(
-        backgroundColor: GColors.background, elevation: 0,
-        leading: IconButton(icon: const Icon(Icons.arrow_back, color: GColors.textPrimary), onPressed: () => context.pop()),
+        backgroundColor: GColors.background,
+        elevation: 0,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: GColors.textPrimary),
+            onPressed: () => context.pop()),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(GSpacing.pagePadding),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(GStrings.addTaskHeader, style: GText.label.copyWith(fontSize: 14)),
+            Text(GStrings.addTaskHeader,
+                style: GText.label.copyWith(fontSize: 14)),
             const SizedBox(height: GSpacing.xs),
-            Text(GStrings.addTaskTitle, style: GText.heading.copyWith(fontSize: 22, color: GColors.orange)),
+            Text(GStrings.addTaskTitle,
+                style: GText.heading
+                    .copyWith(fontSize: 22, color: GColors.orange)),
             const SizedBox(height: GSpacing.xl),
-
             Text(GStrings.smartWhat, style: GText.label),
             const SizedBox(height: GSpacing.sm),
-            _Field(ctrl: _whatCtrl, hint: GStrings.addTaskWhatHint, maxLength: GLimits.taskTitleMax),
+            _Field(
+                ctrl: _whatCtrl,
+                hint: GStrings.addTaskWhatHint,
+                maxLength: GLimits.taskTitleMax),
             const SizedBox(height: GSpacing.lg),
-
             Text(GStrings.smartDoneWhen, style: GText.label),
             const SizedBox(height: GSpacing.sm),
-            _Field(ctrl: _doneWhenCtrl, hint: GStrings.addTaskDoneHint, maxLines: 3, maxLength: GLimits.taskTitleMax),
+            _Field(
+                ctrl: _doneWhenCtrl,
+                hint: GStrings.addTaskDoneHint,
+                maxLines: 3,
+                maxLength: GLimits.taskTitleMax),
             const SizedBox(height: GSpacing.lg),
-
             Text(GStrings.addTaskByLabel, style: GText.label),
             const SizedBox(height: GSpacing.sm),
             Row(
               children: [
-                Expanded(flex: 2, child: _PickerTile(label: GStrings.addTaskDateLabel, value: dateStr, icon: Icons.calendar_today, onTap: _pickDate)),
+                Expanded(
+                    flex: 2,
+                    child: _PickerTile(
+                        label: GStrings.addTaskDateLabel,
+                        value: dateStr,
+                        icon: Icons.calendar_today,
+                        onTap: _pickDate)),
                 const SizedBox(width: GSpacing.sm),
-                Expanded(flex: 1, child: _PickerTile(label: GStrings.addTaskTimeLabel, value: timeStr, icon: Icons.access_time, onTap: _pickTime)),
+                Expanded(
+                    flex: 1,
+                    child: _PickerTile(
+                        label: GStrings.addTaskTimeLabel,
+                        value: timeStr,
+                        icon: Icons.access_time,
+                        onTap: _pickTime)),
               ],
             ),
             const SizedBox(height: GSpacing.lg),
-
             Text(GStrings.addTaskCategoryLabel, style: GText.label),
             const SizedBox(height: GSpacing.sm),
             Wrap(
-              spacing: GSpacing.sm, runSpacing: GSpacing.sm,
+              spacing: GSpacing.sm,
+              runSpacing: GSpacing.sm,
               children: GCategories.defaults.map((cat) {
                 final selected = cat == _category;
-                final color    = GColors.category[cat] ?? GColors.textMuted;
+                final color = GColors.category[cat] ?? GColors.textMuted;
                 return Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => setState(() => _category = cat),
                     borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
                     child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    padding: const EdgeInsets.symmetric(horizontal: GSpacing.md, vertical: GSpacing.sm),
-                    decoration: BoxDecoration(
-                      color: selected ? color.withAlpha(40) : GColors.surface,
-                      border: Border.all(color: selected ? color : GColors.border),
-                      borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
-                    ),
-                    child: Text(cat[0].toUpperCase() + cat.substring(1), style: GText.body.copyWith(color: selected ? color : GColors.textMuted)),
+                      duration: const Duration(milliseconds: 150),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: GSpacing.md, vertical: GSpacing.sm),
+                      decoration: BoxDecoration(
+                        color: selected ? color.withAlpha(40) : GColors.surface,
+                        border: Border.all(
+                            color: selected ? color : GColors.border),
+                        borderRadius:
+                            BorderRadius.circular(GSpacing.buttonRadius),
+                      ),
+                      child: Text(cat[0].toUpperCase() + cat.substring(1),
+                          style: GText.body.copyWith(
+                              color: selected ? color : GColors.textMuted)),
                     ),
                   ),
                 );
               }).toList(),
             ),
-
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
               height: _error != null ? 36 : 12,
               child: _error != null
-                  ? Padding(padding: const EdgeInsets.only(top: GSpacing.sm), child: Text(_error!, style: GText.danger))
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: GSpacing.sm),
+                      child: Text(_error!, style: GText.danger))
                   : const SizedBox.shrink(),
             ),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _loading ? null : _save,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: GColors.orange, disabledBackgroundColor: GColors.surfaceHigh,
+                  backgroundColor: GColors.orange,
+                  disabledBackgroundColor: GColors.surfaceHigh,
                   padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(GSpacing.buttonRadius)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(GSpacing.buttonRadius)),
                 ),
                 child: _loading
-                    ? const SizedBox(height: 18, width: 18, child: CircularProgressIndicator(color: GColors.background, strokeWidth: 2))
-                    : Text(GStrings.addTaskSaveBtn, style: GText.subheading.copyWith(color: GColors.background, fontWeight: FontWeight.bold)),
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(
+                            color: GColors.background, strokeWidth: 2))
+                    : Text(GStrings.addTaskSaveBtn,
+                        style: GText.subheading.copyWith(
+                            color: GColors.background,
+                            fontWeight: FontWeight.bold)),
               ),
             ),
             const SizedBox(height: GSpacing.sm),
-            SizedBox(width: double.infinity, child: TextButton(onPressed: () => context.pop(), child: Text(GStrings.cancel, style: GText.label))),
+            SizedBox(
+                width: double.infinity,
+                child: TextButton(
+                    onPressed: () => context.pop(),
+                    child: Text(GStrings.cancel, style: GText.label))),
           ],
         ),
       ),
@@ -175,7 +243,11 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
 }
 
 class _Field extends StatelessWidget {
-  const _Field({required this.ctrl, required this.hint, this.maxLines = 1, this.maxLength});
+  const _Field(
+      {required this.ctrl,
+      required this.hint,
+      this.maxLines = 1,
+      this.maxLength});
   final TextEditingController ctrl;
   final String hint;
   final int maxLines;
@@ -184,20 +256,33 @@ class _Field extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: ctrl, style: GText.body, maxLines: maxLines, maxLength: maxLength,
+      controller: ctrl,
+      style: GText.body,
+      maxLines: maxLines,
+      maxLength: maxLength,
       decoration: InputDecoration(
-        hintText: hint, hintStyle: GText.body.copyWith(color: GColors.textDisabled),
-        filled: true, fillColor: GColors.surface,
+        hintText: hint,
+        hintStyle: GText.body.copyWith(color: GColors.textDisabled),
+        filled: true,
+        fillColor: GColors.surface,
         counterStyle: GText.muted.copyWith(fontSize: 10),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(GSpacing.inputRadius), borderSide: BorderSide.none),
-        focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(GSpacing.inputRadius), borderSide: const BorderSide(color: GColors.orange, width: 1.5)),
+        border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(GSpacing.inputRadius),
+            borderSide: BorderSide.none),
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(GSpacing.inputRadius),
+            borderSide: const BorderSide(color: GColors.orange, width: 1.5)),
       ),
     );
   }
 }
 
 class _PickerTile extends StatelessWidget {
-  const _PickerTile({required this.label, required this.value, required this.icon, required this.onTap});
+  const _PickerTile(
+      {required this.label,
+      required this.value,
+      required this.icon,
+      required this.onTap});
   final String label, value;
   final IconData icon;
   final VoidCallback onTap;
@@ -210,23 +295,27 @@ class _PickerTile extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(GSpacing.inputRadius),
         child: Container(
-        padding: const EdgeInsets.all(GSpacing.md),
-        decoration: BoxDecoration(color: GColors.surface, borderRadius: BorderRadius.circular(GSpacing.inputRadius), border: Border.all(color: GColors.border)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(label, style: GText.label.copyWith(fontSize: 10)),
-                const SizedBox(height: 4),
-                Text(value, style: GText.body, overflow: TextOverflow.ellipsis),
-              ],
-            ),
-            Icon(icon, color: GColors.textMuted, size: 16),
-          ],
+          padding: const EdgeInsets.all(GSpacing.md),
+          decoration: BoxDecoration(
+              color: GColors.surface,
+              borderRadius: BorderRadius.circular(GSpacing.inputRadius),
+              border: Border.all(color: GColors.border)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(label, style: GText.label.copyWith(fontSize: 10)),
+                  const SizedBox(height: 4),
+                  Text(value,
+                      style: GText.body, overflow: TextOverflow.ellipsis),
+                ],
+              ),
+              Icon(icon, color: GColors.textMuted, size: 16),
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

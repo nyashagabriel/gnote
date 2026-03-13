@@ -29,7 +29,8 @@ import '../services/auth_service.dart';
 const _uuid = Uuid();
 
 final localDbProvider = Provider<LocalDb>((ref) => LocalDb.instance);
-final syncServiceProvider = Provider<SyncService>((ref) => SyncService.instance);
+final syncServiceProvider =
+    Provider<SyncService>((ref) => SyncService.instance);
 final syncStatusProvider = StreamProvider<SyncStatusSnapshot>((ref) {
   final status = ref.watch(syncServiceProvider).status;
   final controller = StreamController<SyncStatusSnapshot>();
@@ -46,7 +47,8 @@ final syncStatusProvider = StreamProvider<SyncStatusSnapshot>((ref) {
 
   return controller.stream;
 });
-final authServiceProvider = Provider<AuthService>((ref) => AuthService.instance);
+final authServiceProvider =
+    Provider<AuthService>((ref) => AuthService.instance);
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   ThemeModeNotifier(this._db) : super(_read(_db));
@@ -84,7 +86,8 @@ final themeModeProvider =
 String _authError(Object e, {required bool isSignUp}) {
   if (e is AuthException) {
     final msg = e.message.toLowerCase();
-    if (msg.contains('invalid login credentials') || msg.contains('invalid credentials')) {
+    if (msg.contains('invalid login credentials') ||
+        msg.contains('invalid credentials')) {
       return 'Incorrect email or password.';
     }
     if (msg.contains('email not confirmed')) {
@@ -148,7 +151,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
   final LocalDb _db;
   final SyncService _sync;
 
-  AuthNotifier(this._auth, this._db, this._sync) : super(const AsyncValue.loading()) {
+  AuthNotifier(this._auth, this._db, this._sync)
+      : super(const AsyncValue.loading()) {
     _init();
   }
 
@@ -278,7 +282,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
   }
 }
 
-final authProvider = StateNotifierProvider<AuthNotifier, AsyncValue<GUser?>>((ref) {
+final authProvider =
+    StateNotifierProvider<AuthNotifier, AsyncValue<GUser?>>((ref) {
   return AuthNotifier(
     ref.watch(authServiceProvider),
     ref.watch(localDbProvider),
@@ -325,7 +330,8 @@ class AnchorNotifier extends StateNotifier<GAnchor?> {
 }
 
 final anchorProvider = StateNotifierProvider<AnchorNotifier, GAnchor?>((ref) {
-  return AnchorNotifier(ref.watch(localDbProvider), ref.watch(syncServiceProvider));
+  return AnchorNotifier(
+      ref.watch(localDbProvider), ref.watch(syncServiceProvider));
 });
 
 // ═════════════════════════════════════════════════════════════
@@ -346,7 +352,8 @@ class Daily3Notifier extends StateNotifier<Daily3State> {
   final LocalDb _db;
   final SyncService _sync;
 
-  Daily3Notifier(this._db, this._sync) : super(const Daily3State(tasks: [], locked: false)) {
+  Daily3Notifier(this._db, this._sync)
+      : super(const Daily3State(tasks: [], locked: false)) {
     _load();
   }
 
@@ -400,8 +407,10 @@ class Daily3Notifier extends StateNotifier<Daily3State> {
   }
 }
 
-final daily3Provider = StateNotifierProvider<Daily3Notifier, Daily3State>((ref) {
-  return Daily3Notifier(ref.watch(localDbProvider), ref.watch(syncServiceProvider));
+final daily3Provider =
+    StateNotifierProvider<Daily3Notifier, Daily3State>((ref) {
+  return Daily3Notifier(
+      ref.watch(localDbProvider), ref.watch(syncServiceProvider));
 });
 
 // ═════════════════════════════════════════════════════════════
@@ -466,8 +475,10 @@ class CaptureNotifier extends StateNotifier<List<GTask>> {
   }
 }
 
-final captureProvider = StateNotifierProvider<CaptureNotifier, List<GTask>>((ref) {
-  return CaptureNotifier(ref.watch(localDbProvider), ref.watch(syncServiceProvider));
+final captureProvider =
+    StateNotifierProvider<CaptureNotifier, List<GTask>>((ref) {
+  return CaptureNotifier(
+      ref.watch(localDbProvider), ref.watch(syncServiceProvider));
 });
 
 // ═════════════════════════════════════════════════════════════
@@ -516,7 +527,8 @@ class HabitNotifier extends StateNotifier<GHabit?> {
 }
 
 final habitProvider = StateNotifierProvider<HabitNotifier, GHabit?>((ref) {
-  return HabitNotifier(ref.watch(localDbProvider), ref.watch(syncServiceProvider));
+  return HabitNotifier(
+      ref.watch(localDbProvider), ref.watch(syncServiceProvider));
 });
 
 // ═════════════════════════════════════════════════════════════
@@ -634,6 +646,8 @@ class ResponsibilityNotifier extends StateNotifier<ResponsibilityState> {
   }
 }
 
-final responsibilityProvider = StateNotifierProvider<ResponsibilityNotifier, ResponsibilityState>((ref) {
-  return ResponsibilityNotifier(ref.watch(localDbProvider), ref.watch(syncServiceProvider));
+final responsibilityProvider =
+    StateNotifierProvider<ResponsibilityNotifier, ResponsibilityState>((ref) {
+  return ResponsibilityNotifier(
+      ref.watch(localDbProvider), ref.watch(syncServiceProvider));
 });

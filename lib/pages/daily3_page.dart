@@ -43,7 +43,8 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
     final hours = diff.inHours;
     final minutes = diff.inMinutes.remainder(60);
 
-    if (hours > 0) return '${GStrings.daily3LocksIn}${hours}${GStrings.daily3H}${minutes}${GStrings.daily3M}';
+    if (hours > 0)
+      return '${GStrings.daily3LocksIn}${hours}${GStrings.daily3H}${minutes}${GStrings.daily3M}';
     return '${GStrings.daily3LocksIn}${minutes}${GStrings.daily3M}';
   }
 
@@ -67,9 +68,11 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(GStrings.daily3Header, style: GText.label.copyWith(fontSize: 14)),
+                  Text(GStrings.daily3Header,
+                      style: GText.label.copyWith(fontSize: 14)),
                   if (locked)
-                    _LockBadge(label: GStrings.daily3Locked, color: GColors.orange)
+                    _LockBadge(
+                        label: GStrings.daily3Locked, color: GColors.orange)
                   else if (countdown != null)
                     _LockBadge(label: countdown, color: GColors.textMuted),
                 ],
@@ -77,7 +80,6 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
               const SizedBox(height: GSpacing.xs),
               Text(GStrings.daily3Limit, style: GText.muted),
               const SizedBox(height: GSpacing.xl),
-
               if (allDone)
                 Padding(
                   padding: const EdgeInsets.only(bottom: GSpacing.lg),
@@ -96,17 +98,19 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
                     ),
                   ),
                 ),
-
               Expanded(
                 child: ListView.separated(
                   itemCount: 3,
                   physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (_, __) => const SizedBox(height: GSpacing.md),
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(height: GSpacing.md),
                   itemBuilder: (context, i) {
                     if (i < tasks.length) {
                       return _TaskCard(
                         task: tasks[i],
-                        onToggle: () => ref.read(daily3Provider.notifier).toggleDone(tasks[i].id),
+                        onToggle: () => ref
+                            .read(daily3Provider.notifier)
+                            .toggleDone(tasks[i].id),
                       );
                     }
                     return _GhostSlot(
@@ -167,7 +171,8 @@ class _TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final catColor = GColors.category[task.category.toLowerCase()] ?? GColors.textMuted;
+    final catColor =
+        GColors.category[task.category.toLowerCase()] ?? GColors.textMuted;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -180,7 +185,8 @@ class _TaskCard extends StatelessWidget {
             color: task.isDone ? GColors.successDim : GColors.surface,
             borderRadius: BorderRadius.circular(GSpacing.cardRadius),
             border: Border.all(
-              color: task.isDone ? GColors.success.withAlpha(80) : GColors.border,
+              color:
+                  task.isDone ? GColors.success.withAlpha(80) : GColors.border,
             ),
           ),
           child: Row(
@@ -196,7 +202,8 @@ class _TaskCard extends StatelessWidget {
                   task.what,
                   style: GText.body.copyWith(
                     decoration: task.isDone ? TextDecoration.lineThrough : null,
-                    color: task.isDone ? GColors.textMuted : GColors.textPrimary,
+                    color:
+                        task.isDone ? GColors.textMuted : GColors.textPrimary,
                   ),
                 ),
               ),
@@ -244,7 +251,8 @@ class _GhostSlot extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.add_circle_outline, color: GColors.textMuted, size: 20),
+                const Icon(Icons.add_circle_outline,
+                    color: GColors.textMuted, size: 20),
                 const SizedBox(width: GSpacing.sm),
                 Text(label, style: GText.muted),
               ],

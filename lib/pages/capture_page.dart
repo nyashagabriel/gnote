@@ -56,7 +56,8 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(GStrings.captureHeader, style: GText.label.copyWith(fontSize: 14)),
+                      Text(GStrings.captureHeader,
+                          style: GText.label.copyWith(fontSize: 14)),
                       if (items.isNotEmpty)
                         IconButton(
                           onPressed: () =>
@@ -79,8 +80,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                         color: GColors.azureDim,
                         borderRadius:
                             BorderRadius.circular(GSpacing.cardRadius),
-                        border: Border.all(
-                            color: GColors.azure.withAlpha(80)),
+                        border: Border.all(color: GColors.azure.withAlpha(80)),
                       ),
                       child: Text(
                         GStrings.captureReviewMsg,
@@ -92,8 +92,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                 ],
               ),
             ),
-            Expanded(
-                child: items.isEmpty ? _buildEmpty() : _buildList(items)),
+            Expanded(child: items.isEmpty ? _buildEmpty() : _buildList(items)),
             _buildInput(),
           ],
         ),
@@ -163,8 +162,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             child: const Icon(Icons.delete_outline, color: GColors.danger),
           ),
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: GSpacing.md),
+            padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -203,15 +201,13 @@ class _CapturePageState extends ConsumerState<CapturePage> {
               onSubmitted: (_) => _add(),
               decoration: InputDecoration(
                 hintText: GStrings.captureHint,
-                hintStyle:
-                  GText.body.copyWith(color: GColors.textDisabled),
+                hintStyle: GText.body.copyWith(color: GColors.textDisabled),
                 filled: true,
                 fillColor: GColors.surface,
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: GSpacing.md, vertical: GSpacing.sm),
                 border: OutlineInputBorder(
-                  borderRadius:
-                      BorderRadius.circular(GSpacing.inputRadius),
+                  borderRadius: BorderRadius.circular(GSpacing.inputRadius),
                   borderSide: BorderSide.none,
                 ),
               ),
@@ -224,8 +220,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             style: IconButton.styleFrom(
               backgroundColor: GColors.orangeDim,
               shape: RoundedRectangleBorder(
-                borderRadius:
-                    BorderRadius.circular(GSpacing.inputRadius),
+                borderRadius: BorderRadius.circular(GSpacing.inputRadius),
               ),
             ),
           ),

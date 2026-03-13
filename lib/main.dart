@@ -102,8 +102,8 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
 
   @override
   Widget build(BuildContext context) {
-    final syncStatus = ref.watch(syncStatusProvider).valueOrNull ??
-        const SyncStatusSnapshot();
+    final syncStatus =
+        ref.watch(syncStatusProvider).valueOrNull ?? const SyncStatusSnapshot();
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(

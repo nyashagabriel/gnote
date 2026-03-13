@@ -121,7 +121,8 @@ class LocalDb {
   // PEOPLE — Responsibility
 
   List<GPerson> getMotivators() {
-    final list = _people.values.where((person) => person.role == 'Motivator').toList();
+    final list =
+        _people.values.where((person) => person.role == 'Motivator').toList();
     list.sort((a, b) {
       final aDate = a.lastSelectedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
       final bDate = b.lastSelectedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
@@ -131,7 +132,8 @@ class LocalDb {
   }
 
   List<GPerson> getMeditators() {
-    final list = _people.values.where((person) => person.role == 'Meditator').toList();
+    final list =
+        _people.values.where((person) => person.role == 'Meditator').toList();
     list.sort((a, b) {
       final aDate = a.lastSelectedAt ?? DateTime.fromMillisecondsSinceEpoch(0);
       final bDate = b.lastSelectedAt ?? DateTime.fromMillisecondsSinceEpoch(0);

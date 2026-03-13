@@ -165,7 +165,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 borderRadius: BorderRadius.circular(GSpacing.cardRadius),
                 side: const BorderSide(color: GColors.border),
               ),
-              title: Text(GStrings.profileSignOutTitle, style: GText.subheading),
+              title:
+                  Text(GStrings.profileSignOutTitle, style: GText.subheading),
               content: Text(
                 GStrings.profileSignOutSub,
                 style: GText.body,
@@ -201,10 +202,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     final clean = displayName.trim();
     if (clean.isEmpty || clean == '—') return 'GN';
 
-    final parts = clean
-        .split(RegExp(r'\s+'))
-        .where((part) => part.isNotEmpty)
-        .toList();
+    final parts =
+        clean.split(RegExp(r'\s+')).where((part) => part.isNotEmpty).toList();
 
     if (parts.isEmpty) return 'GN';
     if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();

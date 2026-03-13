@@ -44,8 +44,10 @@ class _HabitPageState extends ConsumerState<HabitPage> {
         ),
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(
-            GSpacing.pagePadding, GSpacing.md,
-            GSpacing.pagePadding, GSpacing.xl,
+            GSpacing.pagePadding,
+            GSpacing.md,
+            GSpacing.pagePadding,
+            GSpacing.xl,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -53,7 +55,8 @@ class _HabitPageState extends ConsumerState<HabitPage> {
             children: [
               Center(
                 child: Container(
-                  width: 32, height: 4,
+                  width: 32,
+                  height: 4,
                   decoration: BoxDecoration(
                     color: GColors.border,
                     borderRadius: BorderRadius.circular(2),
@@ -62,7 +65,9 @@ class _HabitPageState extends ConsumerState<HabitPage> {
               ),
               const SizedBox(height: GSpacing.lg),
               Text(
-                hasExisting ? GStrings.habitChangeTitle : GStrings.habitSetTitle,
+                hasExisting
+                    ? GStrings.habitChangeTitle
+                    : GStrings.habitSetTitle,
                 style: GText.label.copyWith(fontSize: 14),
               ),
               const SizedBox(height: GSpacing.xs),
@@ -79,14 +84,16 @@ class _HabitPageState extends ConsumerState<HabitPage> {
                 decoration: InputDecoration(
                   hintText: GStrings.habitHint,
                   hintStyle: GText.body.copyWith(color: GColors.textDisabled),
-                  filled: true, fillColor: GColors.surfaceHigh,
+                  filled: true,
+                  fillColor: GColors.surfaceHigh,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(GSpacing.inputRadius),
                     borderSide: BorderSide.none,
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(GSpacing.inputRadius),
-                    borderSide: const BorderSide(color: GColors.orange, width: 1.5),
+                    borderSide:
+                        const BorderSide(color: GColors.orange, width: 1.5),
                   ),
                 ),
               ),
@@ -159,9 +166,11 @@ class _HabitPageState extends ConsumerState<HabitPage> {
             color: GColors.textMuted,
           ),
           const SizedBox(height: GSpacing.lg),
-          Text(GStrings.habitEmpty, style: GText.subheading, textAlign: TextAlign.center),
+          Text(GStrings.habitEmpty,
+              style: GText.subheading, textAlign: TextAlign.center),
           const SizedBox(height: GSpacing.xs),
-          Text(GStrings.habitOneAtATime, style: GText.muted, textAlign: TextAlign.center),
+          Text(GStrings.habitOneAtATime,
+              style: GText.muted, textAlign: TextAlign.center),
           const SizedBox(height: GSpacing.xl),
           ElevatedButton(
             key: const Key('empty_set_habit_button'),
@@ -175,10 +184,10 @@ class _HabitPageState extends ConsumerState<HabitPage> {
 
   // ── States B / C / D: Active, Done, Broken ──────────────────
   Widget _buildActive(habit) {
-    final String name      = habit.name;
-    final int    streak    = habit.streak;
-    final bool   doneToday = habit.doneToday;
-    final bool   broken    = !habit.streakAlive && streak > 0;
+    final String name = habit.name;
+    final int streak = habit.streak;
+    final bool doneToday = habit.doneToday;
+    final bool broken = !habit.streakAlive && streak > 0;
 
     final Color streakColor = broken ? GColors.danger : GColors.orange;
 
@@ -188,7 +197,8 @@ class _HabitPageState extends ConsumerState<HabitPage> {
         // ── Page label (quiet) ─────────────────────────────────
         Align(
           alignment: Alignment.centerLeft,
-          child: Text(GStrings.habitTitle, style: GText.label.copyWith(fontSize: 14)),
+          child: Text(GStrings.habitTitle,
+              style: GText.label.copyWith(fontSize: 14)),
         ),
         const SizedBox(height: GSpacing.xxl),
 
@@ -274,7 +284,8 @@ class _HabitPageState extends ConsumerState<HabitPage> {
           child: doneToday
               ? Container(
                   key: const Key('habit_done_container'),
-                  padding: const EdgeInsets.symmetric(vertical: GSpacing.md + 2),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: GSpacing.md + 2),
                   decoration: BoxDecoration(
                     color: GColors.successDim,
                     borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
@@ -296,14 +307,18 @@ class _HabitPageState extends ConsumerState<HabitPage> {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: broken ? GColors.danger : GColors.orange,
                     foregroundColor: GColors.background,
-                    padding: const EdgeInsets.symmetric(vertical: GSpacing.md + 2),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: GSpacing.md + 2),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+                      borderRadius:
+                          BorderRadius.circular(GSpacing.buttonRadius),
                     ),
                     elevation: 0,
                   ),
                   child: Text(
-                    broken ? GStrings.habitBeginAgain : GStrings.habitDidItToday,
+                    broken
+                        ? GStrings.habitBeginAgain
+                        : GStrings.habitDidItToday,
                     style: GText.subheading.copyWith(
                       color: GColors.background,
                       fontWeight: FontWeight.w800,

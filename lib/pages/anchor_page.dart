@@ -18,10 +18,10 @@ class AnchorPage extends ConsumerStatefulWidget {
 
 class _AnchorPageState extends ConsumerState<AnchorPage> {
   final _controller = TextEditingController();
-  final _db         = LocalDb.instance;
+  final _db = LocalDb.instance;
 
-  bool  _saving     = false;
-  bool  _restored   = false;
+  bool _saving = false;
+  bool _restored = false;
 
   @override
   void initState() {
@@ -43,10 +43,10 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
     final savedDate = _db.getDraftDate();
     if (savedDate == null) return;
 
-    final now     = DateTime.now();
-    final isToday = savedDate.year  == now.year  &&
-                    savedDate.month == now.month  &&
-                    savedDate.day   == now.day;
+    final now = DateTime.now();
+    final isToday = savedDate.year == now.year &&
+        savedDate.month == now.month &&
+        savedDate.day == now.day;
 
     if (!isToday) {
       _db.clearAnchorDraft();
@@ -85,16 +85,20 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
     await ref.read(anchorProvider.notifier).lockAnchor(text, user.id);
     await _db.clearAnchorDraft();
 
-    if (mounted) setState(() { _saving = false; _restored = false; });
+    if (mounted)
+      setState(() {
+        _saving = false;
+        _restored = false;
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    final anchor    = ref.watch(anchorProvider);
-    final isLocked  = anchor != null;
+    final anchor = ref.watch(anchorProvider);
+    final isLocked = anchor != null;
     final charCount = _controller.text.trim().length;
-    final canLock   = charCount >= 10 && !_saving;
-    final today     = DateFormat('EEEE, d MMMM').format(DateTime.now());
+    final canLock = charCount >= 10 && !_saving;
+    final today = DateFormat('EEEE, d MMMM').format(DateTime.now());
 
     return Scaffold(
       backgroundColor: GColors.background,
@@ -107,17 +111,19 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(GStrings.anchorHeader, style: GText.label.copyWith(fontSize: 14)),
+                  Text(GStrings.anchorHeader,
+                      style: GText.label.copyWith(fontSize: 14)),
                   _ProfileAvatar(
-                    initial: (ref.watch(currentUserProvider)?.displayName ?? '?')[0].toUpperCase(),
-                    onTap:   () => context.push(GRoutes.profile),
+                    initial:
+                        (ref.watch(currentUserProvider)?.displayName ?? '?')[0]
+                            .toUpperCase(),
+                    onTap: () => context.push(GRoutes.profile),
                   ),
                 ],
               ),
               const SizedBox(height: GSpacing.xs),
               Text(today, style: GText.muted),
               const SizedBox(height: GSpacing.xxl),
-
               Center(
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 400),
@@ -130,17 +136,14 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
                 ),
               ),
               const SizedBox(height: GSpacing.xl),
-
-              if (isLocked)
-                _LockedCard(anchor: anchor),
-
+              if (isLocked) _LockedCard(anchor: anchor),
               if (!isLocked)
                 _UnlockedInput(
                   controller: _controller,
-                  canLock:    canLock,
-                  saving:     _saving,
-                  restored:   _restored,
-                  onLock:     _lock,
+                  canLock: canLock,
+                  saving: _saving,
+                  restored: _restored,
+                  onLock: _lock,
                 ),
             ],
           ),
@@ -194,10 +197,10 @@ class _UnlockedInput extends StatelessWidget {
   });
 
   final TextEditingController controller;
-  final bool          canLock;
-  final bool          saving;
-  final bool          restored;
-  final VoidCallback  onLock;
+  final bool canLock;
+  final bool saving;
+  final bool restored;
+  final VoidCallback onLock;
 
   @override
   Widget build(BuildContext context) {
@@ -208,17 +211,16 @@ class _UnlockedInput extends StatelessWidget {
         const SizedBox(height: GSpacing.xs),
         Text(GStrings.anchorSub, style: GText.muted),
         const SizedBox(height: GSpacing.lg),
-
         TextField(
-          controller:  controller,
-          style:       GText.body,
-          maxLines:    3,
-          maxLength:   GLimits.anchorMaxChars,
+          controller: controller,
+          style: GText.body,
+          maxLines: 3,
+          maxLength: GLimits.anchorMaxChars,
           decoration: InputDecoration(
-            hintText:     GStrings.anchorHint,
-            hintStyle:    GText.body.copyWith(color: GColors.textDisabled),
-            filled:       true,
-            fillColor:    GColors.surface,
+            hintText: GStrings.anchorHint,
+            hintStyle: GText.body.copyWith(color: GColors.textDisabled),
+            filled: true,
+            fillColor: GColors.surface,
             counterStyle: GText.muted.copyWith(fontSize: 10),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(GSpacing.inputRadius),
@@ -231,15 +233,14 @@ class _UnlockedInput extends StatelessWidget {
           ),
         ),
         const SizedBox(height: GSpacing.lg),
-
         SizedBox(
           width: double.infinity,
           child: ElevatedButton(
             onPressed: canLock ? onLock : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor:         GColors.orange,
+              backgroundColor: GColors.orange,
               disabledBackgroundColor: GColors.surfaceHigh,
-              foregroundColor:         GColors.background,
+              foregroundColor: GColors.background,
               padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
@@ -247,9 +248,11 @@ class _UnlockedInput extends StatelessWidget {
             ),
             child: saving
                 ? const SizedBox(
-                    height: 18, width: 18,
+                    height: 18,
+                    width: 18,
                     child: CircularProgressIndicator(
-                      color: GColors.background, strokeWidth: 2,
+                      color: GColors.background,
+                      strokeWidth: 2,
                     ),
                   )
                 : Text(
@@ -261,7 +264,6 @@ class _UnlockedInput extends StatelessWidget {
                   ),
           ),
         ),
-
         if (restored)
           Padding(
             padding: const EdgeInsets.only(top: GSpacing.sm),
@@ -280,7 +282,7 @@ class _UnlockedInput extends StatelessWidget {
 class _ProfileAvatar extends StatelessWidget {
   const _ProfileAvatar({required this.initial, required this.onTap});
 
-  final String       initial;
+  final String initial;
   final VoidCallback onTap;
 
   @override
@@ -296,7 +298,8 @@ class _ProfileAvatar extends StatelessWidget {
           backgroundColor: GColors.orange,
           child: Text(
             initial,
-            style: GText.label.copyWith(color: GColors.background, fontSize: 12),
+            style:
+                GText.label.copyWith(color: GColors.background, fontSize: 12),
           ),
         ),
       ),
