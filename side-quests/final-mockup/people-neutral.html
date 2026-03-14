@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>People - GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">People</p>
+            <h1 class="title-lg">The app picks. You send.</h1>
+          </div>
+          <p class="muted-copy">Fri 13 Mar</p>
+        </div>
+
+        <div class="stack reveal people-sections">
+          <section class="card people-block">
+            <div class="people-block-head">
+              <p class="section-label">Motivators</p>
+              <button class="secondary-btn people-pick-btn">Pick</button>
+            </div>
+            <div class="person-row picked-row">
+              <div class="person-info">
+                <div class="avatar small">AR</div>
+                <div>
+                  <p class="body-copy">Alex Rivers</p>
+                  <p class="muted-copy">Last: 2 days ago</p>
+                </div>
+              </div>
+              <button class="icon-btn">↗</button>
+            </div>
+          </section>
+
+          <section class="card people-block">
+            <div class="people-block-head">
+              <p class="section-label">Meditators</p>
+              <button class="secondary-btn people-pick-btn">Pick</button>
+            </div>
+            <div class="person-row">
+              <div class="person-info">
+                <div class="avatar small">NS</div>
+                <div>
+                  <p class="body-copy">Nia Stone</p>
+                  <p class="muted-copy">Last: 5 days ago</p>
+                </div>
+              </div>
+              <button class="icon-btn">↗</button>
+            </div>
+          </section>
+        </div>
+
+        <button class="primary-btn people-add-btn reveal">Add person</button>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item active">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .people-sections {
+        margin-top: 18px;
+        padding-bottom: 108px;
+      }
+      .people-block {
+        display: grid;
+        gap: 14px;
+      }
+      .people-block-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .people-pick-btn {
+        min-width: 72px;
+      }
+      .picked-row {
+        border-color: var(--line-strong);
+        box-shadow: var(--shadow-sm);
+      }
+      .people-add-btn {
+        position: sticky;
+        bottom: 96px;
+        width: 100%;
+        height: 54px;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

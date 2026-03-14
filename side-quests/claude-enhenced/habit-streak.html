@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Streak — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div><p class="screen-label">HABIT</p></div>
+        </div>
+
+        <!-- BENCHMARK HERO PANEL -->
+        <div class="hero-panel reveal streak-hero">
+
+          <!-- Flame emblem -->
+          <div class="streak-emblem-wrap">
+            <div class="streak-ember ember-1"></div>
+            <div class="streak-ember ember-2"></div>
+            <div class="streak-emblem">
+              <div class="flame-core"></div>
+              <div class="flame-inner"></div>
+            </div>
+          </div>
+
+          <div class="streak-header">
+            <p class="streak-note">Current streak</p>
+            <div class="streak-number-lockup">
+              <div class="huge-number streak-glow">34</div>
+              <p class="streak-caption">day streak</p>
+            </div>
+            <p class="body-copy" style="max-width:240px;margin:10px auto 0;">
+              Read 20 minutes before bed
+            </p>
+          </div>
+
+          <!-- Progress bar — to next milestone -->
+          <div class="streak-bar-wrap">
+            <div class="streak-bar" style="width:220px;margin:0 auto 6px;">
+              <div class="streak-fill" style="width:68%;"></div>
+            </div>
+            <p class="muted-copy" style="font-size:10px;text-align:center;">16 days to 50-day streak</p>
+          </div>
+
+          <!-- Week panel — info-panel style (benchmark inner sub-card) -->
+          <div class="info-panel" style="margin-top:18px;">
+            <div class="week-labels">
+              <span>Tu</span><span>We</span><span>Th</span>
+              <span>Fr</span><span>Sa</span><span>Su</span><span>Mo</span>
+            </div>
+            <div class="calendar-week" style="margin-top:10px;">
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day completed"><span class="day-icon">✓</span></div>
+              <div class="calendar-day today"><span class="day-icon">⏳</span></div>
+            </div>
+            <p class="muted-copy" style="font-size:11px;text-align:center;margin-top:12px;">
+              What a streak. Keep going every day.
+            </p>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top:16px;">
+
+          <div class="card reveal">
+            <div class="action-row">
+              <div>
+                <p class="section-label">STATUS</p>
+                <p class="body-copy" id="status-copy" style="margin-top:4px;">Not done yet today.</p>
+              </div>
+              <span class="ghost-chip">One habit only</span>
+            </div>
+          </div>
+
+          <button class="primary-btn" id="did-it-btn"
+            style="width:100%;height:56px;font-size:13px;letter-spacing:0.1em;">
+            I DID IT TODAY
+          </button>
+
+          <button class="secondary-btn" id="change-habit-btn" style="width:100%;">
+            Change habit
+          </button>
+
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item active">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <!-- Change habit bottom sheet -->
+    <div class="sheet-scrim" id="change-sheet" style="display:none;">
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+          <div>
+            <p class="sheet-kicker">CHANGE HABIT</p>
+            <h2 class="sheet-title">What is the one thing<br>you want to build?</h2>
+          </div>
+          <button class="icon-btn" id="close-change-sheet">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div class="form-group">
+            <label class="form-label">New habit</label>
+            <input class="form-input" type="text"
+              placeholder="Read 20 minutes before bed" maxlength="80" />
+            <p class="muted-copy" style="margin-top:8px;font-size:11px;">
+              Your current streak will reset to 0.
+            </p>
+          </div>
+        </div>
+        <div class="sheet-footer">
+          <button class="secondary-btn" id="cancel-change">Cancel</button>
+          <button class="primary-btn">Save new habit</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      /* Flame emblem — pure CSS, screen-specific */
+      .streak-hero {
+        text-align: center; padding-top: 24px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(240,165,0,0.16), transparent 50%),
+          linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+      }
+      .streak-emblem-wrap {
+        position: relative; display: grid;
+        place-items: center; margin-bottom: 14px;
+      }
+      .streak-emblem {
+        position: relative; width: 78px; height: 98px;
+        filter: drop-shadow(0 14px 32px rgba(240,165,0,0.24));
+      }
+      .streak-emblem::before {
+        content: "";
+        position: absolute; left: 18px; top: 4px;
+        width: 42px; height: 62px;
+        background: linear-gradient(180deg, #ffbe32, #f08d00);
+        border-radius: 55% 45% 60% 40% / 60% 50% 50% 40%;
+        transform: rotate(-18deg);
+      }
+      .streak-emblem::after {
+        content: "";
+        position: absolute; right: 16px; top: 14px;
+        width: 38px; height: 56px;
+        background: linear-gradient(180deg, #ff9f24, #e66400);
+        border-radius: 48% 52% 42% 58% / 62% 56% 44% 38%;
+        transform: rotate(14deg);
+      }
+      .flame-core {
+        position: absolute; left: 17px; bottom: 10px;
+        width: 44px; height: 56px;
+        background: linear-gradient(180deg, #ffca45, #ff9200);
+        border-radius: 50% 50% 58% 58% / 42% 42% 64% 64%;
+        z-index: 2;
+      }
+      .flame-inner {
+        position: absolute; left: 29px; bottom: 22px;
+        width: 20px; height: 28px;
+        background: linear-gradient(180deg, #fff3bf, #ffd25a);
+        border-radius: 50% 50% 58% 58% / 42% 42% 64% 64%;
+        z-index: 3;
+      }
+      .streak-ember {
+        position: absolute; border-radius: 50%;
+        background: rgba(240,165,0,0.8);
+        box-shadow: 0 0 14px rgba(240,165,0,0.4);
+      }
+      .ember-1 { width: 6px; height: 6px; top: 6px; left: calc(50% - 28px); }
+      .ember-2 { width: 4px; height: 4px; top: 16px; right: calc(50% - 30px); }
+      .streak-number-lockup { margin-top: 6px; }
+      .streak-caption {
+        color: var(--orange); font-size: 24px; font-weight: 800;
+        letter-spacing: -0.04em; line-height: 0.95; margin: 0;
+      }
+      .streak-bar-wrap { margin-top: 18px; }
+      .week-labels {
+        display: flex; justify-content: space-between;
+        gap: 4px; color: var(--muted);
+        font-size: 10px; font-weight: 700;
+        letter-spacing: 0.04em; text-transform: uppercase;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const didItBtn = document.getElementById('did-it-btn');
+      const statusCopy = document.getElementById('status-copy');
+      let done = false;
+
+      didItBtn.addEventListener('click', () => {
+        if (done) return;
+        done = true;
+        // Kinetic typography: text swap + green state
+        didItBtn.textContent = '✓ DONE TODAY ⚡';
+        didItBtn.classList.add('done-state');
+        statusCopy.textContent = 'Done for today. ⚡';
+      });
+
+      const sheet = document.getElementById('change-sheet');
+      document.getElementById('change-habit-btn').addEventListener('click', () => {
+        sheet.style.display = 'flex';
+      });
+      const closeSheet = () => { sheet.style.display = 'none'; };
+      document.getElementById('close-change-sheet').addEventListener('click', closeSheet);
+      document.getElementById('cancel-change').addEventListener('click', closeSheet);
+      sheet.addEventListener('click', (e) => { if (e.target === sheet) closeSheet(); });
+    </script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../core/constants.dart';
+import '../core/timezone.dart';
 
 part 'anchor.g.dart';
 
@@ -38,10 +39,7 @@ class GAnchor extends HiveObject {
   });
 
   bool get isToday {
-    final now = DateTime.now();
-    return date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    return isSameLocalDay(asLocal(date), localNow());
   }
 
   // ── fromJson — null-safe via GJson ────────────────────────

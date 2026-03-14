@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../core/constants.dart';
+import '../core/timezone.dart';
 
 part 'habit.g.dart';
 
@@ -47,20 +48,18 @@ class GHabit extends HiveObject {
 
   bool get doneToday {
     if (lastChecked == null) return false;
-    final now = DateTime.now();
-    return lastChecked!.year == now.year &&
-        lastChecked!.month == now.month &&
-        lastChecked!.day == now.day;
+    return isSameLocalDay(asLocal(lastChecked!), localNow());
   }
 
   bool get streakAlive {
     if (lastChecked == null) return false;
-    final yesterday = DateTime.now().subtract(const Duration(days: 1));
-    return doneToday ||
-        (lastChecked!.year == yesterday.year &&
-            lastChecked!.month == yesterday.month &&
-            lastChecked!.day == yesterday.day);
+    final yesterday = localNow().subtract(const Duration(days: 1));
+    return doneToday || isSameLocalDay(asLocal(lastChecked!), yesterday);
   }
+
+  bool get isBroken => lastChecked != null && !streakAlive && streak > 0;
+
+  int get currentStreak => isBroken ? 0 : streak;
 
   // ── fromJson — null-safe via GJson ────────────────────────
   factory GHabit.fromJson(Map<String, dynamic> json) => GHabit(

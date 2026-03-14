@@ -1,7 +1,9 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart'
+    show debugPrint, debugPrintStack, kIsWeb;
 import 'package:flutter/material.dart';
 import '../core/constants.dart';
+import 'local_db.dart';
 
 // ─────────────────────────────────────────────────────────────
 // GNOTE — NOTIFICATION SERVICE
@@ -22,6 +24,19 @@ import '../core/constants.dart';
 
 class NotificationService {
   NotificationService._();
+
+  static String? _volatilePendingRoute;
+
+  static void _logNonFatal(
+    String context,
+    Object error, [
+    StackTrace? stackTrace,
+  ]) {
+    debugPrint('NotificationService non-fatal [$context]: $error');
+    if (stackTrace != null) {
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  }
 
   // ── Initialise — call once in main() ─────────────────────────
   static Future<void> init() async {
@@ -109,7 +124,8 @@ class NotificationService {
         _scheduleResponsibilityPick(),
         _scheduleCaptureReview(),
       ]);
-    } catch (_) {
+    } catch (e, stackTrace) {
+      _logNonFatal('scheduleAll', e, stackTrace);
       // Notification scheduling is non-critical — app continues without it
     }
   }
@@ -240,7 +256,8 @@ class NotificationService {
           .cancelNotificationsByChannelKey(GChannels.habit);
       await _scheduleHabitReminder(hour, minute);
       return true;
-    } catch (_) {
+    } catch (e, stackTrace) {
+      _logNonFatal('updateHabitTime', e, stackTrace);
       return false;
     }
   }
@@ -250,7 +267,9 @@ class NotificationService {
     if (kIsWeb) return;
     try {
       await AwesomeNotifications().cancelAll();
-    } catch (_) {}
+    } catch (e, stackTrace) {
+      _logNonFatal('cancelAll', e, stackTrace);
+    }
   }
 
   // ── Cancel single ─────────────────────────────────────────────
@@ -258,7 +277,9 @@ class NotificationService {
     if (kIsWeb) return;
     try {
       await AwesomeNotifications().cancel(id);
-    } catch (_) {}
+    } catch (e, stackTrace) {
+      _logNonFatal('cancel:$id', e, stackTrace);
+    }
   }
 
   // ── Listen to notification taps ───────────────────────────────
@@ -270,18 +291,29 @@ class NotificationService {
   ) async {
     final route = action.payload?['route'];
     if (route == null) return;
-    // Navigation is handled by the app's router listener —
-    // store the route in a global and consume it on next resume.
-    _pendingRoute = route;
+    try {
+      await LocalDb.instance.savePendingNotificationRoute(route);
+    } catch (e, stackTrace) {
+      _logNonFatal('savePendingRoute', e, stackTrace);
+      _volatilePendingRoute = route;
+    }
   }
-
-  static String? _pendingRoute;
 
   /// Call this from app's first build or after resume
   /// to consume any tap that happened while app was closed.
   static String? consumePendingRoute() {
-    final r = _pendingRoute;
-    _pendingRoute = null;
-    return r;
+    try {
+      return LocalDb.instance.consumePendingNotificationRoute() ??
+          _consumeVolatilePendingRoute();
+    } catch (e, stackTrace) {
+      _logNonFatal('consumePendingRoute', e, stackTrace);
+      return _consumeVolatilePendingRoute();
+    }
+  }
+
+  static String? _consumeVolatilePendingRoute() {
+    final route = _volatilePendingRoute;
+    _volatilePendingRoute = null;
+    return route;
   }
 }

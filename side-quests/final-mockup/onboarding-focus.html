@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Onboarding — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen onboarding-screen">
+        <div class="login-wordmark reveal">
+          <p class="gnote-mark">GNOTE</p>
+          <p class="gnote-tagline">Built for people who need less noise, not more tools.</p>
+        </div>
+
+        <div class="hero-panel reveal onboarding-hero" style="animation-delay: 80ms;">
+          <p class="screen-label">How it works</p>
+          <h1 class="title-lg">Win the morning. The rest gets easier.</h1>
+          <p class="body-copy" style="margin-top: 12px;">
+            Gnote is strict on purpose. You anchor first, choose only three tasks,
+            keep one habit, and let everything else wait its turn.
+          </p>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <article class="card reveal feature-card" style="animation-delay: 140ms;">
+            <div class="feature-index">01</div>
+            <div>
+              <p class="section-label">Morning Anchor</p>
+              <p class="body-copy">Write one sentence before the day starts pulling at you.</p>
+            </div>
+          </article>
+          <article class="card reveal feature-card" style="animation-delay: 200ms;">
+            <div class="feature-index">02</div>
+            <div>
+              <p class="section-label">Daily 3</p>
+              <p class="body-copy">Choose three tasks. No fourth slot. No productivity theater.</p>
+            </div>
+          </article>
+          <article class="card reveal feature-card" style="animation-delay: 260ms;">
+            <div class="feature-index">03</div>
+            <div>
+              <p class="section-label">Everything Else</p>
+              <p class="body-copy">Capture fast, track one habit, and let one person hold the line with you.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="card reveal onboarding-note" style="animation-delay: 320ms;">
+          <p class="section-label">Why the friction exists</p>
+          <p class="body-copy">
+            The constraints are the product. If everything stays editable and optional,
+            this becomes another list app.
+          </p>
+        </div>
+
+        <div class="onboarding-actions reveal" style="animation-delay: 380ms;">
+          <button class="secondary-btn" style="flex: 1;">See the flow</button>
+          <button class="primary-btn" style="flex: 1.4;">Try the ritual</button>
+        </div>
+      </section>
+    </div>
+
+    <style>
+      .onboarding-screen { padding-bottom: 36px; }
+      .onboarding-hero { margin-top: 16px; }
+      .feature-card {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      .feature-index {
+        width: 40px;
+        height: 40px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: var(--orange-soft);
+        border: 1px solid rgba(240, 165, 0, 0.2);
+        color: var(--orange);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+      .onboarding-note { margin-top: 4px; }
+      .onboarding-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

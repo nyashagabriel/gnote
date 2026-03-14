@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>People — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">RESPONSIBILITY</p>
+            <h1 class="title-lg" style="max-width:220px;">Choose your people.</h1>
+            <p class="body-copy" style="margin-top:4px;">We remind you daily.</p>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top:14px;">
+
+          <!-- MOTIVATORS — hero panel with radial glow -->
+          <div class="hero-panel reveal" style="padding:16px;">
+            <div class="resp-section-header">
+              <p class="section-label" style="color:var(--orange);">MOTIVATORS</p>
+              <span class="ghost-chip" style="background:var(--orange-soft);color:var(--orange);border-color:rgba(240,165,0,0.2);">2</span>
+            </div>
+
+            <div class="people-list" style="margin-top:12px;">
+
+              <!-- Picked today -->
+              <div class="person-row picked-row">
+                <div class="person-info">
+                  <div class="avatar small motivator-avatar">A</div>
+                  <div>
+                    <p class="body-copy" style="margin:0 0 2px;font-weight:500;">Alex Rivers</p>
+                    <p class="muted-copy">✓ Picked today</p>
+                  </div>
+                </div>
+                <button class="wa-btn" aria-label="Send WhatsApp">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  Send
+                </button>
+              </div>
+
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small motivator-avatar">C</div>
+                  <div>
+                    <p class="body-copy" style="margin:0 0 2px;font-weight:500;">Coach Mike</p>
+                    <p class="muted-copy">Last: 2 days ago</p>
+                  </div>
+                </div>
+                <button class="wa-btn wa-muted" aria-label="Send WhatsApp">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="pick-btn pick-motivator pick-picked" style="margin-top:14px;">
+              ✓ ALEX RIVERS PICKED — TAP TO SEND
+            </button>
+          </div>
+
+          <!-- MEDITATORS — hero panel with azure tint -->
+          <div class="hero-panel reveal meditator-hero" style="padding:16px;">
+            <div class="resp-section-header">
+              <p class="section-label" style="color:#5ebdfa;">MEDITATORS</p>
+              <span class="ghost-chip" style="background:rgba(63,169,245,0.1);color:#5ebdfa;border-color:rgba(63,169,245,0.2);">2</span>
+            </div>
+
+            <div class="people-list" style="margin-top:12px;">
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small meditator-avatar">F</div>
+                  <div>
+                    <p class="body-copy" style="margin:0 0 2px;font-weight:500;">Friend Sarah</p>
+                    <p class="muted-copy">Never picked</p>
+                  </div>
+                </div>
+                <button class="wa-btn" aria-label="Send WhatsApp">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </button>
+              </div>
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small meditator-avatar">T</div>
+                  <div>
+                    <p class="body-copy" style="margin:0 0 2px;font-weight:500;">Therapist Nia</p>
+                    <p class="muted-copy">Last: yesterday</p>
+                  </div>
+                </div>
+                <button class="wa-btn" aria-label="Send WhatsApp">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <button class="pick-btn pick-meditator" style="margin-top:14px;">
+              PICK TODAY'S MEDITATOR
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <button class="fab" aria-label="Add person">+</button>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item active">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .meditator-hero {
+        background:
+          radial-gradient(circle at 50% 0%, rgba(63,169,245,0.08), transparent 60%),
+          linear-gradient(180deg, var(--surface) 0%, var(--surface-soft) 100%);
+        border-color: rgba(63,169,245,0.15);
+      }
+      .resp-section-header { display: flex; align-items: center; gap: 8px; }
+      .motivator-avatar { background: var(--orange-soft); color: var(--orange); border-color: rgba(240,165,0,0.2); }
+      .meditator-avatar { background: var(--azure-soft); color: #5ebdfa; border: 1px solid rgba(63,169,245,0.2); }
+      .picked-row { border-color: rgba(240,165,0,0.3); background: rgba(240,165,0,0.04); }
+
+      .wa-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 8px 12px; border-radius: 10px;
+        background: rgba(37,211,102,0.12); color: #25d366;
+        border: 1px solid rgba(37,211,102,0.25);
+        font-size: 12px; font-weight: 700;
+        cursor: pointer; white-space: nowrap;
+        transition: background 150ms;
+      }
+      .wa-btn:hover { background: rgba(37,211,102,0.22); }
+      .wa-muted { background: var(--surface-soft); color: var(--muted); border-color: var(--line); }
+
+      .pick-btn {
+        width: 100%; padding: 14px; border-radius: 12px;
+        font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+        cursor: pointer; transition: all 150ms;
+      }
+      .pick-motivator { border: 1px solid rgba(240,165,0,0.4); color: var(--orange); background: transparent; }
+      .pick-motivator:hover { background: var(--orange-soft); }
+      .pick-picked { background: rgba(240,165,0,0.1); border-color: rgba(240,165,0,0.5); letter-spacing: 0.05em; }
+      .pick-meditator { border: 1px solid rgba(63,169,245,0.3); color: #5ebdfa; background: transparent; }
+      .pick-meditator:hover { background: rgba(63,169,245,0.08); }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

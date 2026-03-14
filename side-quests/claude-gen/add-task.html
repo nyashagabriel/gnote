@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Task — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: Priority selector (high/medium/low)
+      → GNOTE has no priority system. Daily 3 uses SMART
+        framework. Priority is noise against the discipline
+        of "three tasks, no more."
+
+    ✗ REMOVED: Generic "Task title" single field
+      → Replaced with proper SMART fields matching the app:
+        what (Specific), doneWhen (Measurable)
+
+    ✗ REMOVED: Due date only (date picker with no time)
+      → GNOTE tasks have a DateTime deadline. Need date + time.
+
+    ✓ ADDED: "What exactly will you do?" — maps to task.what
+    ✓ ADDED: "How will you know it's done?" — maps to task.doneWhen
+    ✓ ADDED: Date + time picker pair — maps to task.by (DateTime)
+
+    ✓ CORRECTED: Category values match GCategories in constants:
+        career / project / learning / personal / other
+        (prototype had Work, Health which don't exist in app)
+
+    DESIGN FIXES:
+    ✗ Modal centered overlay → bottom sheet pattern
+      Centered modals are a desktop pattern. On mobile, a
+      bottom sheet is the expected gesture (slides up, dismisses
+      down). This matches Flutter's showModalBottomSheet behavior.
+
+    ✓ Character counters on text fields (80 char max per GLimits)
+    ✓ "Complete by" label matches app copy (GStrings.addTaskByLabel)
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page add-sheet-page">
+    <div class="sheet-scrim">
+      <div class="bottom-sheet">
+
+        <!-- Drag handle -->
+        <div class="sheet-handle"></div>
+
+        <div class="sheet-header">
+          <div>
+            <p class="sheet-kicker">NEW TASK</p>
+            <h2 class="sheet-title">OWN YOUR DAY.</h2>
+          </div>
+          <button class="icon-btn sheet-close" aria-label="Close">✕</button>
+        </div>
+
+        <div class="sheet-body">
+
+          <!-- SMART: Specific — what exactly -->
+          <div class="form-group">
+            <label class="form-label smart-label">
+              <span class="smart-letter">S</span>
+              What exactly will you do?
+            </label>
+            <div class="field-wrap">
+              <input
+                class="form-input"
+                type="text"
+                placeholder="Design the user profile screen"
+                maxlength="80"
+              />
+              <span class="char-count">0 / 80</span>
+            </div>
+          </div>
+
+          <!-- SMART: Measurable — how will you know it's done -->
+          <div class="form-group">
+            <label class="form-label smart-label">
+              <span class="smart-letter">M</span>
+              How will you know it's done?
+            </label>
+            <div class="field-wrap">
+              <textarea
+                class="form-input form-textarea"
+                rows="2"
+                placeholder="Prototype shared and reviewed by team"
+                maxlength="80"
+              ></textarea>
+              <span class="char-count">0 / 80</span>
+            </div>
+          </div>
+
+          <!-- SMART: Time-bound — complete by (date + time) -->
+          <div class="form-group">
+            <label class="form-label">COMPLETE BY</label>
+            <div class="picker-row">
+              <div class="picker-tile flex-2">
+                <span class="picker-label">DATE</span>
+                <div class="picker-value">
+                  <span>Fri 13 Mar</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <rect x="1" y="3" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="picker-tile flex-1">
+                <span class="picker-label">TIME</span>
+                <div class="picker-value">
+                  <span>17:00</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+                    <path d="M8 5v3.5l2.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SMART: Relevant — category -->
+          <div class="form-group">
+            <label class="form-label">CATEGORY</label>
+            <div class="category-chips">
+              <button class="cat-chip active" data-cat="career">Career</button>
+              <button class="cat-chip" data-cat="project">Project</button>
+              <button class="cat-chip" data-cat="learning">Learning</button>
+              <button class="cat-chip" data-cat="personal">Personal</button>
+              <button class="cat-chip" data-cat="other">Other</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="sheet-footer">
+          <button class="secondary-btn sheet-cancel">Cancel</button>
+          <button class="primary-btn sheet-save">Save task</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .add-sheet-page .sheet-scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        align-items: flex-end;
+      }
+      .bottom-sheet {
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        background: var(--surface, #1a1a1a);
+        border-radius: 24px 24px 0 0;
+        border: 1px solid var(--line, #2a2a2a);
+        border-bottom: none;
+        overflow: hidden;
+      }
+      .sheet-handle {
+        width: 36px;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--line-strong, #3a3a3a);
+        margin: 14px auto 0;
+      }
+      .sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 18px 24px 0;
+      }
+      .sheet-kicker {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--muted, #9a9a9a);
+        margin: 0 0 4px;
+      }
+      .sheet-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: var(--orange, #f0a500);
+        letter-spacing: -0.5px;
+        margin: 0;
+      }
+      .sheet-close {
+        margin-top: 2px;
+      }
+      .sheet-body {
+        padding: 20px 24px;
+        display: grid;
+        gap: 20px;
+      }
+      .smart-label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .smart-letter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        background: var(--orange-soft, rgba(240,165,0,0.12));
+        color: var(--orange, #f0a500);
+        font-size: 10px;
+        font-weight: 900;
+        flex-shrink: 0;
+      }
+      .field-wrap {
+        position: relative;
+        margin-top: 8px;
+      }
+      .char-count {
+        position: absolute;
+        right: 12px;
+        bottom: 8px;
+        font-size: 10px;
+        color: var(--muted, #9a9a9a);
+        pointer-events: none;
+      }
+      .form-textarea {
+        resize: none;
+        line-height: 1.5;
+        padding-bottom: 24px;
+      }
+      .picker-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .picker-tile {
+        background: var(--bg-raised, #242424);
+        border: 1px solid var(--line, #2a2a2a);
+        border-radius: 12px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: border-color 150ms;
+      }
+      .picker-tile:hover { border-color: var(--orange, #f0a500); }
+      .flex-2 { flex: 2; }
+      .flex-1 { flex: 1; }
+      .picker-label {
+        display: block;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        color: var(--muted, #9a9a9a);
+        margin-bottom: 6px;
+      }
+      .picker-value {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--text, #e8e8e8);
+      }
+      .picker-value svg { color: var(--muted, #9a9a9a); }
+      .category-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 8px;
+      }
+      .cat-chip {
+        padding: 8px 16px;
+        border-radius: 10px;
+        border: 1px solid var(--line, #2a2a2a);
+        background: var(--bg-raised, #242424);
+        color: var(--muted, #9a9a9a);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 150ms;
+      }
+      .cat-chip.active[data-cat="career"]  { border-color: #5ebdfa; background: rgba(94,189,250,0.1); color: #5ebdfa; }
+      .cat-chip.active[data-cat="project"] { border-color: var(--orange,#f0a500); background: var(--orange-soft); color: var(--orange,#f0a500); }
+      .cat-chip.active[data-cat="learning"]{ border-color: #52e0a0; background: rgba(82,224,160,0.1); color: #52e0a0; }
+      .cat-chip.active[data-cat="personal"]{ border-color: #c05ce0; background: rgba(192,92,224,0.1); color: #c05ce0; }
+      .cat-chip.active[data-cat="other"]   { border-color: #888; background: rgba(136,136,136,0.1); color: #aaa; }
+      .sheet-footer {
+        display: flex;
+        gap: 12px;
+        padding: 16px 24px 28px;
+        border-top: 1px solid var(--line, #2a2a2a);
+      }
+      .sheet-footer .secondary-btn { flex: 1; }
+      .sheet-footer .primary-btn { flex: 2; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      // Category chip selection
+      document.querySelectorAll(".cat-chip").forEach(chip => {
+        chip.addEventListener("click", () => {
+          document.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("active"));
+          chip.classList.add("active");
+        });
+      });
+
+      // Live char count
+      document.querySelectorAll(".form-input[maxlength]").forEach(input => {
+        const counter = input.closest(".field-wrap")?.querySelector(".char-count");
+        if (!counter) return;
+        const max = input.getAttribute("maxlength");
+        input.addEventListener("input", () => {
+          counter.textContent = `${input.value.length} / ${max}`;
+        });
+      });
+    </script>
+  </body>
+</html>

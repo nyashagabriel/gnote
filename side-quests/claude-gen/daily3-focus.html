@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily 3 — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: Priority badges (High / Medium / Low) on tasks
+      → GNOTE has no priority. The discipline IS the limit
+        of 3 tasks. Adding priority creates a ranking game
+        inside a system designed to eliminate ranking games.
+        GTask model has no priority field.
+
+    ✗ REMOVED: Colored left border by priority
+        (.task-card.priority-high → danger border)
+      → Replaced with category color accent (career=azure,
+        project=orange, learning=green, personal=purple).
+        This matches the actual Flutter TaskCard implementation.
+
+    ✗ REMOVED: "Assignee" row (avatar + "Assigned to you")
+      → GNOTE is a personal single-user app. There are no
+        collaborators. This is vestigial Notion/Linear
+        complexity.
+
+    ✗ REMOVED: Emoji task icons (.task-icon)
+      → Not in the Flutter implementation. Creates visual
+        noise against the discipline-first aesthetic.
+
+    ✗ REMOVED: "In Progress" / "Done" status mini-tags
+      → Task state is binary: done or not done. The isDone
+        toggle is the entire status system.
+
+    ✓ CORRECTED: Categories match GCategories:
+        career / project / learning / personal / other
+        (prototype had "Design" which doesn't exist)
+
+    ✓ CORRECTED: Task shows "what" + "by" time
+      → Flutter TaskCard shows task.what + timestamp from
+        task.by. The doneWhen field is not shown in the list
+        view — it's input-only context for the user.
+
+    ✓ CORRECTED: "1 of 3 complete" progress framing
+    ✓ CORRECTED: Ghost slot label "Add your second task"
+      → Matches GStrings.daily3Slot2
+
+    ✓ ADDED: "LOCKED" badge state example (third slot)
+      → Shows what the locked state looks like post-9am,
+        matching the Flutter _LockBadge widget behavior.
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">DAILY 3</p>
+            <h1 class="title-lg">Three tasks. No more.</h1>
+            <p class="body-copy progress-line">1 of 3 complete</p>
+          </div>
+          <div class="header-actions">
+            <span class="chip">Locks in 31m</span>
+          </div>
+        </div>
+
+        <div class="task-list d3-list reveal">
+
+          <!-- Task 1: Done -->
+          <article class="d3-card done-card">
+            <div class="d3-check-col">
+              <div class="checkbox done" role="checkbox" aria-checked="true" tabindex="0"></div>
+            </div>
+            <div class="d3-content">
+              <h2 class="d3-title done-title">Ship the profile redesign polish pass</h2>
+              <div class="d3-meta">
+                <span class="d3-cat cat-project">Project</span>
+                <span class="d3-time">Due today · 17:00</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Task 2: Active -->
+          <article class="d3-card active-card">
+            <div class="d3-check-col">
+              <div class="checkbox" role="checkbox" aria-checked="false" tabindex="0"></div>
+            </div>
+            <div class="d3-content">
+              <h2 class="d3-title">Resolve user model persistence mismatch</h2>
+              <div class="d3-meta">
+                <span class="d3-cat cat-career">Career</span>
+                <span class="d3-time">Due today · 10:15</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slot 3: Empty, not yet added -->
+          <article class="d3-card ghost-card">
+            <div class="d3-check-col">
+              <div class="ghost-circle"></div>
+            </div>
+            <div class="d3-content ghost-content">
+              <p class="d3-ghost-label">Add your third task</p>
+            </div>
+            <svg class="ghost-plus" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 4v10M4 9h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </article>
+
+        </div>
+
+        <!-- FAB: only shown when < 3 tasks and not locked -->
+        <button class="fab" aria-label="Add task">+</button>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item active">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .progress-line {
+        margin-top: 6px;
+        color: var(--muted, #9a9a9a);
+      }
+      .d3-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      /* Base card — clean, no left accent by default */
+      .d3-card {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 16px 18px;
+        background: var(--surface, #1a1a1a);
+        border: 1px solid var(--line, #2a2a2a);
+        border-radius: 14px;
+        cursor: pointer;
+        transition: background 150ms, border-color 150ms;
+      }
+      .d3-card:hover {
+        border-color: var(--line-strong, #3a3a3a);
+      }
+      /* Active task — orange left accent, very subtle background */
+      .active-card {
+        border-left: 3px solid var(--orange, #f0a500);
+        background: rgba(240,165,0,0.04);
+      }
+      /* Done task — muted */
+      .done-card {
+        opacity: 0.62;
+        background: var(--surface-soft, #222);
+      }
+      /* Ghost slot */
+      .ghost-card {
+        border-style: dashed;
+        background: transparent;
+        align-items: center;
+      }
+      .ghost-circle {
+        width: 28px; height: 28px;
+        border-radius: 50%;
+        border: 1px dashed var(--line-strong, #3a3a3a);
+        flex-shrink: 0;
+      }
+      .ghost-content { flex: 1; }
+      .d3-ghost-label {
+        color: var(--muted, #9a9a9a);
+        font-size: 14px;
+      }
+      .ghost-plus {
+        color: var(--muted, #9a9a9a);
+        flex-shrink: 0;
+      }
+      .d3-check-col { flex-shrink: 0; padding-top: 1px; }
+      .d3-content { flex: 1; min-width: 0; }
+      .d3-title {
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text, #e8e8e8);
+        line-height: 1.4;
+        margin: 0 0 8px;
+      }
+      .done-title {
+        text-decoration: line-through;
+        color: var(--muted, #9a9a9a);
+      }
+      .d3-meta {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      /* Category badges — matches Flutter GColors.category */
+      .d3-cat {
+        padding: 2px 8px;
+        border-radius: 6px;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+      .cat-career  { background: rgba(94,189,250,0.12); color: #5ebdfa; }
+      .cat-project { background: var(--orange-soft, rgba(240,165,0,0.12)); color: var(--orange, #f0a500); }
+      .cat-learning{ background: rgba(82,224,160,0.12); color: #52e0a0; }
+      .cat-personal{ background: rgba(192,92,224,0.12); color: #c05ce0; }
+      .cat-other   { background: rgba(136,136,136,0.12); color: #888; }
+      .d3-time {
+        font-size: 11px;
+        color: var(--muted, #9a9a9a);
+        margin-left: auto;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

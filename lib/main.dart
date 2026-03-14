@@ -12,7 +12,9 @@ import 'models/task.dart';
 import 'models/anchor.dart';
 import 'models/habit.dart';
 import 'models/person.dart';
+import 'models/user.dart';
 import 'core/constants.dart';
+import 'core/timezone.dart';
 import 'core/theme.dart';
 import 'core/router.dart';
 import 'services/notification_service.dart';
@@ -24,10 +26,12 @@ Future<void> main() async {
 
   // 1. Local Database Init
   await Hive.initFlutter();
+  Hive.registerAdapter(GUserAdapter());
   Hive.registerAdapter(GTaskAdapter());
   Hive.registerAdapter(GAnchorAdapter());
   Hive.registerAdapter(GHabitAdapter());
   Hive.registerAdapter(GPersonAdapter());
+  await Hive.openBox<GUser>(GBoxes.users);
   await Hive.openBox<GTask>(GBoxes.tasks);
   await Hive.openBox<GAnchor>(GBoxes.anchors);
   await Hive.openBox<GHabit>(GBoxes.habits);
@@ -68,7 +72,7 @@ class GnoteApp extends ConsumerStatefulWidget {
 
 class _GnoteAppState extends ConsumerState<GnoteApp>
     with WidgetsBindingObserver {
-  DateTime _lastDate = DateTime.now();
+  DateTime _lastDate = localNow();
 
   @override
   void initState() {
@@ -85,7 +89,7 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state != AppLifecycleState.resumed) return;
-    final now = DateTime.now();
+    final now = localNow();
     final newDay = now.year != _lastDate.year ||
         now.month != _lastDate.month ||
         now.day != _lastDate.day;
@@ -94,7 +98,9 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
       _lastDate = now;
       ref.invalidate(anchorProvider);
       ref.invalidate(daily3Provider);
+      ref.invalidate(captureProvider);
       ref.invalidate(habitProvider);
+      ref.invalidate(responsibilityProvider);
     }
     final route = NotificationService.consumePendingRoute();
     if (route != null && mounted) goRouter.go(route);

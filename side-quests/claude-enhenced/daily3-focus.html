@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily 5 Unlocked — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">DAILY 5 UNLOCKED</p>
+            <h1 class="title-lg">Five tasks. Earned.</h1>
+            <p class="body-copy progress-line">1 of 5 complete · 11 straight 3/3 days</p>
+          </div>
+          <span class="chip">Locks in 31m</span>
+        </div>
+
+        <!-- HERO PANEL — now has radial glow, matches habit screen -->
+        <div class="hero-panel reveal" style="margin-top:14px;">
+
+          <!-- Progress bar inside hero — uniform with habit streak-bar -->
+          <div style="margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+              <p class="section-label">PROGRESS</p>
+              <p class="muted-copy">1 / 5</p>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width:20%;"></div>
+            </div>
+          </div>
+
+          <!-- Earned bonus — inner-panel (benchmark DNA: inner sub-card) -->
+          <div class="inner-panel">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+              <div>
+                <p class="section-label">Streak reward</p>
+                <p class="body-copy" style="margin-top:5px;font-size:13px;max-width:210px;">
+                  You unlocked two bonus slots by hitting 3/3 for 11 straight days.
+                </p>
+              </div>
+              <span class="earned-badge">+2 slots</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Task list -->
+        <div class="d3-list reveal">
+
+          <!-- Task 1: Done -->
+          <article class="d3-card done-card">
+            <div class="d3-check-col">
+              <div class="checkbox done" role="checkbox" aria-checked="true" tabindex="0"></div>
+            </div>
+            <div class="d3-content">
+              <h2 class="d3-title done-title">Ship the profile redesign polish pass</h2>
+              <div class="d3-meta">
+                <span class="d3-cat cat-project">Project</span>
+                <span class="d3-time">Due today · 17:00</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Task 2: Active -->
+          <article class="d3-card active-card">
+            <div class="d3-check-col">
+              <div class="checkbox" role="checkbox" aria-checked="false" tabindex="0"></div>
+            </div>
+            <div class="d3-content">
+              <h2 class="d3-title">Resolve user model persistence mismatch</h2>
+              <div class="d3-meta">
+                <span class="d3-cat cat-career">Career</span>
+                <span class="d3-time">Due today · 10:15</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Task 3 -->
+          <article class="d3-card">
+            <div class="d3-check-col">
+              <div class="checkbox" role="checkbox" aria-checked="false" tabindex="0"></div>
+            </div>
+            <div class="d3-content">
+              <h2 class="d3-title">Choose the final analytics event list for onboarding</h2>
+              <div class="d3-meta">
+                <span class="d3-cat cat-learning">Learning</span>
+                <span class="d3-time">Due today · 14:30</span>
+              </div>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- COMPOSE SHELL — unified class (was d3-compose-shell with per-screen CSS) -->
+        <div class="compose-shell reveal">
+          <button class="primary-btn bottom-action-btn" aria-label="Add task">
+            <span style="font-size:18px;line-height:1;margin-right:4px;">+</span>
+            Add task
+          </button>
+        </div>
+
+        <!-- Bonus slots -->
+        <div class="d3-bonus-list reveal">
+          <article class="d3-card ghost-card">
+            <div class="d3-check-col">
+              <div class="ghost-circle"></div>
+            </div>
+            <div class="d3-content ghost-content">
+              <p class="d3-ghost-label">Bonus slot 4</p>
+              <p class="ghost-sub">Use it only if it deserves the streak.</p>
+            </div>
+            <svg class="ghost-plus" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 4v10M4 9h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </article>
+          <article class="d3-card ghost-card">
+            <div class="d3-check-col">
+              <div class="ghost-circle"></div>
+            </div>
+            <div class="d3-content ghost-content">
+              <p class="d3-ghost-label">Bonus slot 5</p>
+              <p class="ghost-sub">More room, same discipline.</p>
+            </div>
+            <svg class="ghost-plus" width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M9 4v10M4 9h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+          </article>
+        </div>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item active">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .progress-line { margin-top: 6px; }
+      .earned-badge {
+        flex-shrink: 0; padding: 8px 12px; border-radius: 999px;
+        background: rgba(240,165,0,0.14); border: 1px solid rgba(240,165,0,0.2);
+        color: var(--orange); font-size: 10px; font-weight: 800;
+        letter-spacing: 0.12em; text-transform: uppercase;
+      }
+      .d3-list { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+      .d3-bonus-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; padding-bottom: 24px; }
+      .d3-card {
+        display: flex; align-items: flex-start; gap: 14px;
+        padding: 16px 18px; background: var(--surface);
+        border: 1px solid var(--line); border-radius: 18px; cursor: pointer;
+        transition: background 150ms, border-color 150ms, transform 180ms var(--ease);
+      }
+      .d3-card:hover { border-color: var(--line-strong); transform: translateY(-1px); }
+      .active-card { border-left: 3px solid var(--orange); background: linear-gradient(180deg, rgba(240,165,0,0.06), rgba(255,255,255,0.01)); }
+      .done-card { opacity: 0.62; background: var(--surface-soft); }
+      .ghost-card { border-style: dashed; background: rgba(255,255,255,0.01); align-items: center; }
+      .ghost-circle { width: 28px; height: 28px; border-radius: 50%; border: 1px dashed var(--line-strong); flex-shrink: 0; }
+      .ghost-content { flex: 1; }
+      .d3-ghost-label { color: var(--muted); font-size: 14px; }
+      .ghost-sub { margin: 4px 0 0; color: var(--muted); font-size: 11px; line-height: 1.4; }
+      .ghost-plus { color: var(--muted); flex-shrink: 0; }
+      .d3-check-col { flex-shrink: 0; padding-top: 1px; }
+      .d3-content { flex: 1; min-width: 0; }
+      .d3-title { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; margin: 0 0 8px; }
+      .done-title { text-decoration: line-through; color: var(--muted); }
+      .d3-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+      .d3-cat { padding: 2px 8px; border-radius: 6px; font-size: 9px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
+      .cat-career  { background: rgba(94,189,250,0.12); color: #5ebdfa; }
+      .cat-project { background: var(--orange-soft); color: var(--orange); }
+      .cat-learning{ background: rgba(82,224,160,0.12); color: #52e0a0; }
+      .cat-personal{ background: rgba(192,92,224,0.12); color: #c05ce0; }
+      .d3-time { font-size: 11px; color: var(--muted); margin-left: auto; }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GNOTE v3 — Design System</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="lab-shell">
+    <main class="lab-index">
+
+      <div class="lab-hero reveal">
+        <p class="eyebrow">GNOTE v3</p>
+        <h1>Uniform design system</h1>
+        <p class="lede">
+          All screens now share the same visual DNA as the benchmark habit-streak screen:
+          radial-glow hero panels, Liquid Glass compose shells, info-panel sub-cards,
+          Bento Grid for Daily 3, and kinetic typography on every state change.
+        </p>
+      </div>
+
+      <div class="corrections-grid reveal" style="margin-bottom:40px;">
+        <div class="correction-item">
+          <p class="correction-title">Benchmark</p>
+          <p class="correction-body">habit-streak.html — CSS flame, radial glow hero, streak number, info-panel week card. Every other screen inherits its DNA.</p>
+        </div>
+        <div class="correction-item">
+          <p class="correction-title">New: Bento Grid</p>
+          <p class="correction-body">Daily 3 tasks are now modular bento cells — research mandate from the feasibility report. Category color strips replace priority left borders.</p>
+        </div>
+        <div class="correction-item">
+          <p class="correction-title">New: Liquid Glass</p>
+          <p class="correction-body">All floating compose shells (Capture, Daily 3) now use backdrop-filter blur + saturate. Nav bar is frosted. Matches 2026 premium UI direction.</p>
+        </div>
+        <div class="correction-item">
+          <p class="correction-title">Kinetic Typography</p>
+          <p class="correction-body">Done states animate — habit button turns green with spring-pop, lock button flashes success, checkbox springs in. Text changes are instant kinetic moments.</p>
+        </div>
+      </div>
+
+      <p class="section-label" style="margin-bottom:12px;">CORE SCREENS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./onboarding-focus.html">
+          <span class="card-kicker">Onboarding</span>
+          <strong>Focus Onboarding</strong>
+          <span>Rules before friction. First-time clarity, not feature listing.</span>
+        </a>
+        <a class="lab-card" href="./anchor-ritual.html">
+          <span class="card-kicker">Anchor</span>
+          <strong>Anchor Ritual</strong>
+          <span>Radial hero glow. Info-panel rule card. Live char count. Kinetic lock button.</span>
+        </a>
+        <a class="lab-card" href="./daily3-focus.html">
+          <span class="card-kicker">Daily 3</span>
+          <strong>Daily 3 — Bento Grid</strong>
+          <span>Bento layout with category color strips. Progress bar. Liquid Glass compose shell.</span>
+        </a>
+        <a class="lab-card" href="./capture-inbox.html">
+          <span class="card-kicker">Capture</span>
+          <strong>Capture Inbox</strong>
+          <span>Brain dump philosophy. Info-panel Sunday banner. Liquid Glass compose shell.</span>
+        </a>
+        <a class="lab-card" href="./habit-streak.html">
+          <span class="card-kicker">Habit · Benchmark</span>
+          <strong>Habit Streak ★</strong>
+          <span>The reference screen. CSS flame, streak number, info-panel week card, kinetic done state.</span>
+        </a>
+        <a class="lab-card" href="./people-neutral.html">
+          <span class="card-kicker">People</span>
+          <strong>People (Responsibility)</strong>
+          <span>Hero panels per section — orange for Motivators, azure for Meditators. WhatsApp icon.</span>
+        </a>
+        <a class="lab-card" href="./profile-quiet-luxury.html">
+          <span class="card-kicker">Profile</span>
+          <strong>Profile</strong>
+          <span>One sign-out. No phantom analytics. Correct section structure.</span>
+        </a>
+      </section>
+
+      <p class="section-label" style="margin:32px 0 12px;">AUTH + MONETIZATION</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./login.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Sign In</strong>
+          <span>Email only — no password. OTP model. Validates before enabling.</span>
+        </a>
+        <a class="lab-card" href="./signup.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Create Account</strong>
+          <span>Name + email. Both required before CTA enables.</span>
+        </a>
+        <a class="lab-card" href="./verify-otp.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Verify Code</strong>
+          <span>Single 8-digit field. Progress bar. SMS autofill compatible.</span>
+        </a>
+        <a class="lab-card" href="./unlock-discipline.html">
+          <span class="card-kicker">Monetization</span>
+          <strong>Unlock Discipline</strong>
+          <span>$29.99/year + $89.99 lifetime. Hard paywall post-onboarding.</span>
+        </a>
+      </section>
+
+      <p class="section-label" style="margin:32px 0 12px;">BOTTOM SHEETS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./add-task.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Task</strong>
+          <span>SMART fields. Category chips with color coding. Date + time pickers.</span>
+        </a>
+        <a class="lab-card" href="./add-person.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Person</strong>
+          <span>Motivator/Meditator roles. WhatsApp-only. Message template auto-fills on role change.</span>
+        </a>
+      </section>
+
+    </main>
+
+    <style>
+      .corrections-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px; margin-top: 4px;
+      }
+      .correction-item {
+        padding: 16px 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--r-lg);
+      }
+      .correction-title {
+        font-size: 11px; font-weight: 700; color: var(--orange);
+        letter-spacing: 0.08em; text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+      .correction-body {
+        font-size: 13px; color: var(--muted); line-height: 1.55; margin: 0;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

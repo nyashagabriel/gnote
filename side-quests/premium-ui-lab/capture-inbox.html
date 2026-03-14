@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capture Inbox</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Capture</p>
+            <h1 class="title-lg">Catch it. Keep moving.</h1>
+          </div>
+          <div class="header-actions">
+            <span class="chip">Sunday review 19:00</span>
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+
+        <div class="capture-list stack">
+          <article class="capture-card reveal priority-high">
+            <div class="capture-header">
+              <span class="priority-dot high"></span>
+              <span class="capture-time">2m ago</span>
+            </div>
+            <p class="capture-text">Ask designer for final icon export sizes</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+
+          <article class="capture-card reveal priority-medium">
+            <div class="capture-header">
+              <span class="priority-dot medium"></span>
+              <span class="capture-time">17m ago</span>
+            </div>
+            <p class="capture-text">Check Supabase OTP expiry copy in email</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+
+          <article class="capture-card reveal priority-low">
+            <div class="capture-header">
+              <span class="priority-dot low"></span>
+              <span class="capture-time">Yesterday</span>
+            </div>
+            <p class="capture-text">Prototype premium lock state for Daily 3</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <div class="input-panel reveal fixed-bottom">
+          <div class="capture-compose">
+            <input
+              class="capture-input"
+              type="text"
+              placeholder="What's on your mind?"
+            />
+            <button class="icon-btn" aria-label="Voice input">🎤</button>
+            <button class="primary-btn compact-btn">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item active">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

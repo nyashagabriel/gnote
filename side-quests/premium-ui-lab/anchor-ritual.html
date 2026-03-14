@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor Ritual</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">MORNING</p>
+            <h1 class="title-xl">Why did you wake up today?</h1>
+          </div>
+          <div class="header-actions">
+            <span class="chip urgent">Locks in 2h 31m</span>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal primary">
+          <div class="panel-header">
+            <p class="body-copy">
+              One honest sentence. No list. No strategy. Just the reason.
+            </p>
+          </div>
+          <textarea
+            class="anchor-field interactive-field"
+            placeholder="Write one sentence that can carry the day."
+          ></textarea>
+          <div class="divider"></div>
+          <div class="bottom-row">
+            <div class="progress-info">
+              <p class="meta-label">Progress</p>
+              <p class="muted-copy">14 / 160 characters</p>
+            </div>
+            <button class="primary-btn">Lock it in</button>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 24px;">
+          <div class="card reveal secondary">
+            <div class="card-header">
+              <p class="section-label">Yesterday's anchor</p>
+              <span class="status-badge completed">Completed</span>
+            </div>
+            <p class="body-copy" style="font-style: italic; margin-top: 8px;">
+              "To build something meaningful that helps others find their focus."
+            </p>
+            <p class="muted-copy">Locked in yesterday at 7:32 AM</p>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item active">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GNOTE — UI Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="lab-shell">
+    <main class="lab-index">
+
+      <div class="lab-hero reveal">
+        <p class="eyebrow">UI LAB — CORRECTED EDITION</p>
+        <h1>GNOTE screens</h1>
+        <p class="lede">
+          All screens cross-referenced against the Flutter codebase and corrected.
+          Every screen now reflects the actual app architecture — no phantom features,
+          no wrong terminology, no dead UI patterns.
+        </p>
+      </div>
+
+      <!-- Core Screens -->
+      <p class="section-label" style="margin-bottom: 12px;">CORE SCREENS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./anchor-ritual.html">
+          <span class="card-kicker">Anchor</span>
+          <strong>Anchor Ritual</strong>
+          <span>Live char count. 10-char gate with hint. LOCKED badge. Time-aware label.</span>
+        </a>
+        <a class="lab-card" href="./daily3-focus.html">
+          <span class="card-kicker">Daily 3</span>
+          <strong>Daily 3 Focus</strong>
+          <span>Category accents (not priority). SMART task structure. Ghost slot for empty 3rd task.</span>
+        </a>
+        <a class="lab-card" href="./capture-inbox.html">
+          <span class="card-kicker">Capture</span>
+          <strong>Capture Inbox</strong>
+          <span>No priority dots. Brain dump philosophy. Swipe hint. Date stamps. Sunday banner.</span>
+        </a>
+        <a class="lab-card" href="./habit-streak.html">
+          <span class="card-kicker">Habit</span>
+          <strong>Habit Streak</strong>
+          <span>No + button. Animated I-did-it state. Change habit bottom sheet. Streak bar.</span>
+        </a>
+        <a class="lab-card" href="./people-neutral.html">
+          <span class="card-kicker">People</span>
+          <strong>People (Responsibility)</strong>
+          <span>Motivators/Meditators (not Energizers/Relaxers). Pick behaviour. WhatsApp icon. Last-picked dates.</span>
+        </a>
+        <a class="lab-card" href="./profile-quiet-luxury.html">
+          <span class="card-kicker">Profile</span>
+          <strong>Profile</strong>
+          <span>Fixed broken HTML. One sign-out. No phantom analytics. Correct section structure.</span>
+        </a>
+      </section>
+
+      <!-- Auth Screens -->
+      <p class="section-label" style="margin: 32px 0 12px;">AUTH SCREENS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./login.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Sign In</strong>
+          <span>Email only — no password. Supabase OTP model. Validates before enabling SEND CODE.</span>
+        </a>
+        <a class="lab-card" href="./signup.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Create Account</strong>
+          <span>Name + email, no password. Both fields required before CTA enables.</span>
+        </a>
+        <a class="lab-card" href="./verify-otp.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Verify Code</strong>
+          <span>Single 8-digit field (not 6 boxes). Progress bar. SMS autofill compatible.</span>
+        </a>
+      </section>
+
+      <!-- Modal / Sheet Screens -->
+      <p class="section-label" style="margin: 32px 0 12px;">BOTTOM SHEETS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./add-task.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Task</strong>
+          <span>Bottom sheet (not centered modal). SMART fields: what + doneWhen. Date+time picker. Correct GCategories.</span>
+        </a>
+        <a class="lab-card" href="./add-person.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Person</strong>
+          <span>Motivator/Meditator roles. WhatsApp-only contact. Message template pre-fills on role change.</span>
+        </a>
+      </section>
+
+      <div class="lab-section reveal">
+        <h2>What was corrected</h2>
+        <div class="corrections-grid">
+          <div class="correction-item">
+            <p class="correction-title">Wrong terminology</p>
+            <p class="correction-body">Energizer/Relaxer → Motivator/Meditator. "Completed" → "LOCKED" (anchors). Priority levels removed entirely.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Wrong auth model</p>
+            <p class="correction-body">Removed password fields from login + signup. GNOTE uses Supabase Email OTP only. Changed 6-box OTP to single 8-digit field.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Phantom features</p>
+            <p class="correction-body">Removed: voice input, assignee rows, percentile analytics, priority dots on captures, frequency selectors on people.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Wrong UI patterns</p>
+            <p class="correction-body">Centered modals → bottom sheets. Added sheet-handle drag indicators. Press feedback now has easing transition.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Broken HTML</p>
+            <p class="correction-body">Profile screen had unclosed divs causing layout bleed. Sign-out appeared twice. Fixed all nesting.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Broken interactions</p>
+            <p class="correction-body">Lock button had no minimum-char hint. Habit had no done state. OTP had no auto-advance. All fixed.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <style>
+      .corrections-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+        margin-top: 4px;
+      }
+      .correction-item {
+        padding: 16px 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+      }
+      .correction-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--orange);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+      .correction-body {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin: 0;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

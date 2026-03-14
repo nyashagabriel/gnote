@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Person — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: "Energizer / Relaxer" role types
+      → App uses "Motivator / Meditator" (GPerson.role,
+        GStrings.roleMotivator, GStrings.roleMeditator).
+        These are not interchangeable brand terms.
+
+    ✗ REMOVED: "Contact method" selector (WhatsApp/Phone/Email)
+      → GNOTE is WhatsApp-only. The entire responsibility
+        feature is a WhatsApp accountability loop. There is
+        no other contact path in the app.
+
+    ✗ REMOVED: "Check-in frequency" selector (Daily/Weekly etc)
+      → Not a field in GPerson model. GNOTE picks one person
+        randomly per day — frequency is not configurable.
+
+    ✗ REMOVED: "Purpose" free-text field
+      → Not in GPerson model.
+
+    ✓ ADDED: WhatsApp number field with +international format
+      → Maps to GPerson.whatsappNumber
+      → Validation hint: must start with +, international format
+        (GStrings.addPersonPhoneHint1: "+263712345678")
+
+    ✓ ADDED: Message template textarea
+      → Maps to GPerson.messageTemplate (max 300 chars)
+      → Pre-filled with role-appropriate template from
+        GStrings.messageTemplates — updates on role change
+
+    ✓ CORRECTED: "Add person" CTA (was "Add relationship")
+      → Matches GStrings.addPersonSaveBtn exactly
+
+    ✓ CORRECTED: Header copy matches GStrings.addPersonTitle:
+        "Build your support circle."
+
+    DESIGN FIX:
+    → Bottom sheet instead of centered modal (same as add-task)
+    → Role toggle uses orange for Motivator, azure for Meditator
+      matching the People screen color coding
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page add-sheet-page">
+    <div class="sheet-scrim">
+      <div class="bottom-sheet">
+
+        <div class="sheet-handle"></div>
+
+        <div class="sheet-header">
+          <div>
+            <p class="sheet-kicker">NEW PERSON</p>
+            <h2 class="sheet-title">Build your support circle.</h2>
+          </div>
+          <button class="icon-btn sheet-close" aria-label="Close">✕</button>
+        </div>
+
+        <div class="sheet-body">
+
+          <!-- Role: Motivator / Meditator -->
+          <div class="form-group">
+            <label class="form-label">ROLE</label>
+            <div class="role-select">
+              <button class="role-option active" data-role="Motivator">
+                <span class="role-dot motivator"></span>
+                Motivator
+              </button>
+              <button class="role-option" data-role="Meditator">
+                <span class="role-dot meditator"></span>
+                Meditator
+              </button>
+            </div>
+            <p class="role-hint" id="role-hint">
+              People who energize and motivate you — picked daily.
+            </p>
+          </div>
+
+          <!-- Full name -->
+          <div class="form-group">
+            <label class="form-label">Full name</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Alex Rivers"
+              maxlength="80"
+            />
+          </div>
+
+          <!-- WhatsApp number — the only contact path in GNOTE -->
+          <div class="form-group">
+            <label class="form-label">WhatsApp number</label>
+            <input
+              class="form-input"
+              type="tel"
+              placeholder="+263712345678"
+              pattern="^\+[0-9]{7,15}$"
+            />
+            <p class="field-hint">International format — e.g. +263712345678</p>
+          </div>
+
+          <!-- Message template -->
+          <div class="form-group">
+            <label class="form-label">
+              Message
+              <span class="label-muted">sent via WhatsApp</span>
+            </label>
+            <div class="field-wrap">
+              <textarea
+                class="form-input form-textarea"
+                id="msg-template"
+                rows="3"
+                maxlength="300"
+                placeholder="Write a personal message..."
+              ></textarea>
+              <span class="char-count">0 / 300</span>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="sheet-footer">
+          <button class="secondary-btn">Cancel</button>
+          <button class="primary-btn">Add person</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .add-sheet-page .sheet-scrim {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: flex;
+        align-items: flex-end;
+      }
+      .bottom-sheet {
+        width: 100%;
+        max-width: 430px;
+        margin: 0 auto;
+        background: var(--surface, #1a1a1a);
+        border-radius: 24px 24px 0 0;
+        border: 1px solid var(--line, #2a2a2a);
+        border-bottom: none;
+        overflow: hidden;
+        max-height: 92dvh;
+        overflow-y: auto;
+      }
+      .sheet-handle {
+        width: 36px; height: 4px;
+        border-radius: 2px;
+        background: var(--line-strong, #3a3a3a);
+        margin: 14px auto 0;
+      }
+      .sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 18px 24px 0;
+      }
+      .sheet-kicker {
+        font-size: 10px; font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--muted, #9a9a9a);
+        margin: 0 0 4px;
+      }
+      .sheet-title {
+        font-size: 18px; font-weight: 800;
+        color: var(--text, #e8e8e8);
+        letter-spacing: -0.3px; margin: 0;
+      }
+      .sheet-body {
+        padding: 20px 24px;
+        display: grid; gap: 20px;
+      }
+      /* Role selector */
+      .role-select {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+      }
+      .role-option {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 14px;
+        border: 1px solid var(--line, #2a2a2a);
+        border-radius: 12px;
+        background: var(--bg-raised, #242424);
+        color: var(--muted, #9a9a9a);
+        font-size: 14px; font-weight: 600;
+        cursor: pointer;
+        transition: all 150ms;
+      }
+      .role-option.active[data-role="Motivator"] {
+        border-color: var(--orange, #f0a500);
+        background: var(--orange-soft, rgba(240,165,0,0.1));
+        color: var(--orange, #f0a500);
+      }
+      .role-option.active[data-role="Meditator"] {
+        border-color: #3fa9f5;
+        background: rgba(63,169,245,0.1);
+        color: #5ebdfa;
+      }
+      .role-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .role-dot.motivator { background: var(--orange, #f0a500); }
+      .role-dot.meditator { background: #3fa9f5; }
+      .role-hint {
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: var(--muted, #9a9a9a);
+        line-height: 1.5;
+      }
+      .field-hint {
+        margin: 6px 0 0;
+        font-size: 11px;
+        color: var(--muted, #9a9a9a);
+      }
+      .label-muted {
+        font-size: 11px;
+        font-weight: 400;
+        color: var(--muted, #9a9a9a);
+        margin-left: 6px;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+      .field-wrap { position: relative; margin-top: 8px; }
+      .char-count {
+        position: absolute; right: 12px; bottom: 8px;
+        font-size: 10px; color: var(--muted, #9a9a9a);
+        pointer-events: none;
+      }
+      .form-textarea { resize: none; line-height: 1.5; padding-bottom: 24px; }
+      .sheet-footer {
+        display: flex; gap: 12px;
+        padding: 16px 24px 28px;
+        border-top: 1px solid var(--line, #2a2a2a);
+      }
+      .sheet-footer .secondary-btn { flex: 1; }
+      .sheet-footer .primary-btn { flex: 2; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const TEMPLATES = {
+        Motivator: "Hey {name} 👋 You've been selected as today's Motivator. Share something that keeps you going — a word, a thought, anything real. We need it today. 🔥",
+        Meditator: "Hey {name} 🌿 You're today's Meditator. Drop a moment of calm — a reflection, a breath, a reminder to slow down. Whatever feels true to you. 🙏"
+      };
+      const HINTS = {
+        Motivator: "People who energize and motivate you — picked daily.",
+        Meditator: "People who help you find calm and perspective — picked daily."
+      };
+
+      const msgField = document.getElementById("msg-template");
+      msgField.value = TEMPLATES.Motivator;
+
+      document.querySelectorAll(".role-option").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".role-option").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          const role = btn.dataset.role;
+          msgField.value = TEMPLATES[role];
+          document.getElementById("role-hint").textContent = HINTS[role];
+          updateCount();
+        });
+      });
+
+      function updateCount() {
+        const counter = msgField.closest(".field-wrap")?.querySelector(".char-count");
+        if (counter) counter.textContent = `${msgField.value.length} / 300`;
+      }
+      msgField.addEventListener("input", updateCount);
+      updateCount();
+    </script>
+  </body>
+</html>

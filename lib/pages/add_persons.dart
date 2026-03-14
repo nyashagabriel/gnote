@@ -99,23 +99,15 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
       _loading = true;
       _error = null;
     });
-    try {
-      await ref.read(responsibilityProvider.notifier).addPerson(
-            name: name,
-            whatsappNumber: number.replaceAll(' ', ''),
-            role: _role,
-            messageTemplate: message,
-            userId: user.id,
-          );
-      if (!mounted) return;
-      context.pop();
-    } catch (_) {
-      if (!mounted) return;
-      setState(() {
-        _loading = false;
-        _error = GStrings.errorGeneric;
-      });
-    }
+    await ref.read(responsibilityProvider.notifier).addPerson(
+          name: name,
+          whatsappNumber: number.replaceAll(' ', ''),
+          role: _role,
+          messageTemplate: message,
+          userId: user.id,
+        );
+    if (!mounted) return;
+    context.pop();
   }
 
   @override

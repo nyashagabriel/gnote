@@ -1,5 +1,6 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import '../core/constants.dart';
+import '../core/timezone.dart';
 
 part 'person.g.dart';
 
@@ -61,10 +62,7 @@ class GPerson extends HiveObject {
   // ── Was this person selected today? ───────────────────────
   bool get selectedToday {
     if (lastSelectedAt == null) return false;
-    final now = DateTime.now();
-    return lastSelectedAt!.year == now.year &&
-        lastSelectedAt!.month == now.month &&
-        lastSelectedAt!.day == now.day;
+    return isSameLocalDay(asLocal(lastSelectedAt!), localNow());
   }
 
   // ── fromJson ──────────────────────────────────────────────

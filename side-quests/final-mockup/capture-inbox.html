@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capture - GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen capture-screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Capture</p>
+            <h1 class="title-lg">Mind clear.</h1>
+            <p class="body-copy capture-sub">Drop thoughts here. Review is for Sunday.</p>
+          </div>
+          <button class="icon-btn" aria-label="Share list">↗</button>
+        </div>
+
+        <div class="card sunday-banner reveal">
+          <p class="section-label">Sunday review</p>
+          <p class="body-copy">Promote what matters. Ignore what does not.</p>
+        </div>
+
+        <div class="capture-list stack reveal">
+          <article class="capture-card">
+            <p class="capture-text">Need to simplify the responsibility sheet copy.</p>
+            <p class="muted-copy capture-date">13 Mar</p>
+          </article>
+          <article class="capture-card">
+            <p class="capture-text">Check whether anchor lock copy is too severe.</p>
+            <p class="muted-copy capture-date">12 Mar</p>
+          </article>
+        </div>
+
+        <div class="input-panel fixed-bottom capture-bar reveal">
+          <div class="capture-compose">
+            <input class="capture-input" type="text" placeholder="Capture a thought..." />
+            <button class="icon-btn capture-send" aria-label="Add capture">→</button>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item active">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .capture-sub { max-width: 260px; }
+      .sunday-banner {
+        display: grid;
+        gap: 8px;
+        margin-top: 18px;
+      }
+      .capture-list {
+        margin-top: 18px;
+        padding-bottom: 108px;
+      }
+      .capture-card {
+        display: grid;
+        gap: 8px;
+        padding: 16px 18px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+      }
+      .capture-text {
+        font-size: 16px;
+        line-height: 1.55;
+        color: var(--text);
+      }
+      .capture-date {
+        justify-self: end;
+      }
+      .capture-bar {
+        padding: 12px;
+        background: rgba(15, 15, 16, 0.96);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+      }
+      .capture-send {
+        width: 52px;
+        height: 52px;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

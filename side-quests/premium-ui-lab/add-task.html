@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Task</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+<div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="modal-overlay">
+          <div class="modal">
+            <div class="modal-header">
+              <h2 class="modal-title">Add new task</h2>
+              <button class="icon-btn">×</button>
+            </div>
+
+            <div class="modal-body">
+              <div class="form-group">
+                <label class="form-label">Task title</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  placeholder="What needs to be done?"
+                />
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Priority</label>
+                <div class="priority-select">
+                  <button class="priority-option active" data-priority="low">
+                    <span class="priority-dot low"></span>
+                    Low
+                  </button>
+                  <button class="priority-option" data-priority="medium">
+                    <span class="priority-dot medium"></span>
+                    Medium
+                  </button>
+                  <button class="priority-option" data-priority="high">
+                    <span class="priority-dot high"></span>
+                    High
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Category</label>
+                <select class="form-input">
+                  <option>Personal</option>
+                  <option>Work</option>
+                  <option>Learning</option>
+                  <option>Health</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Due date</label>
+                <input
+                  class="form-input"
+                  type="date"
+                />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button class="secondary-btn">Cancel</button>
+              <button class="primary-btn">Add task</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

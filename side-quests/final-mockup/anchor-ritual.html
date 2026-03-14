@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor - GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header anchor-top-row">
+          <p class="screen-label">Anchor</p>
+          <p class="muted-copy anchor-date">Fri 13 Mar</p>
+        </div>
+
+        <div class="anchor-main reveal">
+          <h1 class="title-xl">Why did you wake up today?</h1>
+          <p class="body-copy anchor-helper">One honest sentence. Locked after you save it.</p>
+
+          <textarea
+            class="anchor-field"
+            id="anchor-textarea"
+            placeholder="Write the reason plainly."
+          ></textarea>
+
+          <p class="muted-copy anchor-count" id="anchor-count">0 / 160</p>
+
+          <button class="primary-btn anchor-lock-btn" id="anchor-lock-btn" disabled>
+            Lock anchor
+          </button>
+        </div>
+
+        <div class="card reveal anchor-locked-card" id="anchor-locked-card" hidden>
+          <div class="anchor-rail"></div>
+          <div class="anchor-locked-content">
+            <p class="section-label">Locked for today</p>
+            <p class="body-copy" id="anchor-locked-copy">To work with more attention than drift.</p>
+            <p class="muted-copy anchor-locked-time">Locked at 07:14</p>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item active">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .anchor-top-row {
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .anchor-date {
+        font-size: 12px;
+      }
+      .anchor-main {
+        display: grid;
+        gap: 16px;
+      }
+      .anchor-helper {
+        max-width: 280px;
+      }
+      .anchor-count {
+        min-height: 18px;
+        opacity: 0;
+      }
+      .anchor-lock-btn {
+        width: 100%;
+        height: 54px;
+      }
+      .anchor-locked-card {
+        margin-top: 18px;
+        display: flex;
+        gap: 14px;
+        align-items: stretch;
+      }
+      .anchor-rail {
+        width: 3px;
+        border-radius: 999px;
+        background: var(--line-strong);
+      }
+      .anchor-locked-content {
+        display: grid;
+        gap: 10px;
+      }
+      .anchor-locked-time {
+        text-align: right;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const ta = document.getElementById('anchor-textarea');
+      const counter = document.getElementById('anchor-count');
+      const lockBtn = document.getElementById('anchor-lock-btn');
+      const lockedCard = document.getElementById('anchor-locked-card');
+      const lockedCopy = document.getElementById('anchor-locked-copy');
+      const MAX = 160;
+      const MIN = 10;
+
+      ta.addEventListener('input', () => {
+        if (ta.value.length > MAX) ta.value = ta.value.slice(0, MAX);
+        const len = ta.value.length;
+        counter.textContent = `${len} / ${MAX}`;
+        counter.style.opacity = len > 0 ? '1' : '0';
+        lockBtn.disabled = len < MIN;
+      });
+
+      lockBtn.addEventListener('click', () => {
+        if (ta.value.length < MIN) return;
+        lockedCopy.textContent = ta.value;
+        ta.closest('.anchor-main').hidden = true;
+        lockedCard.hidden = false;
+      });
+    </script>
+  </body>
+</html>

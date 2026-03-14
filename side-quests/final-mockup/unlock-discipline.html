@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unlock Discipline — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Unlock</p>
+            <h1 class="title-lg">Pay for the system, not the noise.</h1>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal" style="margin-top: 18px;">
+          <p class="body-copy">
+            The core value is not more features. It is staying inside a system that
+            protects your attention every day.
+          </p>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <article class="pricing-card reveal pricing-card-featured">
+            <div class="pricing-top">
+              <div>
+                <p class="section-label">Best fit</p>
+                <h2 class="pricing-name">Annual</h2>
+              </div>
+              <span class="chip">Recommended</span>
+            </div>
+            <p class="pricing-price">$29.99<span>/year</span></p>
+            <ul class="pricing-list">
+              <li>Full daily system</li>
+              <li>Cloud sync across devices</li>
+              <li>Premium updates as the product grows</li>
+            </ul>
+            <button class="primary-btn full-width">Start annual</button>
+          </article>
+
+          <article class="pricing-card reveal" style="animation-delay: 90ms;">
+            <div class="pricing-top">
+              <div>
+                <p class="section-label">One-time</p>
+                <h2 class="pricing-name">Lifetime</h2>
+              </div>
+            </div>
+            <p class="pricing-price">$89.99<span> once</span></p>
+            <ul class="pricing-list">
+              <li>Everything in annual</li>
+              <li>No recurring billing fatigue</li>
+              <li>For people who know they want this system long-term</li>
+            </ul>
+            <button class="secondary-btn" style="width: 100%;">Choose lifetime</button>
+          </article>
+        </div>
+
+        <p class="muted-copy reveal pricing-note" style="animation-delay: 140ms;">
+          Research direction only: this tests the premium positioning and price framing,
+          not final billing copy.
+        </p>
+      </section>
+    </div>
+
+    <style>
+      .pricing-card {
+        padding: 20px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow-sm);
+      }
+      .pricing-card-featured {
+        border-color: rgba(240, 165, 0, 0.24);
+        background: linear-gradient(180deg, rgba(240, 165, 0, 0.06), rgba(255,255,255,0.01));
+      }
+      .pricing-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: start;
+      }
+      .pricing-name {
+        margin: 4px 0 0;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .pricing-price {
+        margin: 22px 0 18px;
+        font-size: 40px;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+      }
+      .pricing-price span {
+        font-size: 14px;
+        color: var(--muted);
+        font-weight: 600;
+        letter-spacing: 0;
+      }
+      .pricing-list {
+        margin: 0 0 20px;
+        padding-left: 18px;
+        color: var(--text-soft);
+        display: grid;
+        gap: 10px;
+      }
+      .pricing-note {
+        margin-top: 16px;
+        text-align: center;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

@@ -5,10 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../core/auth_flow.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
-import '../services/notification_service.dart';
-import '../services/local_db.dart';
 
 class VerifyOtpPage extends ConsumerStatefulWidget {
   final String email;
@@ -43,21 +42,18 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
       _error = null;
       _successMsg = null;
     });
-    final error =
+    final result =
         await ref.read(authProvider.notifier).verifyOTP(widget.email, code);
 
     if (!mounted) return;
     setState(() => _loading = false);
-    if (error == null) {
-      final reminder = LocalDb.instance.getHabitReminderTime();
-      await NotificationService.ensurePermissionAndScheduleAll(
-        habitHour: reminder.hour,
-        habitMinute: reminder.minute,
-      );
-      if (!mounted) return;
-      context.go(GRoutes.anchor);
-    } else {
-      setState(() => _error = error);
+    switch (result) {
+      case AuthSuccess():
+        await completeAuthenticatedEntry(context);
+      case AuthFailure(:final message):
+        setState(() => _error = message);
+      case AuthNeedsVerification():
+        setState(() => _error = GStrings.otpReqCode);
     }
   }
 
@@ -67,15 +63,19 @@ class _VerifyOtpPageState extends ConsumerState<VerifyOtpPage> {
       _error = null;
       _successMsg = null;
     });
-    final error = await ref.read(authProvider.notifier).resendOTP(widget.email);
+    final result =
+        await ref.read(authProvider.notifier).resendOTP(widget.email);
 
     if (!mounted) return;
     setState(() {
       _resending = false;
-      if (error == null) {
-        _successMsg = GStrings.otpNewCodeSent;
-      } else {
-        _error = error;
+      switch (result) {
+        case AuthSuccess():
+          _successMsg = GStrings.otpNewCodeSent;
+        case AuthFailure(:final message):
+          _error = message;
+        case AuthNeedsVerification():
+          _error = GStrings.otpReqCode;
       }
     });
   }

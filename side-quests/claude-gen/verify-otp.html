@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: 6 individual .otp-input boxes
+      → The Flutter app (verify_opt_page.dart) uses a SINGLE
+        TextField with maxLength: 8 and auto-submits when
+        all 8 chars are entered. 6 boxes is wrong on two
+        counts: wrong count (8 not 6) and wrong pattern.
+        The Supabase OTP is 8 digits.
+
+    ✗ REMOVED: "Use different email" link
+      → Not in the Flutter app. The back button goes to
+        login which allows changing email. Extra link adds
+        confusion.
+
+    ✓ ADDED: Single wide OTP input (.otp-single class)
+      → Matches Flutter's large centered text field
+      → letterSpacing + monospace rendering for digit clarity
+      → Auto-submits at 8 chars (script.js handles this)
+      → Numeric keyboard on mobile (inputmode="numeric")
+
+    ✓ CORRECTED: "8-digit code" (was "6-digit code")
+      → GStrings.otpEnterCode: "Enter 8-digit code"
+
+    ✓ CORRECTED: Email shown in body copy
+      → GStrings.otpSentCode: "We sent a secure code to"
+        then email in bold — matching the RichText in Flutter
+
+    ✓ ADDED: Back arrow to login
+      → Flutter app has IconButton → context.go(GRoutes.login)
+
+    DESIGN NOTE:
+    → Large single field is more thumb-friendly than 6 tiny
+      boxes on mobile. Auto-fill from SMS works natively on
+      a single input field; individual boxes require custom
+      JS and often break SMS autofill.
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <!-- Back button -->
+        <button class="back-btn icon-btn" onclick="history.back()" aria-label="Back to login">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M11 4L6 9l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <div class="otp-content reveal">
+          <!-- Label + heading -->
+          <p class="otp-kicker">CHECK YOUR INBOX</p>
+          <h1 class="title-lg" style="margin-bottom: 12px;">Enter 8-digit code</h1>
+
+          <!-- Email line — matches Flutter RichText -->
+          <p class="body-copy otp-body">
+            We sent a secure code to<br>
+            <strong class="otp-email">user@example.com</strong>
+          </p>
+
+          <!-- Single 8-digit field — correct pattern -->
+          <div class="otp-field-wrap">
+            <input
+              class="otp-single"
+              type="text"
+              inputmode="numeric"
+              pattern="[0-9]*"
+              autocomplete="one-time-code"
+              maxlength="8"
+              placeholder="12345678"
+              aria-label="8-digit verification code"
+            />
+            <div class="otp-progress">
+              <div class="otp-bar" id="otp-bar"></div>
+            </div>
+          </div>
+
+          <!-- Error / success message slot -->
+          <p class="otp-feedback" id="otp-feedback" role="alert" aria-live="polite"></p>
+
+          <!-- Verify button -->
+          <button class="primary-btn full-width otp-verify-btn" id="otp-verify-btn" disabled>
+            VERIFY ACCOUNT
+          </button>
+
+          <!-- Resend -->
+          <div class="otp-links">
+            <button class="link-btn otp-resend">Resend code</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <style>
+      .back-btn {
+        margin: 8px 0 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .otp-content {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .otp-kicker {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+        color: var(--orange, #f0a500);
+        margin: 0 0 10px;
+      }
+      .otp-body {
+        color: var(--muted, #9a9a9a);
+        line-height: 1.7;
+        margin-bottom: 36px;
+      }
+      .otp-email {
+        color: var(--text, #e8e8e8);
+        font-weight: 700;
+      }
+      /* The correct single-field OTP pattern */
+      .otp-field-wrap {
+        margin-bottom: 8px;
+      }
+      .otp-single {
+        display: block;
+        width: 100%;
+        height: 76px;
+        text-align: center;
+        font-size: 32px;
+        font-weight: 900;
+        letter-spacing: 0.3em;
+        font-variant-numeric: tabular-nums;
+        background: var(--surface, #1a1a1a);
+        border: 1px solid var(--line, #2a2a2a);
+        border-radius: 14px;
+        color: var(--orange, #f0a500);
+        outline: none;
+        transition: border-color 180ms, box-shadow 180ms;
+        caret-color: var(--orange, #f0a500);
+        /* Monospace so digits don't shift */
+        font-family: 'SF Mono', 'Courier New', monospace;
+      }
+      .otp-single::placeholder {
+        color: var(--line-strong, #3a3a3a);
+        letter-spacing: 0.3em;
+      }
+      .otp-single:focus {
+        border-color: var(--orange, #f0a500);
+        box-shadow: 0 0 0 4px rgba(240,165,0,0.1);
+      }
+      .otp-single.ready {
+        border-color: var(--success, #52e0a0);
+        box-shadow: 0 0 0 4px rgba(82,224,160,0.08);
+      }
+      /* 8-segment progress bar underneath */
+      .otp-progress {
+        height: 2px;
+        background: var(--line, #2a2a2a);
+        border-radius: 1px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+      .otp-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--orange, #f0a500);
+        border-radius: 1px;
+        transition: width 100ms, background 200ms;
+      }
+      .otp-feedback {
+        min-height: 20px;
+        font-size: 13px;
+        text-align: center;
+        color: var(--danger, #e05252);
+        margin: 4px 0 20px;
+      }
+      .otp-feedback.success {
+        color: var(--success, #52e0a0);
+      }
+      .otp-verify-btn {
+        width: 100%;
+        letter-spacing: 0.1em;
+      }
+      .otp-verify-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .otp-links {
+        display: flex;
+        justify-content: center;
+        margin-top: 28px;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const input = document.querySelector(".otp-single");
+      const bar = document.getElementById("otp-bar");
+      const btn = document.getElementById("otp-verify-btn");
+      const feedback = document.getElementById("otp-feedback");
+
+      input.addEventListener("input", () => {
+        const val = input.value.replace(/\D/g, "").slice(0, 8);
+        input.value = val;
+
+        // Progress bar — 8 segments
+        const pct = (val.length / 8) * 100;
+        bar.style.width = pct + "%";
+        bar.style.background = val.length === 8
+          ? "var(--success, #52e0a0)"
+          : "var(--orange, #f0a500)";
+
+        if (val.length === 8) {
+          input.classList.add("ready");
+          btn.disabled = false;
+          feedback.textContent = "";
+        } else {
+          input.classList.remove("ready");
+          btn.disabled = true;
+        }
+      });
+
+      btn.addEventListener("click", () => {
+        // Simulate verify
+        feedback.className = "otp-feedback success";
+        feedback.textContent = "Code verified. Redirecting…";
+      });
+
+      document.querySelector(".otp-resend")?.addEventListener("click", () => {
+        feedback.className = "otp-feedback success";
+        feedback.textContent = "A new code has been sent to your email.";
+        input.value = "";
+        bar.style.width = "0%";
+        btn.disabled = true;
+        input.classList.remove("ready");
+        input.focus();
+      });
+    </script>
+  </body>
+</html>

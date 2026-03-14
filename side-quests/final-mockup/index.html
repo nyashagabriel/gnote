@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GNOTE — Final Mockup Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="lab-shell">
+    <main class="lab-index">
+
+      <div class="lab-hero reveal">
+        <p class="eyebrow">FINAL MOCKUP LAB</p>
+        <h1>GNOTE design direction</h1>
+        <p class="lede">
+          One testable mobile mockup built from the structurally-correct Claude pass
+          and the stronger black-premium styling direction from the UI lab. This is
+          for judging feel, hierarchy, and user clarity before touching Flutter.
+        </p>
+      </div>
+
+      <div class="lab-section reveal" style="margin-top: 0; padding-top: 0; border-top: 0;">
+        <h2>Design Thesis</h2>
+        <p class="section-description">
+          Discipline-first, black-first, premium without visual noise. The app should
+          feel deliberate, expensive, and calm under pressure, not trendy or overloaded.
+        </p>
+        <div class="corrections-grid">
+          <div class="correction-item">
+            <p class="correction-title">Keep</p>
+            <p class="correction-body">True black base, editorial hierarchy, orange ritual accent, low-noise cards, bottom-sheet mobile patterns.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Test with users</p>
+            <p class="correction-body">Can they understand each screen in under 2 seconds? Does the friction feel intentional, not broken?</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Do not drift</p>
+            <p class="correction-body">No fake analytics, no priority systems, no dashboard clutter, no extra productivity theater.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Screens -->
+      <p class="section-label" style="margin-bottom: 12px;">CORE SCREENS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./onboarding-focus.html">
+          <span class="card-kicker">Onboarding</span>
+          <strong>Focus Onboarding</strong>
+          <span>Explains the rules before friction hits. Built for first-time clarity, not feature listing.</span>
+        </a>
+        <a class="lab-card" href="./anchor-ritual.html">
+          <span class="card-kicker">Anchor</span>
+          <strong>Anchor Ritual</strong>
+          <span>Live char count. 10-char gate with hint. LOCKED badge. Time-aware label.</span>
+        </a>
+        <a class="lab-card" href="./daily3-focus.html">
+          <span class="card-kicker">Daily 3</span>
+          <strong>Daily 3 Focus</strong>
+          <span>Category accents (not priority). SMART task structure. Ghost slot for empty 3rd task.</span>
+        </a>
+        <a class="lab-card" href="./capture-inbox.html">
+          <span class="card-kicker">Capture</span>
+          <strong>Capture Inbox</strong>
+          <span>No priority dots. Brain dump philosophy. Swipe hint. Date stamps. Sunday banner.</span>
+        </a>
+        <a class="lab-card" href="./habit-streak.html">
+          <span class="card-kicker">Habit</span>
+          <strong>Habit Streak</strong>
+          <span>No + button. Animated I-did-it state. Change habit bottom sheet. Streak bar.</span>
+        </a>
+        <a class="lab-card" href="./people-neutral.html">
+          <span class="card-kicker">People</span>
+          <strong>People (Responsibility)</strong>
+          <span>Motivators/Meditators (not Energizers/Relaxers). Pick behaviour. WhatsApp icon. Last-picked dates.</span>
+        </a>
+        <a class="lab-card" href="./profile-quiet-luxury.html">
+          <span class="card-kicker">Profile</span>
+          <strong>Profile</strong>
+          <span>Fixed broken HTML. One sign-out. No phantom analytics. Correct section structure.</span>
+        </a>
+      </section>
+
+      <!-- Auth Screens -->
+      <p class="section-label" style="margin: 32px 0 12px;">AUTH SCREENS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./login.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Sign In</strong>
+          <span>Email only — no password. Supabase OTP model. Validates before enabling SEND CODE.</span>
+        </a>
+        <a class="lab-card" href="./signup.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Create Account</strong>
+          <span>Name + email, no password. Both fields required before CTA enables.</span>
+        </a>
+        <a class="lab-card" href="./verify-otp.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Verify Code</strong>
+          <span>Single 8-digit field (not 6 boxes). Progress bar. SMS autofill compatible.</span>
+        </a>
+        <a class="lab-card" href="./unlock-discipline.html">
+          <span class="card-kicker">Monetization</span>
+          <strong>Unlock Discipline</strong>
+          <span>Premium pricing concept aligned to the research: annual first, lifetime second.</span>
+        </a>
+      </section>
+
+      <!-- Modal / Sheet Screens -->
+      <p class="section-label" style="margin: 32px 0 12px;">BOTTOM SHEETS</p>
+      <section class="lab-grid reveal">
+        <a class="lab-card" href="./add-task.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Task</strong>
+          <span>Bottom sheet (not centered modal). SMART fields: what + doneWhen. Date+time picker. Correct GCategories.</span>
+        </a>
+        <a class="lab-card" href="./add-person.html">
+          <span class="card-kicker">Sheet</span>
+          <strong>Add Person</strong>
+          <span>Motivator/Meditator roles. WhatsApp-only contact. Message template pre-fills on role change.</span>
+        </a>
+      </section>
+
+      <div class="lab-section reveal">
+        <h2>What this mockup is proving</h2>
+        <div class="corrections-grid">
+          <div class="correction-item">
+            <p class="correction-title">Premium without drift</p>
+            <p class="correction-body">The surfaces, spacing, and motion are richer, but the product is still constraint-first instead of convenience-first.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Real feature fit</p>
+            <p class="correction-body">All screens stay aligned with the Dart app: OTP auth, one habit, three tasks, WhatsApp accountability, and no phantom data fields.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">End-user clarity</p>
+            <p class="correction-body">The mockup is meant to answer whether users feel guided, not dazzled. If a screen needs explanation, it still fails.</p>
+          </div>
+          <div class="correction-item">
+            <p class="correction-title">Testing prompt</p>
+            <p class="correction-body">Show this to users and ask what they think each screen is for, what feels premium, and where anything feels punishing or unclear.</p>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <style>
+      .corrections-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 14px;
+        margin-top: 4px;
+      }
+      .correction-item {
+        padding: 16px 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+      }
+      .correction-title {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--orange);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+      .correction-body {
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.55;
+        margin: 0;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

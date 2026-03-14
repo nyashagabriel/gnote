@@ -1,5 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../core/constants.dart';
+
 part 'user.g.dart';
 
 // ─────────────────────────────────────────────────────────────
@@ -44,12 +46,14 @@ class GUser extends HiveObject {
 
   // ── fromJson — Supabase response → GUser ──────────────────
   factory GUser.fromJson(Map<String, dynamic> json) => GUser(
-        id: json['id'] as String,
-        email: json['email'] as String,
-        displayName: json['display_name'] as String,
-        timezone: json['timezone'] as String?,
-        createdAt: DateTime.parse(json['created_at'] as String),
-        lastSeen: DateTime.parse(json['last_seen'] as String),
+        id: GJson.str(json, 'id'),
+        email: GJson.str(json, 'email'),
+        displayName: GJson.str(json, 'display_name'),
+        timezone: GJson.str(json, 'timezone', fallback: '').isEmpty
+            ? null
+            : GJson.str(json, 'timezone'),
+        createdAt: GJson.dateTime(json, 'created_at'),
+        lastSeen: GJson.dateTime(json, 'last_seen'),
       );
 
   // ── toJson — GUser → Supabase insert/update ───────────────

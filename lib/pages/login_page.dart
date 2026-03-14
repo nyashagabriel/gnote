@@ -5,10 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../core/auth_flow.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
-import '../services/notification_service.dart';
-import '../services/local_db.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -45,29 +44,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       _error = null;
     });
 
-    final error = await ref.read(authProvider.notifier).signIn(email, pass);
+    final result = await ref.read(authProvider.notifier).signIn(email, pass);
 
     if (!mounted) return;
     setState(() => _loading = false);
 
-    if (error == null) {
-      final reminder = LocalDb.instance.getHabitReminderTime();
-      await NotificationService.ensurePermissionAndScheduleAll(
-        habitHour: reminder.hour,
-        habitMinute: reminder.minute,
-      );
-      if (!mounted) return;
-      context.go(GRoutes.anchor);
-      return;
+    switch (result) {
+      case AuthSuccess():
+        await completeAuthenticatedEntry(context);
+        return;
+      case AuthNeedsVerification():
+        context.go('${GRoutes.verifyOtp}?email=$email');
+        return;
+      case AuthFailure(:final message):
+        setState(() => _error = message);
     }
-
-    // Dynamic reroute
-    if (error.contains('confirm your email first')) {
-      context.go('${GRoutes.verifyOtp}?email=$email');
-      return;
-    }
-
-    setState(() => _error = error);
   }
 
   @override

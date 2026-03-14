@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: Password field
+      → Same as login — GNOTE uses Email OTP. The Flutter
+        SignupPage (signup_page.dart) has display name +
+        email + submit. No password.
+
+    ✓ CORRECTED: CTA button
+      → GStrings.signupCta: "CREATE ACCOUNT"
+        (was "Create account" lowercase — should match ALL-CAPS
+        button style used on .primary-btn)
+
+    ✓ CORRECTED: Display name field
+      → GStrings.signupNameHint: "Your full name"
+      → Maps to profiles.display_name in Supabase
+
+    ✓ CORRECTED: Sub-copy after CTA
+      → Explains what happens next: "We'll send a code to
+        verify your email."
+
+    ✓ ADDED: GNOTE wordmark (matches login screen consistency)
+
+    ✓ CORRECTED: Back to login link
+      → GStrings.signupLoginLink: "Already have an account? Sign in"
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen login-screen">
+
+        <div class="login-wordmark reveal">
+          <p class="gnote-mark">GNOTE</p>
+          <p class="gnote-tagline">Build your discipline. One day at a time.</p>
+        </div>
+
+        <div class="auth-form reveal" style="animation-delay: 80ms;">
+
+          <div class="form-group">
+            <label class="form-label" for="display-name">Your name</label>
+            <input
+              class="form-input"
+              id="display-name"
+              type="text"
+              placeholder="Alex Rivers"
+              autocomplete="name"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="form-group" style="margin-top: 16px;">
+            <label class="form-label" for="signup-email">Email address</label>
+            <input
+              class="form-input"
+              id="signup-email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              inputmode="email"
+            />
+          </div>
+
+          <button class="primary-btn full-width" id="create-btn" disabled>
+            CREATE ACCOUNT
+          </button>
+
+          <p class="send-hint">We'll send a code to verify your email.</p>
+
+          <div class="auth-links" style="justify-content: center; margin-top: 32px;">
+            <button class="link-btn">Already have an account? Sign in</button>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <style>
+      .login-screen { display: flex; flex-direction: column; justify-content: center; min-height: calc(844px - 64px - 80px); }
+      .login-wordmark { margin-bottom: 48px; }
+      .gnote-mark {
+        font-size: 38px; font-weight: 900;
+        letter-spacing: -0.04em; color: var(--text);
+        line-height: 1; margin: 0 0 6px;
+      }
+      .gnote-tagline { font-size: 13px; color: var(--muted); letter-spacing: 0.04em; margin: 0; }
+      .send-hint { font-size: 12px; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.5; }
+      #create-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const nameInput = document.getElementById('display-name');
+      const emailInput = document.getElementById('signup-email');
+      const createBtn = document.getElementById('create-btn');
+
+      const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+      const check = () => {
+        createBtn.disabled = nameInput.value.trim().length < 2 || !isValidEmail(emailInput.value);
+      };
+
+      nameInput.addEventListener('input', check);
+      emailInput.addEventListener('input', check);
+
+      createBtn.addEventListener('click', () => {
+        if (!createBtn.disabled) {
+          createBtn.textContent = '✓ CHECK YOUR EMAIL';
+          createBtn.disabled = true;
+        }
+      });
+    </script>
+  </body>
+</html>

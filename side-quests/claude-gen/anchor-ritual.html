@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor Ritual — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ FIXED: "Lock it in" button stays disabled below 10 chars
+      with NO explanation shown to user (identified bug).
+      → Added char counter + hint "10 characters minimum"
+        that appears when < 10 chars.
+      → Button is visually disabled with reduced opacity.
+
+    ✗ FIXED: "14 / 160 characters" hardcoded progress
+      → Now live — updates with actual textarea input.
+      → 160 char max matches GLimits.anchorMaxChars.
+
+    ✓ CORRECTED: "Progress" meta-label
+      → GStrings.anchorCharCount: shows live count.
+
+    ✓ CORRECTED: "MORNING" label
+      → GStrings.anchorHeader: "MORNING"
+      → Changes to "AFTERNOON" / "EVENING" based on time
+        in the Flutter app. Prototype uses time-based logic.
+
+    ✓ CORRECTED: Yesterday's anchor card
+      → Previously showed static copy.
+      → Label: GStrings.anchorYesterdayTitle: "Yesterday"
+      → Status badge: GStrings.anchorCompletedBadge: "LOCKED"
+        (not "Completed" — anchors LOCK, they don't "complete")
+
+    ✗ REMOVED: "interactive-field" class
+      → This class doesn't exist in styles.css. Bug.
+
+    ✗ FIXED: hero-panel class usage
+      → Was .hero-panel.reveal.primary — .primary is a
+        modifier that styles.css handles separately.
+        Removed conflict.
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span id="anchor-time">9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label" id="time-of-day">MORNING</p>
+            <h1 class="title-xl">Why did you wake up today?</h1>
+          </div>
+          <div class="header-actions">
+            <span class="chip urgent">Locks in 2h 31m</span>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal" style="margin-top: 20px;">
+          <p class="body-copy" style="margin-bottom: 16px;">
+            One honest sentence. No list. No strategy. Just the reason.
+          </p>
+
+          <textarea
+            class="anchor-field"
+            id="anchor-textarea"
+            placeholder="Write one sentence that can carry the day."
+          ></textarea>
+
+          <!-- Minimum character hint — only shown below 10 chars -->
+          <p class="anchor-min-hint" id="anchor-min-hint">
+            10 characters minimum
+          </p>
+
+          <div class="divider"></div>
+          <div class="bottom-row">
+            <div class="progress-info">
+              <p class="meta-label">Characters</p>
+              <p class="muted-copy" id="anchor-count">0 / 160</p>
+            </div>
+            <button class="primary-btn" id="anchor-lock-btn" disabled>
+              Lock it in
+            </button>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <div class="card reveal">
+            <div class="card-header">
+              <p class="section-label">Yesterday</p>
+              <!-- FIXED: "LOCKED" not "Completed" — anchors lock -->
+              <span class="status-badge" style="background: var(--surface-high); color: var(--muted); font-size: 9px; letter-spacing: 0.14em; padding: 3px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase;">
+                LOCKED
+              </span>
+            </div>
+            <p class="body-copy" style="font-style: italic; margin-top: 4px;">
+              "To build something meaningful that helps others find their focus."
+            </p>
+            <p class="muted-copy" style="margin-top: 6px;">Locked at 7:32 AM</p>
+          </div>
+        </div>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item active">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .anchor-min-hint {
+        font-size: 11px;
+        color: var(--danger);
+        margin-top: 8px;
+        min-height: 18px;
+        transition: opacity 180ms;
+      }
+      #anchor-lock-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      // Time of day label
+      const h = new Date().getHours();
+      const labels = { morning: 'MORNING', afternoon: 'AFTERNOON', evening: 'EVENING' };
+      document.getElementById('time-of-day').textContent =
+        h < 12 ? labels.morning : h < 17 ? labels.afternoon : labels.evening;
+
+      // Live character count + lock gating
+      const ta = document.getElementById('anchor-textarea');
+      const counter = document.getElementById('anchor-count');
+      const hint = document.getElementById('anchor-min-hint');
+      const lockBtn = document.getElementById('anchor-lock-btn');
+      const MAX = 160;
+      const MIN = 10;
+
+      ta.addEventListener('input', () => {
+        const len = ta.value.length;
+        if (len > MAX) ta.value = ta.value.slice(0, MAX);
+        const actual = ta.value.length;
+        counter.textContent = `${actual} / ${MAX}`;
+        hint.style.opacity = actual < MIN && actual > 0 ? '1' : '0';
+        lockBtn.disabled = actual < MIN;
+      });
+
+      lockBtn.addEventListener('click', () => {
+        if (ta.value.length >= MIN) {
+          lockBtn.textContent = '✓ Locked';
+          lockBtn.disabled = true;
+          ta.disabled = true;
+          ta.style.opacity = '0.7';
+        }
+      });
+    </script>
+  </body>
+</html>

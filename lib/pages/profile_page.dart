@@ -8,9 +8,12 @@ import 'package:go_router/go_router.dart';
 
 import '../core/constants.dart';
 import '../core/timezone.dart';
+import '../models/user.dart';
 import '../services/local_db.dart';
 import '../services/notification_service.dart';
 import '../services/providers.dart';
+
+part 'profile_page_sections.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -29,6 +32,24 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     super.initState();
     final reminder = _db.getHabitReminderTime();
     _habitTime = TimeOfDay(hour: reminder.hour, minute: reminder.minute);
+  }
+
+  void _logProfileIssue(String context, Object error,
+      [StackTrace? stackTrace]) {
+    debugPrint('ProfilePage issue [$context]: $error');
+    if (stackTrace != null) {
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  }
+
+  void _showErrorSnack(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: GColors.danger,
+        content: Text(message, style: GText.body),
+      ),
+    );
   }
 
   Future<void> _pickHabitTime() async {
@@ -73,17 +94,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ),
         ),
       );
-    } catch (_) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: GColors.danger,
-          content: Text(
-            GStrings.profileHabitErrSnack,
-            style: GText.body,
-          ),
-        ),
-      );
+    } catch (e, stackTrace) {
+      _logProfileIssue('pickHabitTime', e, stackTrace);
+      _showErrorSnack(GStrings.profileHabitErrSnack);
     }
   }
 
@@ -100,18 +113,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
 
       if (!mounted) return;
       context.go(GRoutes.login);
-    } catch (_) {
+    } catch (e, stackTrace) {
+      _logProfileIssue('signOut', e, stackTrace);
       if (!mounted) return;
       setState(() => _signingOut = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: GColors.danger,
-          content: Text(
-            GStrings.profileSignOutErr,
-            style: GText.body,
-          ),
-        ),
-      );
+      _showErrorSnack(GStrings.profileSignOutErr);
     }
   }
 
@@ -193,41 +199,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         false;
   }
 
-  String _safeText(String? value, {String fallback = '—'}) {
-    final clean = value?.trim() ?? '';
-    return clean.isEmpty ? fallback : clean;
-  }
-
-  String _buildInitials(String displayName) {
-    final clean = displayName.trim();
-    if (clean.isEmpty || clean == '—') return 'GN';
-
-    final parts =
-        clean.split(RegExp(r'\s+')).where((part) => part.isNotEmpty).toList();
-
-    if (parts.isEmpty) return 'GN';
-    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
-
-    return (parts[0].substring(0, 1) + parts[1].substring(0, 1)).toUpperCase();
-  }
-
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(currentUserProvider);
-
-    final displayName = _safeText(user?.displayName);
-    final email = _safeText(user?.email);
-    final timezone = _safeText(
-      user?.timezone,
-      fallback: deviceTimezone(),
-    );
-    final initials = _buildInitials(displayName);
     final themeMode = ref.watch(themeModeProvider);
-    final themeLabel = switch (themeMode) {
-      ThemeMode.light => GStrings.profileThemeLight,
-      ThemeMode.dark => GStrings.profileThemeDark,
-      ThemeMode.system => GStrings.profileThemeSystem,
-    };
+    final viewData = _ProfileViewData.fromUser(
+      user: user,
+      themeMode: themeMode,
+    );
 
     return Scaffold(
       backgroundColor: GColors.background,
@@ -253,9 +232,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
                 children: [
                   _ProfileHeroCard(
-                    initials: initials,
-                    displayName: displayName,
-                    email: email,
+                    initials: viewData.initials,
+                    displayName: viewData.displayName,
+                    email: viewData.email,
                   ),
                   const SizedBox(height: GSpacing.xl),
                   const _SectionTitle(GStrings.profileSecAccount),
@@ -265,19 +244,19 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       _InfoRow(
                         icon: Icons.badge_outlined,
                         label: GStrings.profileDisplayName,
-                        value: displayName,
+                        value: viewData.displayName,
                       ),
                       const _SectionDivider(),
                       _InfoRow(
                         icon: Icons.alternate_email_rounded,
                         label: GStrings.profileEmail,
-                        value: email,
+                        value: viewData.email,
                       ),
                       const _SectionDivider(),
                       _InfoRow(
                         icon: Icons.public_outlined,
                         label: GStrings.profileTimezone,
-                        value: timezone,
+                        value: viewData.timezone,
                       ),
                     ],
                   ),
@@ -289,7 +268,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                       _ActionRow(
                         icon: Icons.palette_outlined,
                         label: GStrings.profileThemeMode,
-                        value: themeLabel,
+                        value: viewData.themeLabel,
                         accent: GColors.azure,
                         onTap: _pickThemeMode,
                       ),
@@ -329,315 +308,6 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader({required this.onBack});
-
-  final VoidCallback onBack;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        GSpacing.sm,
-        GSpacing.sm,
-        GSpacing.pagePadding,
-        GSpacing.md,
-      ),
-      child: Row(
-        children: [
-          IconButton(
-            onPressed: onBack,
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: GColors.textPrimary,
-            ),
-          ),
-          const SizedBox(width: GSpacing.xs),
-          Expanded(
-            child: Text(
-              GStrings.profileHeader,
-              style: GText.heading.copyWith(
-                fontSize: 28,
-                height: 1.0,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfileHeroCard extends StatelessWidget {
-  const _ProfileHeroCard({
-    required this.initials,
-    required this.displayName,
-    required this.email,
-  });
-
-  final String initials;
-  final String displayName;
-  final String email;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(GSpacing.lg),
-      decoration: BoxDecoration(
-        color: GColors.surface,
-        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-        border: Border.all(color: GColors.border),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 32,
-            backgroundColor: GColors.orange,
-            child: Text(
-              initials,
-              style: GText.heading.copyWith(
-                fontSize: 22,
-                height: 1.0,
-                color: GColors.background,
-              ),
-            ),
-          ),
-          const SizedBox(width: GSpacing.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  displayName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GText.subheading.copyWith(fontSize: 18),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  email,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: GText.muted,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.title);
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title.toUpperCase(),
-      style: GText.label.copyWith(
-        fontSize: 12,
-        color: GColors.textMuted,
-      ),
-    );
-  }
-}
-
-class _CardSection extends StatelessWidget {
-  const _CardSection({required this.children});
-
-  final List<Widget> children;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: GColors.surface,
-        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-        border: Border.all(color: GColors.border),
-      ),
-      child: Column(children: children),
-    );
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: GSpacing.md,
-        vertical: GSpacing.md,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 18, color: GColors.textMuted),
-          const SizedBox(width: GSpacing.md),
-          Expanded(
-            child: Text(label, style: GText.muted),
-          ),
-          const SizedBox(width: GSpacing.md),
-          Flexible(
-            child: Text(
-              value,
-              textAlign: TextAlign.right,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: GText.subheading.copyWith(fontSize: 15),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ActionRow extends StatelessWidget {
-  const _ActionRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.accent,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color accent;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: GSpacing.md,
-            vertical: GSpacing.md,
-          ),
-          child: Row(
-            children: [
-              Icon(icon, size: 18, color: accent),
-              const SizedBox(width: GSpacing.md),
-              Expanded(
-                child: Text(
-                  label,
-                  style: GText.subheading.copyWith(fontSize: 15),
-                ),
-              ),
-              const SizedBox(width: GSpacing.md),
-              Text(
-                value,
-                style: GText.subheading.copyWith(
-                  fontSize: 15,
-                  color: accent,
-                ),
-              ),
-              const SizedBox(width: GSpacing.xs),
-              Icon(
-                Icons.chevron_right_rounded,
-                size: 20,
-                color: accent,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DangerRow extends StatelessWidget {
-  const _DangerRow({
-    required this.icon,
-    required this.label,
-    required this.loading,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool loading;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: GSpacing.md,
-            vertical: GSpacing.md,
-          ),
-          child: Row(
-            children: [
-              Icon(icon, size: 18, color: GColors.danger),
-              const SizedBox(width: GSpacing.md),
-              Expanded(
-                child: Text(
-                  label,
-                  style: GText.subheading.copyWith(
-                    fontSize: 15,
-                    color: GColors.danger,
-                  ),
-                ),
-              ),
-              if (loading)
-                const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: GColors.danger,
-                  ),
-                )
-              else
-                const Icon(
-                  Icons.chevron_right_rounded,
-                  size: 20,
-                  color: GColors.danger,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _SectionDivider extends StatelessWidget {
-  const _SectionDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(
-      height: 1,
-      thickness: 1,
-      color: GColors.border,
     );
   }
 }

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign In — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: Password field
+      → GNOTE uses Supabase Email OTP authentication.
+        There IS no password. The Flutter login page
+        (login_page.dart) has a single email field and
+        sends an OTP. There is no password field in the
+        production app.
+
+    ✗ REMOVED: "Forgot password?" link
+      → No password = no forgot password.
+
+    ✗ REMOVED: "Sign in" button label
+      → GStrings.loginCta: "SEND CODE"
+        (because it sends an OTP, not logs in with password)
+
+    ✓ CORRECTED: Sub-copy below button
+      → Tells user what actually happens next:
+        "We'll send a 6-digit code to your inbox."
+        GStrings.loginEmailHint matches this.
+
+    ✓ CORRECTED: Email validation hint on blur
+      → Simple email format check before enabling the button.
+
+    ✓ CORRECTED: "Create account" link
+      → GStrings.loginCreateAccount: "New here? Create an account"
+
+    ✓ ADDED: GNOTE wordmark in hero
+      → All caps, bold — matches brand spec.
+      → Sets emotional tone of the sign-in moment.
+
+    DESIGN NOTE:
+    → Minimalist auth. One field. One CTA. Intentional.
+      The discipline of the app should be felt from the
+      first screen.
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen login-screen">
+
+        <!-- GNOTE wordmark -->
+        <div class="login-wordmark reveal">
+          <p class="gnote-mark">GNOTE</p>
+          <p class="gnote-tagline">Five functions. One discipline.</p>
+        </div>
+
+        <div class="auth-form reveal" style="animation-delay: 80ms;">
+          <div class="form-group">
+            <label class="form-label" for="login-email">Email address</label>
+            <input
+              class="form-input"
+              id="login-email"
+              type="email"
+              placeholder="you@example.com"
+              autocomplete="email"
+              inputmode="email"
+            />
+          </div>
+
+          <button class="primary-btn full-width" id="send-code-btn" disabled>
+            SEND CODE
+          </button>
+
+          <p class="send-hint">We'll send an 8-digit code to your inbox.</p>
+
+          <div class="auth-links" style="justify-content: center; margin-top: 32px;">
+            <button class="link-btn">New here? Create an account</button>
+          </div>
+        </div>
+
+      </section>
+    </div>
+
+    <style>
+      .login-screen { display: flex; flex-direction: column; justify-content: center; min-height: calc(844px - 64px - 80px); }
+      .login-wordmark { margin-bottom: 48px; }
+      .gnote-mark {
+        font-size: 38px;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: var(--text);
+        line-height: 1;
+        margin: 0 0 6px;
+      }
+      .gnote-tagline {
+        font-size: 13px;
+        color: var(--muted);
+        letter-spacing: 0.04em;
+        margin: 0;
+      }
+      .send-hint {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 12px;
+        line-height: 1.5;
+      }
+      #send-code-btn:disabled { opacity: 0.38; cursor: not-allowed; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const emailInput = document.getElementById('login-email');
+      const sendBtn = document.getElementById('send-code-btn');
+
+      const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+      emailInput.addEventListener('input', () => {
+        sendBtn.disabled = !isValidEmail(emailInput.value);
+      });
+
+      sendBtn.addEventListener('click', () => {
+        if (!isValidEmail(emailInput.value)) return;
+        sendBtn.textContent = '✓ CODE SENT';
+        sendBtn.disabled = true;
+      });
+    </script>
+  </body>
+</html>

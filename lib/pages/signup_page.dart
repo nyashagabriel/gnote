@@ -5,10 +5,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../core/auth_flow.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
-import '../services/notification_service.dart';
-import '../services/local_db.dart';
 
 class SignupPage extends ConsumerStatefulWidget {
   const SignupPage({super.key});
@@ -78,30 +77,25 @@ class _SignupPageState extends ConsumerState<SignupPage> {
       _loading = true;
       _error = null;
     });
-    final result =
-        await ref.read(authProvider.notifier).signUp(email, pass, name);
+    final result = await ref.read(authProvider.notifier).signUp(
+          email,
+          pass,
+          name,
+        );
 
     if (!mounted) return;
     setState(() => _loading = false);
 
-    if (result == null) {
-      final reminder = LocalDb.instance.getHabitReminderTime();
-      await NotificationService.ensurePermissionAndScheduleAll(
-        habitHour: reminder.hour,
-        habitMinute: reminder.minute,
-      );
-      if (!mounted) return;
-      context.go(GRoutes.anchor);
-      return;
+    switch (result) {
+      case AuthSuccess():
+        await completeAuthenticatedEntry(context);
+        return;
+      case AuthNeedsVerification(:final email):
+        context.go('${GRoutes.verifyOtp}?email=$email');
+        return;
+      case AuthFailure(:final message):
+        setState(() => _error = message);
     }
-
-    if (result.startsWith('VERIFY:')) {
-      final userEmail = result.substring(7);
-      context.go('${GRoutes.verifyOtp}?email=$userEmail');
-      return;
-    }
-
-    setState(() => _error = result);
   }
 
   @override

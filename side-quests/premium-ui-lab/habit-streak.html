@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Streak</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Habit</p>
+          </div>
+          <button class="icon-btn">+</button>
+        </div>
+        <div class="hero-panel reveal primary" style="text-align: center;">
+          <div class="streak-header">
+            <p class="streak-note">Current streak</p>
+            <div class="huge-number">18</div>
+            <p class="body-copy" style="max-width: 260px; margin: 0 auto;">
+              Read 20 minutes before bed
+            </p>
+          </div>
+
+          <div class="streak-calendar">
+            <div class="calendar-week">
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day incomplete">
+                <span class="day-label">W</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day incomplete">
+                <span class="day-label">F</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day today">
+                <span class="day-icon">⏰</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="repetition-pattern">
+            <p class="muted-copy">Daily at 9:00 PM</p>
+            <div class="pattern-dots">
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <div class="card reveal">
+            <div class="action-row">
+              <div>
+                <p class="section-label">Status</p>
+                <p class="body-copy">Not done today yet.</p>
+              </div>
+              <span class="ghost-chip">One habit</span>
+            </div>
+          </div>
+
+          <button class="primary-btn" style="width: 100%; height: 58px;">
+            I did it today
+          </button>
+
+          <button class="secondary-btn" style="width: 100%;">
+            Change habit
+          </button>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item active">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>

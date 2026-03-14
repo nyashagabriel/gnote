@@ -1,0 +1,1055 @@
+// ==========================================
+// FILE: ./add-person.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Person</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Add relationship</h2>
+          <button class="icon-btn">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Relationship type</label>
+            <div class="relationship-select">
+              <button class="relationship-option active" data-type="energizer">
+                Energizer
+              </button>
+              <button class="relationship-option" data-type="relaxer">
+                Relaxer
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Their name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Contact method</label>
+            <select class="form-input">
+              <option>WhatsApp</option>
+              <option>Phone call</option>
+              <option>Email</option>
+              <option>In person</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Check-in frequency</label>
+            <select class="form-input">
+              <option>Daily</option>
+              <option>Weekly</option>
+              <option>Monthly</option>
+              <option>Quarterly</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Purpose</label>
+            <textarea
+              class="form-input"
+              rows="3"
+              placeholder="Why is this relationship important to you?"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-btn">Cancel</button>
+          <button class="primary-btn">Add relationship</button>
+        </div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+// ==========================================
+// FILE: ./add-task.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add Task</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="modal-overlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">Add new task</h2>
+          <button class="icon-btn">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Task title</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="What needs to be done?"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <div class="priority-select">
+              <button class="priority-option active" data-priority="low">
+                <span class="priority-dot low"></span>
+                Low
+              </button>
+              <button class="priority-option" data-priority="medium">
+                <span class="priority-dot medium"></span>
+                Medium
+              </button>
+              <button class="priority-option" data-priority="high">
+                <span class="priority-dot high"></span>
+                High
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-input">
+              <option>Personal</option>
+              <option>Work</option>
+              <option>Learning</option>
+              <option>Health</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Due date</label>
+            <input
+              class="form-input"
+              type="date"
+            />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="secondary-btn">Cancel</button>
+          <button class="primary-btn">Add task</button>
+        </div>
+      </div>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+// ==========================================
+// FILE: ./anchor-ritual.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor Ritual</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">MORNING</p>
+            <h1 class="title-xl">Why did you wake up today?</h1>
+          </div>
+          <div class="header-actions">
+            <span class="chip urgent">Locks in 2h 31m</span>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal primary">
+          <div class="panel-header">
+            <p class="body-copy">
+              One honest sentence. No list. No strategy. Just the reason.
+            </p>
+          </div>
+          <textarea
+            class="anchor-field interactive-field"
+            placeholder="Write one sentence that can carry the day."
+          ></textarea>
+          <div class="divider"></div>
+          <div class="bottom-row">
+            <div class="progress-info">
+              <p class="meta-label">Progress</p>
+              <p class="muted-copy">14 / 160 characters</p>
+            </div>
+            <button class="primary-btn">Lock it in</button>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 24px;">
+          <div class="card reveal secondary">
+            <div class="card-header">
+              <p class="section-label">Yesterday's anchor</p>
+              <span class="status-badge completed">Completed</span>
+            </div>
+            <p class="body-copy" style="font-style: italic; margin-top: 8px;">
+              "To build something meaningful that helps others find their focus."
+            </p>
+            <p class="muted-copy">Locked in yesterday at 7:32 AM</p>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item active">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./capture-inbox.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capture Inbox</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Capture</p>
+            <h1 class="title-lg">Catch it. Keep moving.</h1>
+          </div>
+          <div class="header-actions">
+            <span class="chip">Sunday review 19:00</span>
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+
+        <div class="capture-list stack">
+          <article class="capture-card reveal priority-high">
+            <div class="capture-header">
+              <span class="priority-dot high"></span>
+              <span class="capture-time">2m ago</span>
+            </div>
+            <p class="capture-text">Ask designer for final icon export sizes</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+
+          <article class="capture-card reveal priority-medium">
+            <div class="capture-header">
+              <span class="priority-dot medium"></span>
+              <span class="capture-time">17m ago</span>
+            </div>
+            <p class="capture-text">Check Supabase OTP expiry copy in email</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+
+          <article class="capture-card reveal priority-low">
+            <div class="capture-header">
+              <span class="priority-dot low"></span>
+              <span class="capture-time">Yesterday</span>
+            </div>
+            <p class="capture-text">Prototype premium lock state for Daily 3</p>
+            <div class="capture-actions">
+              <button class="icon-btn small-icon-btn" aria-label="Archive item">
+                ✓
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <div class="input-panel reveal fixed-bottom">
+          <div class="capture-compose">
+            <input
+              class="capture-input"
+              type="text"
+              placeholder="What's on your mind?"
+            />
+            <button class="icon-btn" aria-label="Voice input">🎤</button>
+            <button class="primary-btn compact-btn">Add</button>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item active">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./daily3-focus.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily 3 Focus</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Daily 3</p>
+            <h1 class="title-lg">Three tasks. No more.</h1>
+            <p class="body-copy" style="margin-top: 8px;">1 of 3 completed</p>
+          </div>
+          <div class="header-actions">
+            <span class="chip">Locks in 31m</span>
+            <button class="icon-btn">+</button>
+          </div>
+        </div>
+
+        <div class="task-list">
+          <article class="task-card reveal priority-high completed">
+            <div class="task-header">
+              <div class="task-icon">🎨</div>
+              <div class="task-priority">
+                <span class="priority-badge high">High</span>
+              </div>
+              <div class="checkbox done"></div>
+            </div>
+            <div class="task-content">
+              <h2 class="task-title">Ship the profile redesign polish pass</h2>
+              <div class="task-meta">
+                <span class="mini-tag orange">Project</span>
+                <span class="mini-tag green">Done</span>
+                <span class="due-date">Due today</span>
+              </div>
+            </div>
+            <div class="task-footer">
+              <div class="assignee">
+                <div class="avatar tiny">NG</div>
+                <span class="muted-copy">Assigned to you</span>
+              </div>
+              <span class="muted-copy">08:30</span>
+            </div>
+          </article>
+
+          <article class="task-card reveal priority-medium active">
+            <div class="task-header">
+              <div class="task-icon">🔧</div>
+              <div class="task-priority">
+                <span class="priority-badge medium">Medium</span>
+              </div>
+              <div class="checkbox"></div>
+            </div>
+            <div class="task-content">
+              <h2 class="task-title">Resolve user model persistence mismatch</h2>
+              <div class="task-meta">
+                <span class="mini-tag blue">Career</span>
+                <span class="mini-tag yellow">In Progress</span>
+                <span class="due-date">Due tomorrow</span>
+              </div>
+            </div>
+            <div class="task-footer">
+              <div class="assignee">
+                <div class="avatar tiny">NG</div>
+                <span class="muted-copy">Assigned to you</span>
+              </div>
+              <span class="muted-copy">10:15</span>
+            </div>
+          </article>
+
+          <article class="task-card reveal priority-low">
+            <div class="task-header">
+              <div class="task-icon">💡</div>
+              <div class="task-priority">
+                <span class="priority-badge low">Low</span>
+              </div>
+              <div class="checkbox"></div>
+            </div>
+            <div class="task-content">
+              <h2 class="task-title">Choose premium motion direction for Gnote</h2>
+              <div class="task-meta">
+                <span class="mini-tag orange">Design</span>
+                <span class="due-date">Due this week</span>
+              </div>
+            </div>
+            <div class="task-footer">
+              <div class="assignee">
+                <div class="avatar tiny">NG</div>
+                <span class="muted-copy">Assigned to you</span>
+              </div>
+              <span class="muted-copy">11:40</span>
+            </div>
+          </article>
+        </div>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item active">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./habit-streak.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Streak</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Habit</p>
+          </div>
+          <button class="icon-btn">+</button>
+        </div>
+        <div class="hero-panel reveal primary" style="text-align: center;">
+          <div class="streak-header">
+            <p class="streak-note">Current streak</p>
+            <div class="huge-number">18</div>
+            <p class="body-copy" style="max-width: 260px; margin: 0 auto;">
+              Read 20 minutes before bed
+            </p>
+          </div>
+
+          <div class="streak-calendar">
+            <div class="calendar-week">
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day incomplete">
+                <span class="day-label">W</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day incomplete">
+                <span class="day-label">F</span>
+              </div>
+              <div class="calendar-day completed">
+                <span class="day-icon">⚡</span>
+              </div>
+              <div class="calendar-day today">
+                <span class="day-icon">⏰</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="repetition-pattern">
+            <p class="muted-copy">Daily at 9:00 PM</p>
+            <div class="pattern-dots">
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <div class="card reveal">
+            <div class="action-row">
+              <div>
+                <p class="section-label">Status</p>
+                <p class="body-copy">Not done today yet.</p>
+              </div>
+              <span class="ghost-chip">One habit</span>
+            </div>
+          </div>
+
+          <button class="primary-btn" style="width: 100%; height: 58px;">
+            I did it today
+          </button>
+
+          <button class="secondary-btn" style="width: 100%;">
+            Change habit
+          </button>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item active">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./index.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gnote Premium UI Lab</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="lab-shell">
+    <main class="lab-index">
+      <div class="lab-hero">
+        <p class="eyebrow">SIDE QUEST</p>
+        <h1>Gnote premium UI lab</h1>
+        <p class="lede">
+          Black-first mobile concepts with stronger motion, surface depth, and
+          hierarchy. Open each screen in Live Server and judge the direction,
+          not the code.
+        </p>
+      </div>
+
+      <section class="lab-grid">
+        <a class="lab-card" href="./anchor-ritual.html">
+          <span class="card-kicker">Direction A</span>
+          <strong>Anchor ritual</strong>
+          <span>Editorial, serious, single-focus entry experience.</span>
+        </a>
+        <a class="lab-card" href="./daily3-focus.html">
+          <span class="card-kicker">Direction B</span>
+          <strong>Daily 3 focus</strong>
+          <span>Scarcity-driven layout with premium lock state treatment.</span>
+        </a>
+        <a class="lab-card" href="./habit-streak.html">
+          <span class="card-kicker">Direction C</span>
+          <strong>Habit streak</strong>
+          <span>Heavy-number composition with tactile state transitions.</span>
+        </a>
+        <a class="lab-card" href="./profile-quiet-luxury.html">
+          <span class="card-kicker">Direction D</span>
+          <strong>Profile quiet luxury</strong>
+          <span>Low-noise settings screen with stronger materials and rhythm.</span>
+        </a>
+        <a class="lab-card" href="./capture-inbox.html">
+          <span class="card-kicker">Direction E</span>
+          <strong>Capture inbox</strong>
+          <span>Fast dump flow with premium list density and review cues.</span>
+        </a>
+        <a class="lab-card" href="./people-neutral.html">
+          <span class="card-kicker">Direction F</span>
+          <strong>People neutral</strong>
+          <span>Generic responsibility management without personal data.</span>
+        </a>
+        <a class="lab-card" href="./login.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Login</strong>
+          <span>Clean authentication flow.</span>
+        </a>
+        <a class="lab-card" href="./signup.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Signup</strong>
+          <span>User onboarding experience.</span>
+        </a>
+        <a class="lab-card" href="./verify-otp.html">
+          <span class="card-kicker">Auth</span>
+          <strong>Verify OTP</strong>
+          <span>Secure verification process.</span>
+        </a>
+        <a class="lab-card" href="./add-task.html">
+          <span class="card-kicker">Modal</span>
+          <strong>Add Task</strong>
+          <span>Task creation modal.</span>
+        </a>
+        <a class="lab-card" href="./add-person.html">
+          <span class="card-kicker">Modal</span>
+          <strong>Add Person</strong>
+          <span>Relationship creation modal.</span>
+        </a>
+      </section>
+
+      <section class="lab-section">
+        <h2>Complete App Flow</h2>
+        <p class="section-description">All screens now prototyped for comprehensive testing before implementation.</p>
+      </section>
+    </main>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./login.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Welcome back</p>
+            <h1 class="title-xl">Sign in to Gnote</h1>
+          </div>
+        </div>
+
+        <div class="auth-form reveal">
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              class="form-input"
+              type="email"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              class="form-input"
+              type="password"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button class="primary-btn full-width">Sign in</button>
+
+          <div class="auth-links">
+            <button class="link-btn">Forgot password?</button>
+            <button class="link-btn">Create account</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+// ==========================================
+// FILE: ./people-neutral.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>People Neutral</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">People</p>
+            <h1 class="title-lg">Responsibilities, not relationships.</h1>
+          </div>
+          <button class="icon-btn">+</button>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <div class="card reveal">
+            <p class="section-label">Energizers</p>
+            <p class="body-copy" style="margin-bottom: 16px;">
+              People who energize and motivate you. Check in weekly.
+            </p>
+            <div class="people-list">
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small">E</div>
+                  <div>
+                    <p class="body-copy">Energizer</p>
+                    <p class="muted-copy">Weekly sync</p>
+                  </div>
+                </div>
+                <button class="icon-btn small-icon-btn">📱</button>
+              </div>
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small">C</div>
+                  <div>
+                    <p class="body-copy">Coach</p>
+                    <p class="muted-copy">Monthly review</p>
+                  </div>
+                </div>
+                <button class="icon-btn small-icon-btn">📱</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card reveal">
+            <p class="section-label">Relaxers</p>
+            <p class="body-copy" style="margin-bottom: 16px;">
+              People who help you relax and find peace. Check in monthly.
+            </p>
+            <div class="people-list">
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small">F</div>
+                  <div>
+                    <p class="body-copy">Friend</p>
+                    <p class="muted-copy">Casual catchup</p>
+                  </div>
+                </div>
+                <button class="icon-btn small-icon-btn">📱</button>
+              </div>
+              <div class="person-row">
+                <div class="person-info">
+                  <div class="avatar small">T</div>
+                  <div>
+                    <p class="body-copy">Therapist</p>
+                    <p class="muted-copy">Bi-weekly</p>
+                  </div>
+                </div>
+                <button class="icon-btn small-icon-btn">📱</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item active">People</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+// ==========================================
+// FILE: ./profile-quiet-luxury.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile Quiet Luxury</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Profile</p>
+            <h1 class="title-lg">Quiet, not empty.</h1>
+          </div>
+          <div class="header-actions">
+            <button class="icon-btn">⋯</button>
+          </div>
+        </div>
+
+        <div class="hero-panel reveal">
+          <div class="action-row">
+            <div class="action-row" style="justify-content: start; gap: 14px;">
+              <div class="avatar">U</div>
+              <div>
+                <p class="body-copy" style="margin-bottom: 4px;">User</p>
+                <p class="muted-copy" style="margin: 0;">user@example.com</p>
+              </div>
+            </div>
+            <span class="ghost-chip">System</span>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 18px;">
+          <div class="setting-section">
+            <p class="section-title">Preferences</p>
+            <div class="setting-card reveal">
+            <div class="setting-row">
+              <div class="setting-main">
+                  <span class="section-label">Theme</span>
+                  <strong>System</strong>
+                </div>
+                <span class="muted-copy">Change</span>
+              </div>
+              <div class="setting-row">
+                <div class="setting-main">
+                  <span class="section-label">Notifications</span>
+                  <strong>9:00 PM</strong>
+                </div>
+                <span class="muted-copy">Update</span>
+          <div class="setting-card reveal">
+            <div class="setting-row">
+              <div class="setting-main">
+                <span class="section-label">Session</span>
+                <strong style="color: var(--danger);">Sign out</strong>
+              </div>
+              <span class="status-pill danger">Careful</span>
+            </div>
+          </div>
+
+          <div class="setting-section">
+            <p class="section-title">Insights</p>
+            <div class="setting-card reveal">
+              <p class="section-label" style="margin-bottom: 12px;">Your standing</p>
+            <div class="setting-row">
+              <div class="setting-main">
+                <span class="body-copy">Daily anchors</span>
+                <strong>Top 12%</strong>
+              </div>
+              <span class="muted-copy">vs others</span>
+            </div>
+            <div class="setting-row">
+              <div class="setting-main">
+                <span class="body-copy">Habit streaks</span>
+                <strong>Top 8%</strong>
+              </div>
+              <span class="muted-copy">this month</span>
+            </div>
+            <div class="setting-row">
+              <div class="setting-main">
+                <span class="body-copy">Task completion</span>
+                <strong>Top 25%</strong>
+              </div>
+              <span class="muted-copy">consistency</span>
+            </div>
+          </div>
+
+          <div class="setting-section danger">
+            <p class="section-title">Account</p>
+            <div class="setting-card reveal">
+              <div class="setting-row">
+                <div class="setting-main">
+                  <span class="section-label">Session</span>
+                  <strong style="color: var(--danger);">Sign out</strong>
+                </div>
+                <span class="status-pill danger">Careful</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item active">Profile</div>
+      </nav>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+
+// ==========================================
+// FILE: ./signup.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Get started</p>
+            <h1 class="title-xl">Create your account</h1>
+          </div>
+        </div>
+
+        <div class="auth-form reveal">
+          <div class="form-group">
+            <label class="form-label">Full name</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Your full name"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input
+              class="form-input"
+              type="email"
+              placeholder="your@email.com"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input
+              class="form-input"
+              type="password"
+              placeholder="••••••••"
+            />
+          </div>
+
+          <button class="primary-btn full-width">Create account</button>
+
+          <div class="auth-links">
+            <button class="link-btn">Already have an account?</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+
+// ==========================================
+// FILE: ./verify-otp.html
+// ==========================================
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Verify</p>
+            <h1 class="title-lg">Check your email</h1>
+          </div>
+        </div>
+
+        <div class="auth-form reveal">
+          <p class="body-copy" style="text-align: center; margin-bottom: 24px;">
+            We've sent a 6-digit code to your email address.
+          </p>
+
+          <div class="otp-inputs">
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+            <input class="otp-input" type="text" maxlength="1" />
+          </div>
+
+          <button class="primary-btn full-width">Verify code</button>
+
+          <div class="auth-links">
+            <button class="link-btn">Resend code</button>
+            <button class="link-btn">Use different email</button>
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="./script.js"></script>
+  </body>
+</html>
+

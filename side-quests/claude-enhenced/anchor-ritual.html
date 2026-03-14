@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Anchor — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span id="anchor-time">9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label" id="time-of-day">MORNING</p>
+            <h1 class="title-xl">Why did you<br>wake up today?</h1>
+          </div>
+          <span class="chip urgent" id="lock-chip">Locks in 2h 31m</span>
+        </div>
+
+        <!-- Hero panel — radial orange glow (benchmark DNA) -->
+        <div class="hero-panel reveal" style="margin-top:16px;">
+
+          <!-- Info panel — uniform inner sub-card -->
+          <div class="info-panel" style="margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div class="anchor-rule-dot"></div>
+              <p class="muted-copy" style="margin:0;font-size:12px;line-height:1.5;">
+                One honest sentence. This unlocks the rest of the app.
+                The point is commitment before reaction.
+              </p>
+            </div>
+          </div>
+
+          <textarea
+            class="anchor-field"
+            id="anchor-textarea"
+            placeholder="Write one sentence that can carry the day."
+          ></textarea>
+
+          <p class="anchor-min-hint" id="anchor-min-hint">10 characters minimum</p>
+
+          <div class="divider"></div>
+          <div class="bottom-row">
+            <div class="progress-info">
+              <p class="meta-label">Characters</p>
+              <p class="muted-copy" id="anchor-count">0 / 160</p>
+            </div>
+            <button class="primary-btn" id="anchor-lock-btn" disabled>
+              Lock it in
+            </button>
+          </div>
+        </div>
+
+        <!-- Yesterday's anchor — info-panel card -->
+        <div class="stack" style="margin-top:16px;">
+          <div class="card reveal">
+            <div class="card-header">
+              <p class="section-label">Yesterday</p>
+              <span class="status-badge" style="background:var(--surface-high);color:var(--muted);font-size:9px;letter-spacing:0.14em;padding:3px 8px;border-radius:6px;font-weight:700;text-transform:uppercase;">
+                LOCKED
+              </span>
+            </div>
+            <p class="body-copy" style="font-style:italic;margin-top:4px;">
+              "To build something meaningful that helps others find their focus."
+            </p>
+            <p class="muted-copy" style="margin-top:8px;">Locked at 7:32 AM</p>
+          </div>
+        </div>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item active">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .anchor-min-hint {
+        font-size: 11px; color: var(--danger);
+        margin-top: 8px; min-height: 18px;
+        opacity: 0; transition: opacity 180ms;
+      }
+      .anchor-rule-dot {
+        width: 8px; height: 8px; flex-shrink: 0;
+        border-radius: 50%; background: var(--orange);
+      }
+      #anchor-lock-btn:disabled { opacity: 0.36; cursor: not-allowed; }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      // Time of day label
+      const h = new Date().getHours();
+      document.getElementById('time-of-day').textContent =
+        h < 12 ? 'MORNING' : h < 17 ? 'AFTERNOON' : 'EVENING';
+
+      // Live char count + lock gate + countdown
+      const ta = document.getElementById('anchor-textarea');
+      const counter = document.getElementById('anchor-count');
+      const hint = document.getElementById('anchor-min-hint');
+      const lockBtn = document.getElementById('anchor-lock-btn');
+      const chip = document.getElementById('lock-chip');
+      const MAX = 160, MIN = 10;
+
+      function updateCountdown() {
+        const now = new Date();
+        const lock = new Date(); lock.setHours(11, 0, 0, 0);
+        const diff = Math.max(0, lock - now);
+        const hrs = Math.floor(diff / 3600000);
+        const mins = Math.floor((diff % 3600000) / 60000);
+        chip.textContent = diff > 0 ? `Locks in ${hrs}h ${mins}m` : 'Locked';
+      }
+      setInterval(updateCountdown, 60000);
+      updateCountdown();
+
+      ta.addEventListener('input', () => {
+        const len = Math.min(ta.value.length, MAX);
+        if (ta.value.length > MAX) ta.value = ta.value.slice(0, MAX);
+        counter.textContent = `${len} / ${MAX}`;
+        hint.style.opacity = (len > 0 && len < MIN) ? '1' : '0';
+        lockBtn.disabled = len < MIN;
+      });
+
+      lockBtn.addEventListener('click', () => {
+        if (ta.value.length >= MIN) {
+          lockBtn.textContent = '✓ Locked';
+          lockBtn.disabled = true;
+          ta.disabled = true;
+          ta.style.opacity = '0.65';
+          // Kinetic: button text swap with green flash
+          lockBtn.style.background = 'var(--success)';
+          lockBtn.style.color = '#0a0a0a';
+        }
+      });
+    </script>
+  </body>
+</html>

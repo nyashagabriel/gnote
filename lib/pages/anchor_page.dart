@@ -7,8 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../core/constants.dart';
-import '../services/providers.dart';
+import '../core/timezone.dart';
+import '../models/anchor.dart';
 import '../services/local_db.dart';
+import '../services/providers.dart';
 
 class AnchorPage extends ConsumerStatefulWidget {
   const AnchorPage({super.key});
@@ -18,10 +20,11 @@ class AnchorPage extends ConsumerStatefulWidget {
 
 class _AnchorPageState extends ConsumerState<AnchorPage> {
   final _controller = TextEditingController();
-  final _db = LocalDb.instance;
 
   bool _saving = false;
   bool _restored = false;
+
+  LocalDb get _db => ref.read(localDbProvider);
 
   @override
   void initState() {
@@ -43,7 +46,7 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
     final savedDate = _db.getDraftDate();
     if (savedDate == null) return;
 
-    final now = DateTime.now();
+    final now = localNow();
     final isToday = savedDate.year == now.year &&
         savedDate.month == now.month &&
         savedDate.day == now.day;
@@ -69,7 +72,7 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
       _db.clearAnchorDraft();
     } else {
       _db.saveAnchorDraft(text);
-      _db.saveDraftDate(DateTime.now());
+      _db.saveDraftDate(localNow());
     }
     setState(() {});
   }
@@ -98,7 +101,7 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
     final isLocked = anchor != null;
     final charCount = _controller.text.trim().length;
     final canLock = charCount >= 10 && !_saving;
-    final today = DateFormat('EEEE, d MMMM').format(DateTime.now());
+    final today = DateFormat('EEEE, d MMMM').format(localNow());
 
     return Scaffold(
       backgroundColor: GColors.background,
@@ -155,7 +158,7 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
 
 class _LockedCard extends StatelessWidget {
   const _LockedCard({required this.anchor});
-  final dynamic anchor;
+  final GAnchor anchor;
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +176,7 @@ class _LockedCard extends StatelessWidget {
             ),
           ),
           child: Text(
-            anchor.content ?? '',
+            anchor.content,
             style: GText.body.copyWith(fontSize: 18, height: 1.6),
           ),
         ),

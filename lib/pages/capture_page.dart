@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../core/constants.dart';
+import '../core/timezone.dart';
 import '../models/task.dart';
 import '../services/providers.dart';
 
@@ -18,7 +19,7 @@ class CapturePage extends ConsumerStatefulWidget {
 class _CapturePageState extends ConsumerState<CapturePage> {
   final _controller = TextEditingController();
 
-  bool get _isSunday => DateTime.now().weekday == DateTime.sunday;
+  bool get _isSunday => localNow().weekday == DateTime.sunday;
 
   @override
   void dispose() {

@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
+import '../core/timezone.dart';
 import '../models/task.dart';
 import '../models/anchor.dart';
 import '../models/habit.dart';
@@ -21,7 +22,9 @@ import 'local_db.dart';
 // ─────────────────────────────────────────────────────────────
 
 class SyncService {
-  SyncService._();
+  SyncService._() {
+    _restorePending();
+  }
   static final SyncService instance = SyncService._();
 
   final _client = Supabase.instance.client;
@@ -33,6 +36,40 @@ class SyncService {
 
   String? get _userId => _client.auth.currentUser?.id;
 
+  void _restorePending() {
+    final stored = _db.getPendingSyncOps();
+    _pending
+      ..clear()
+      ..addAll(
+        stored.map(_PendingSyncOp.fromJson).whereType<_PendingSyncOp>(),
+      );
+    _setStatus(
+      phase: _pending.isEmpty ? SyncPhase.idle : SyncPhase.error,
+      error: _pending.isEmpty ? null : 'Sync pending from previous session.',
+    );
+  }
+
+  Future<void> _persistPending() async {
+    if (_pending.isEmpty) {
+      await _db.clearPendingSyncOps();
+      return;
+    }
+    await _db.savePendingSyncOps(
+      _pending.map((op) => op.toJson()).toList(),
+    );
+  }
+
+  Future<void> _enqueue(_PendingSyncOp op) async {
+    _pending.removeWhere((existing) => existing.key == op.key);
+    _pending.add(op);
+    await _persistPending();
+  }
+
+  Future<void> _dequeue(_PendingSyncOp op) async {
+    _pending.removeWhere((existing) => existing.key == op.key);
+    await _persistPending();
+  }
+
   void _setStatus({
     SyncPhase? phase,
     String? error,
@@ -41,24 +78,23 @@ class SyncService {
       phase: phase ?? status.value.phase,
       pendingCount: _pending.length,
       lastError: error,
-      lastSyncedAt: (phase == SyncPhase.synced)
-          ? DateTime.now()
-          : status.value.lastSyncedAt,
+      lastSyncedAt:
+          (phase == SyncPhase.synced) ? localNow() : status.value.lastSyncedAt,
     );
   }
 
   Future<void> _runRemote(
-    String name,
-    Future<void> Function() op,
+    _PendingSyncOp op,
   ) async {
     if (_userId == null) return;
     try {
       _setStatus(phase: SyncPhase.syncing, error: null);
-      await op();
+      await op.run(_client);
+      await _dequeue(op);
       _setStatus(
           phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.syncing);
     } catch (e) {
-      _pending.add(_PendingSyncOp(name: name, run: op));
+      await _enqueue(op);
       _setStatus(phase: SyncPhase.error, error: e.toString());
     }
   }
@@ -70,44 +106,32 @@ class SyncService {
 
   Future<void> pushAnchor(GAnchor anchor) async {
     if (_userId == null) return;
-    await _runRemote('pushAnchor:${anchor.id}', () async {
-      await _client.from(GTables.anchors).upsert(anchor.toJson());
-    });
+    await _runRemote(_PendingSyncOp.pushAnchor(anchor));
   }
 
   Future<void> pushTask(GTask task) async {
     if (_userId == null) return;
-    await _runRemote('pushTask:${task.id}', () async {
-      await _client.from(GTables.tasks).upsert(task.toJson());
-    });
+    await _runRemote(_PendingSyncOp.pushTask(task));
   }
 
   Future<void> deleteTask(String taskId) async {
     if (_userId == null) return;
-    await _runRemote('deleteTask:$taskId', () async {
-      await _client.from(GTables.tasks).delete().eq('id', taskId);
-    });
+    await _runRemote(_PendingSyncOp.deleteTask(taskId));
   }
 
   Future<void> pushHabit(GHabit habit) async {
     if (_userId == null) return;
-    await _runRemote('pushHabit:${habit.id}', () async {
-      await _client.from(GTables.habits).upsert(habit.toJson());
-    });
+    await _runRemote(_PendingSyncOp.pushHabit(habit));
   }
 
   Future<void> pushPerson(GPerson person) async {
     if (_userId == null) return;
-    await _runRemote('pushPerson:${person.id}', () async {
-      await _client.from(GTables.people).upsert(person.toJson());
-    });
+    await _runRemote(_PendingSyncOp.pushPerson(person));
   }
 
   Future<void> deletePerson(String personId) async {
     if (_userId == null) return;
-    await _runRemote('deletePerson:$personId', () async {
-      await _client.from(GTables.people).delete().eq('id', personId);
-    });
+    await _runRemote(_PendingSyncOp.deletePerson(personId));
   }
 
   // ─────────────────────────────────────────────────────────
@@ -137,13 +161,13 @@ class SyncService {
     _setStatus(phase: SyncPhase.syncing, error: null);
 
     final snapshot = List<_PendingSyncOp>.from(_pending);
-    _pending.clear();
 
     for (final op in snapshot) {
       try {
-        await op.run();
+        await op.run(_client);
+        await _dequeue(op);
       } catch (e) {
-        _pending.add(op);
+        await _enqueue(op);
         _setStatus(phase: SyncPhase.error, error: e.toString());
       }
     }
@@ -163,8 +187,9 @@ class SyncService {
       try {
         final anchor = GAnchor.fromJson(row);
         await _db.saveAnchor(anchor);
-      } catch (_) {
-        // Skip malformed row — Hive data from last session used for this entry
+      } catch (e, stackTrace) {
+        debugPrint('Sync skipped malformed anchor row: $e');
+        debugPrintStack(stackTrace: stackTrace);
       }
     }
   }
@@ -177,7 +202,10 @@ class SyncService {
       try {
         final task = GTask.fromJson(row);
         await _db.saveTask(task);
-      } catch (_) {}
+      } catch (e, stackTrace) {
+        debugPrint('Sync skipped malformed task row: $e');
+        debugPrintStack(stackTrace: stackTrace);
+      }
     }
   }
 
@@ -189,7 +217,10 @@ class SyncService {
       try {
         final habit = GHabit.fromJson(row);
         await _db.saveHabit(habit);
-      } catch (_) {}
+      } catch (e, stackTrace) {
+        debugPrint('Sync skipped malformed habit row: $e');
+        debugPrintStack(stackTrace: stackTrace);
+      }
     }
   }
 
@@ -201,7 +232,10 @@ class SyncService {
       try {
         final person = GPerson.fromJson(row);
         await _db.savePerson(person);
-      } catch (_) {}
+      } catch (e, stackTrace) {
+        debugPrint('Sync skipped malformed person row: $e');
+        debugPrintStack(stackTrace: stackTrace);
+      }
     }
   }
 }
@@ -238,11 +272,118 @@ class SyncStatusSnapshot {
 }
 
 class _PendingSyncOp {
-  const _PendingSyncOp({
-    required this.name,
-    required this.run,
+  const _PendingSyncOp._({
+    required this.kind,
+    required this.targetId,
+    required this.payload,
   });
 
-  final String name;
-  final Future<void> Function() run;
+  factory _PendingSyncOp.pushAnchor(GAnchor anchor) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.pushAnchor,
+      targetId: anchor.id,
+      payload: anchor.toJson(),
+    );
+  }
+
+  factory _PendingSyncOp.pushTask(GTask task) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.pushTask,
+      targetId: task.id,
+      payload: task.toJson(),
+    );
+  }
+
+  factory _PendingSyncOp.deleteTask(String taskId) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.deleteTask,
+      targetId: taskId,
+      payload: {'id': taskId},
+    );
+  }
+
+  factory _PendingSyncOp.pushHabit(GHabit habit) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.pushHabit,
+      targetId: habit.id,
+      payload: habit.toJson(),
+    );
+  }
+
+  factory _PendingSyncOp.pushPerson(GPerson person) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.pushPerson,
+      targetId: person.id,
+      payload: person.toJson(),
+    );
+  }
+
+  factory _PendingSyncOp.deletePerson(String personId) {
+    return _PendingSyncOp._(
+      kind: _PendingSyncKind.deletePerson,
+      targetId: personId,
+      payload: {'id': personId},
+    );
+  }
+
+  static _PendingSyncOp? fromJson(Map<String, dynamic> json) {
+    final kind = _PendingSyncKind.fromValue(json['kind']?.toString());
+    final targetId = json['target_id']?.toString();
+    final payload = json['payload'];
+    if (kind == null || targetId == null || payload is! Map) return null;
+    return _PendingSyncOp._(
+      kind: kind,
+      targetId: targetId,
+      payload: Map<String, dynamic>.from(payload),
+    );
+  }
+
+  final _PendingSyncKind kind;
+  final String targetId;
+  final Map<String, dynamic> payload;
+
+  String get key => '${kind.value}:$targetId';
+
+  Map<String, dynamic> toJson() {
+    return {
+      'kind': kind.value,
+      'target_id': targetId,
+      'payload': payload,
+    };
+  }
+
+  Future<void> run(SupabaseClient client) {
+    return switch (kind) {
+      _PendingSyncKind.pushAnchor =>
+        client.from(GTables.anchors).upsert(payload),
+      _PendingSyncKind.pushTask => client.from(GTables.tasks).upsert(payload),
+      _PendingSyncKind.deleteTask =>
+        client.from(GTables.tasks).delete().eq('id', targetId),
+      _PendingSyncKind.pushHabit => client.from(GTables.habits).upsert(payload),
+      _PendingSyncKind.pushPerson =>
+        client.from(GTables.people).upsert(payload),
+      _PendingSyncKind.deletePerson =>
+        client.from(GTables.people).delete().eq('id', targetId),
+    };
+  }
+}
+
+enum _PendingSyncKind {
+  pushAnchor('push_anchor'),
+  pushTask('push_task'),
+  deleteTask('delete_task'),
+  pushHabit('push_habit'),
+  pushPerson('push_person'),
+  deletePerson('delete_person');
+
+  const _PendingSyncKind(this.value);
+
+  final String value;
+
+  static _PendingSyncKind? fromValue(String? value) {
+    for (final kind in values) {
+      if (kind.value == value) return kind;
+    }
+    return null;
+  }
 }

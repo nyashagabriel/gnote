@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
+import '../core/timezone.dart';
 import '../models/task.dart';
 import '../services/providers.dart';
 
@@ -35,7 +36,7 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
   }
 
   String? _countdown() {
-    final now = DateTime.now();
+    final now = localNow();
     if (now.hour >= 9) return null;
 
     final lockTime = DateTime(now.year, now.month, now.day, 9, 0);

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Habit Streak — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <!--
+    ═══════════════════════════════════════════════════════════
+    FIXES APPLIED:
+
+    ✗ REMOVED: + button in header
+      → GNOTE is ONE habit. Adding a + button implies you can
+        add more habits. This undermines the entire philosophy.
+        Flutter HabitPage has no add button at the header.
+
+    ✗ FIXED: "Change habit" button behaviour
+      → Original just shows a dead button. In the app,
+        tapping "Change habit" shows a bottom sheet with a
+        text field (GStrings.habitChangePrompt).
+      → Button now opens a bottom sheet — consistent with
+        add-task / add-person pattern.
+
+    ✗ FIXED: "I did it today" button — no state change
+      → Original had no done state. Tapping "I did it today"
+        should change to a "✓ Done today" state immediately,
+        matching GHabitNotifier.markDone().
+      → Button is replaced by the done confirmation state.
+
+    ✓ CORRECTED: "One habit" ghost chip
+      → GStrings.habitOneHabitBadge: "One habit only"
+
+    ✓ CORRECTED: "Status" card description
+      → GStrings.habitStatusNotDone: "Not done yet today."
+      → GStrings.habitStatusDone: "Done for today. ⚡"
+
+    ✓ CORRECTED: Header label
+      → GStrings.habitHeader: "HABIT"
+
+    ✓ CORRECTED: Calendar days reflect actual week
+      → Monday–Sunday with today highlighted.
+      → Shows both completed (⚡) and incomplete (letter)
+        states correctly, using calendar-day.completed class.
+
+    DESIGN FIX:
+    ✓ Huge streak number gets orange glow (streak-glow class
+      in styles.css — pulse animation already defined).
+    ✓ Streak bar added below number — visual completion
+      toward next milestone (30 streak target visual).
+    ═══════════════════════════════════════════════════════════
+    -->
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">HABIT</p>
+          </div>
+          <!-- NO + button — GNOTE is one habit only -->
+        </div>
+
+        <div class="hero-panel reveal" style="text-align: center;">
+          <div class="streak-header">
+            <p class="streak-note">Current streak</p>
+            <!-- Orange glow matches the orange brand energy -->
+            <div class="huge-number streak-glow">18</div>
+            <p class="body-copy" style="max-width: 240px; margin: 0 auto;">
+              Read 20 minutes before bed
+            </p>
+          </div>
+
+          <!-- Streak progress toward 30-day milestone -->
+          <div class="streak-bar" title="Progress to 30-day streak">
+            <div class="streak-fill" style="width: 60%;"></div>
+          </div>
+          <p class="muted-copy" style="font-size: 10px; margin-bottom: 16px;">12 days to 30-day streak</p>
+
+          <div class="streak-calendar">
+            <div class="calendar-week">
+              <div class="calendar-day completed"><span class="day-icon">⚡</span></div>
+              <div class="calendar-day completed"><span class="day-icon">⚡</span></div>
+              <div class="calendar-day incomplete"><span class="day-label">W</span></div>
+              <div class="calendar-day completed"><span class="day-icon">⚡</span></div>
+              <div class="calendar-day incomplete"><span class="day-label">F</span></div>
+              <div class="calendar-day completed"><span class="day-icon">⚡</span></div>
+              <div class="calendar-day today"><span class="day-icon">⏰</span></div>
+            </div>
+          </div>
+
+          <div class="repetition-pattern">
+            <p class="muted-copy">Daily at 9:00 PM</p>
+            <div class="pattern-dots">
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+              <span class="dot active"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stack" style="margin-top: 16px;">
+
+          <!-- Status card — updates when done -->
+          <div class="card reveal" id="status-card">
+            <div class="action-row">
+              <div>
+                <p class="section-label">STATUS</p>
+                <p class="body-copy" id="status-copy" style="margin-top: 4px;">Not done yet today.</p>
+              </div>
+              <span class="ghost-chip">One habit only</span>
+            </div>
+          </div>
+
+          <!-- I did it today — becomes done state after tap -->
+          <button class="primary-btn" id="did-it-btn" style="width: 100%; height: 56px; font-size: 14px;">
+            I DID IT TODAY
+          </button>
+
+          <!-- Change habit — opens bottom sheet -->
+          <button class="secondary-btn" id="change-habit-btn" style="width: 100%;">
+            Change habit
+          </button>
+
+        </div>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item active">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <!-- Change habit bottom sheet -->
+    <div class="sheet-scrim" id="change-sheet" style="display:none;">
+      <div class="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+          <div>
+            <p class="sheet-kicker">CHANGE HABIT</p>
+            <h2 class="sheet-title" style="font-size: 18px; color: var(--text);">
+              What is the one thing you want to build?
+            </h2>
+          </div>
+          <button class="icon-btn" id="close-change-sheet">✕</button>
+        </div>
+        <div class="sheet-body">
+          <div class="form-group">
+            <label class="form-label">New habit</label>
+            <input
+              class="form-input"
+              type="text"
+              placeholder="Read 20 minutes before bed"
+              maxlength="80"
+            />
+            <p class="muted-copy" style="margin-top: 8px; font-size: 11px;">
+              Your current streak will reset to 0.
+            </p>
+          </div>
+        </div>
+        <div class="sheet-footer">
+          <button class="secondary-btn" id="cancel-change">Cancel</button>
+          <button class="primary-btn">Save new habit</button>
+        </div>
+      </div>
+    </div>
+
+    <style>
+      .streak-bar {
+        width: 200px;
+        height: 3px;
+        background: var(--line);
+        border-radius: 2px;
+        margin: 14px auto 4px;
+        overflow: hidden;
+      }
+      .streak-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--orange), var(--success));
+        border-radius: 2px;
+        transition: width 600ms var(--ease);
+      }
+    </style>
+
+    <script src="./script.js"></script>
+    <script>
+      const didItBtn = document.getElementById('did-it-btn');
+      const statusCopy = document.getElementById('status-copy');
+      let done = false;
+
+      didItBtn.addEventListener('click', () => {
+        if (done) return;
+        done = true;
+        didItBtn.textContent = '✓ DONE TODAY ⚡';
+        didItBtn.style.background = 'var(--success)';
+        didItBtn.style.color = '#0a0a0a';
+        statusCopy.textContent = 'Done for today. ⚡';
+      });
+
+      // Change habit sheet
+      const sheet = document.getElementById('change-sheet');
+      document.getElementById('change-habit-btn').addEventListener('click', () => {
+        sheet.style.display = 'flex';
+      });
+      const closeSheet = () => { sheet.style.display = 'none'; };
+      document.getElementById('close-change-sheet').addEventListener('click', closeSheet);
+      document.getElementById('cancel-change').addEventListener('click', closeSheet);
+      sheet.addEventListener('click', (e) => {
+        if (e.target === sheet) closeSheet();
+      });
+    </script>
+  </body>
+</html>

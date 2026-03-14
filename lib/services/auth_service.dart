@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../core/timezone.dart';
 import '../models/user.dart';
@@ -52,6 +53,13 @@ class AuthService {
 
   final _client = Supabase.instance.client;
 
+  void _logNonFatal(String context, Object error, [StackTrace? stackTrace]) {
+    debugPrint('AuthService non-fatal [$context]: $error');
+    if (stackTrace != null) {
+      debugPrintStack(stackTrace: stackTrace);
+    }
+  }
+
   // ── Current session user ───────────────────────────────────
   User? get currentUser => _client.auth.currentUser;
   bool get isLoggedIn => currentUser != null;
@@ -89,13 +97,14 @@ class AuthService {
       email: email,
       displayName: displayName,
       timezone: deviceTimezone(),
-      createdAt: DateTime.now(),
-      lastSeen: DateTime.now(),
+      createdAt: localNow(),
+      lastSeen: localNow(),
     );
 
     try {
       await _client.from('profiles').upsert(gUser.toJson());
-    } catch (_) {
+    } catch (e, stackTrace) {
+      _logNonFatal('signUp.upsertProfile', e, stackTrace);
       // Trigger already created the row — upsert failure is non-fatal.
     }
 
@@ -132,13 +141,15 @@ class AuthService {
       displayName:
           response.user!.userMetadata?['display_name'] as String? ?? '',
       timezone: deviceTimezone(),
-      createdAt: DateTime.now(),
-      lastSeen: DateTime.now(),
+      createdAt: localNow(),
+      lastSeen: localNow(),
     );
 
     try {
       await _client.from('profiles').upsert(fallback.toJson());
-    } catch (_) {}
+    } catch (e, stackTrace) {
+      _logNonFatal('verifyOtp.upsertFallbackProfile', e, stackTrace);
+    }
 
     return fallback;
   }
@@ -173,9 +184,13 @@ class AuthService {
     try {
       await _client
           .from('profiles')
-          .update({'last_seen': DateTime.now().toIso8601String()}).eq(
-              'id', response.user!.id);
-    } catch (_) {}
+          .update({'last_seen': localNow().toIso8601String()}).eq(
+        'id',
+        response.user!.id,
+      );
+    } catch (e, stackTrace) {
+      _logNonFatal('signIn.updateLastSeen', e, stackTrace);
+    }
 
     return GUser.fromJson(data);
   }

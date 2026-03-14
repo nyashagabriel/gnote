@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily 3 - GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">Daily 3</p>
+            <h1 class="title-lg">Choose the three things that define today.</h1>
+          </div>
+          <span class="chip">Locks at 09:00</span>
+        </div>
+
+        <div class="task-list d3-list reveal">
+          <article class="d3-card ghost-card">
+            <div class="d3-slot-label">Task 1</div>
+            <div class="d3-ghost-body">
+              <p class="d3-ghost-title">What needs to be done?</p>
+            </div>
+          </article>
+          <article class="d3-card ghost-card">
+            <div class="d3-slot-label">Task 2</div>
+            <div class="d3-ghost-body">
+              <p class="d3-ghost-title">What needs to be done?</p>
+            </div>
+          </article>
+          <article class="d3-card ghost-card">
+            <div class="d3-slot-label">Task 3</div>
+            <div class="d3-ghost-body">
+              <p class="d3-ghost-title">What needs to be done?</p>
+            </div>
+          </article>
+        </div>
+
+        <button class="fab" aria-label="Add task">+</button>
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item active">Daily 3</div>
+        <div class="nav-item">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .d3-list {
+        display: grid;
+        gap: 14px;
+        margin-top: 24px;
+        padding-bottom: 104px;
+      }
+      .d3-card {
+        display: grid;
+        gap: 14px;
+        min-height: 120px;
+        padding: 18px;
+        border-radius: 20px;
+        border: 1px solid var(--line);
+        background: transparent;
+      }
+      .ghost-card {
+        border-style: dashed;
+      }
+      .d3-slot-label {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .d3-ghost-body {
+        display: flex;
+        align-items: center;
+        min-height: 54px;
+      }
+      .d3-ghost-title {
+        color: var(--text-soft);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

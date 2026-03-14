@@ -6,12 +6,14 @@ import '../models/anchor.dart';
 import '../models/habit.dart';
 import '../models/person.dart';
 import '../models/task.dart';
+import '../models/user.dart';
 
 class LocalDb {
   LocalDb._();
 
   static final LocalDb instance = LocalDb._();
 
+  Box<GUser> get _users => Hive.box<GUser>(GBoxes.users);
   Box<GTask> get _tasks => Hive.box<GTask>(GBoxes.tasks);
   Box<GAnchor> get _anchors => Hive.box<GAnchor>(GBoxes.anchors);
   Box<GHabit> get _habits => Hive.box<GHabit>(GBoxes.habits);
@@ -23,8 +25,21 @@ class LocalDb {
   static const String _habitReminderHourKey = 'habit_reminder_hour';
   static const String _habitReminderMinuteKey = 'habit_reminder_minute';
   static const String _themeModeKey = 'theme_mode';
+  static const String _pendingSyncOpsKey = 'pending_sync_ops';
+  static const String _pendingNotificationRouteKey =
+      'pending_notification_route';
 
   // ANCHOR
+
+  GUser? getCurrentUser() => _users.get('current');
+
+  Future<void> saveCurrentUser(GUser user) async {
+    await _users.put('current', user);
+  }
+
+  Future<void> clearCurrentUser() async {
+    await _users.delete('current');
+  }
 
   GAnchor? getTodayAnchor() {
     final today = localNow();
@@ -217,6 +232,34 @@ class LocalDb {
     await _meta.put(_themeModeKey, mode);
   }
 
+  List<Map<String, dynamic>> getPendingSyncOps() {
+    final value = _meta.get(_pendingSyncOpsKey);
+    if (value is! List) return const [];
+    return value
+        .whereType<Map>()
+        .map((entry) => Map<String, dynamic>.from(entry))
+        .toList();
+  }
+
+  Future<void> savePendingSyncOps(List<Map<String, dynamic>> ops) async {
+    await _meta.put(_pendingSyncOpsKey, ops);
+  }
+
+  Future<void> clearPendingSyncOps() async {
+    await _meta.delete(_pendingSyncOpsKey);
+  }
+
+  Future<void> savePendingNotificationRoute(String route) async {
+    await _meta.put(_pendingNotificationRouteKey, route);
+  }
+
+  String? consumePendingNotificationRoute() {
+    final value = _meta.get(_pendingNotificationRouteKey);
+    if (value is! String || value.isEmpty) return null;
+    _meta.delete(_pendingNotificationRouteKey);
+    return value;
+  }
+
   // ANCHOR EXISTS TODAY — used by router nav lock
 
   bool get hasAnchorToday {
@@ -235,6 +278,7 @@ class LocalDb {
   // CLEAR — called on sign out
 
   Future<void> clearAll() async {
+    await _users.clear();
     await _tasks.clear();
     await _anchors.clear();
     await _habits.clear();

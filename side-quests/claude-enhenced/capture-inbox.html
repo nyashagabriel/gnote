@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capture — GNOTE</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="prototype-page">
+    <div class="phone">
+      <div class="status-bar">
+        <span>9:41</span>
+        <span>5G 100%</span>
+      </div>
+      <section class="screen">
+
+        <div class="screen-header">
+          <div>
+            <p class="screen-label">CAPTURE</p>
+            <h1 class="title-lg">What is on<br>your mind?</h1>
+            <p class="body-copy" style="margin-top:6px;max-width:220px;">
+              Catch the thought quickly. Review Sundays only.
+            </p>
+          </div>
+          <button class="icon-btn" aria-label="Share list">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <path d="M13 6a2 2 0 100-4 2 2 0 000 4zM5 10a2 2 0 100-4 2 2 0 000 4zM13 14a2 2 0 100-4 2 2 0 000 4z" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M7 8.5l4-2M7 9.5l4 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Sunday banner — info-panel style -->
+        <div class="info-panel reveal sunday-banner">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;">
+            <circle cx="7" cy="7" r="6" stroke="#3fa9f5" stroke-width="1.2"/>
+            <path d="M7 4v3.5l2 2" stroke="#3fa9f5" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+          Review day — clear what no longer matters.
+        </div>
+
+        <!-- Capture list — clean, no priority, no archive buttons -->
+        <div class="stack" style="margin-top:14px;">
+
+          <article class="capture-card reveal">
+            <div class="cap-row">
+              <p class="capture-text">Ask designer for final icon export sizes</p>
+              <span class="cap-date">13 Mar</span>
+            </div>
+            <p class="swipe-hint">← swipe to delete</p>
+          </article>
+
+          <article class="capture-card reveal">
+            <div class="cap-row">
+              <p class="capture-text">Check Supabase OTP expiry copy in email</p>
+              <span class="cap-date">13 Mar</span>
+            </div>
+          </article>
+
+          <article class="capture-card reveal">
+            <div class="cap-row">
+              <p class="capture-text">Prototype premium lock state for Daily 3</p>
+              <span class="cap-date">12 Mar</span>
+            </div>
+          </article>
+
+          <article class="capture-card reveal">
+            <div class="cap-row">
+              <p class="capture-text">Read about RevenueCat pricing tiers before paywall sprint</p>
+              <span class="cap-date">11 Mar</span>
+            </div>
+          </article>
+
+        </div>
+
+        <!-- Compose shell — Liquid Glass (uniform with Daily 3) -->
+        <div class="compose-shell reveal">
+          <p class="compose-label">No sorting. No thinking twice.</p>
+          <input class="capture-input" type="text" placeholder="Dump it here..." style="width:100%;margin-bottom:12px;" />
+          <button class="primary-btn" style="width:100%;height:54px;font-size:13px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;">
+              <path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            Add capture
+          </button>
+        </div>
+
+      </section>
+
+      <nav class="phone-nav">
+        <div class="nav-item">Anchor</div>
+        <div class="nav-item">Daily 3</div>
+        <div class="nav-item active">Capture</div>
+        <div class="nav-item">Habit</div>
+        <div class="nav-item">People</div>
+      </nav>
+    </div>
+
+    <style>
+      .sunday-banner {
+        display: flex; align-items: center; gap: 8px;
+        margin: 12px 0 0;
+        font-size: 12px; color: #5ebdfa; line-height: 1.4;
+        border-color: rgba(63,169,245,0.2);
+        background: rgba(63,169,245,0.06);
+      }
+      .capture-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 150ms, border-color 150ms, transform 200ms var(--ease);
+      }
+      .capture-card:hover {
+        background: var(--surface-soft);
+        border-color: var(--line-strong);
+        transform: translateY(-1px);
+      }
+      .cap-row {
+        display: flex; align-items: flex-start;
+        gap: 12px; justify-content: space-between;
+      }
+      .capture-text {
+        flex: 1; font-size: 14px; line-height: 1.4;
+        color: var(--text); margin: 0;
+      }
+      .cap-date {
+        font-size: 11px; color: var(--muted);
+        white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+      }
+      .swipe-hint {
+        font-size: 10px; color: var(--muted);
+        margin: 6px 0 0; letter-spacing: 0.05em;
+      }
+      .compose-label {
+        margin: 0 0 10px; color: var(--muted);
+        font-size: 11px; letter-spacing: 0.04em;
+      }
+    </style>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
