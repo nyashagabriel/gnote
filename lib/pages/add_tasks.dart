@@ -1,13 +1,19 @@
-// ==========================================
-// FILE: ./pages/add_tasks.dart
-// ==========================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
+
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — ADD TASK PAGE
+//
+// Category field removed from UI for v1.
+// The model still stores category (defaults to 'other') and syncs
+// to Supabase — no migration needed. We simply stopped surfacing it.
+// Daily 3 is a forcing function: what + how you'll know + by when.
+// That is all the user needs to think about.
+// ─────────────────────────────────────────────────────────────────────
 
 class AddTaskPage extends ConsumerStatefulWidget {
   const AddTaskPage({super.key});
@@ -21,7 +27,6 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
 
   DateTime _byDate = DateTime.now();
   TimeOfDay _byTime = TimeOfDay.now();
-  String _category = GCategories.career;
 
   bool _loading = false;
   String? _error;
@@ -82,6 +87,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       _loading = true;
       _error = null;
     });
+
     final by = DateTime(
         _byDate.year, _byDate.month, _byDate.day, _byTime.hour, _byTime.minute);
 
@@ -89,9 +95,10 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
           what: what,
           doneWhen: doneWhen,
           by: by,
-          category: _category,
+          category: 'other', // category hidden from UI in v1
           userId: user.id,
         );
+
     if (!mounted) return;
     setState(() => _loading = false);
     if (err != null) {
@@ -124,16 +131,21 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 style: GText.label.copyWith(fontSize: 14)),
             const SizedBox(height: GSpacing.xs),
             Text(GStrings.addTaskTitle,
-                style: GText.heading
-                    .copyWith(fontSize: 22, color: GColors.orange)),
+                style:
+                    GText.heading.copyWith(fontSize: 22, color: GColors.orange)),
             const SizedBox(height: GSpacing.xl),
+
+            // ── What ───────────────────────────────────────────
             Text(GStrings.smartWhat, style: GText.label),
             const SizedBox(height: GSpacing.sm),
             _Field(
                 ctrl: _whatCtrl,
                 hint: GStrings.addTaskWhatHint,
                 maxLength: GLimits.taskTitleMax),
+
             const SizedBox(height: GSpacing.lg),
+
+            // ── Done when ──────────────────────────────────────
             Text(GStrings.smartDoneWhen, style: GText.label),
             const SizedBox(height: GSpacing.sm),
             _Field(
@@ -141,7 +153,10 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 hint: GStrings.addTaskDoneHint,
                 maxLines: 3,
                 maxLength: GLimits.taskTitleMax),
+
             const SizedBox(height: GSpacing.lg),
+
+            // ── By ─────────────────────────────────────────────
             Text(GStrings.addTaskByLabel, style: GText.label),
             const SizedBox(height: GSpacing.sm),
             Row(
@@ -163,48 +178,17 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                         onTap: _pickTime)),
               ],
             ),
-            const SizedBox(height: GSpacing.lg),
-            Text(GStrings.addTaskCategoryLabel, style: GText.label),
-            const SizedBox(height: GSpacing.sm),
-            Wrap(
-              spacing: GSpacing.sm,
-              runSpacing: GSpacing.sm,
-              children: GCategories.defaults.map((cat) {
-                final selected = cat == _category;
-                final color = GColors.category[cat] ?? GColors.textMuted;
-                return Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: () => setState(() => _category = cat),
-                    borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: GSpacing.md, vertical: GSpacing.sm),
-                      decoration: BoxDecoration(
-                        color: selected ? color.withAlpha(40) : GColors.surface,
-                        border: Border.all(
-                            color: selected ? color : GColors.border),
-                        borderRadius:
-                            BorderRadius.circular(GSpacing.buttonRadius),
-                      ),
-                      child: Text(cat[0].toUpperCase() + cat.substring(1),
-                          style: GText.body.copyWith(
-                              color: selected ? color : GColors.textMuted)),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
+
             AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              height: _error != null ? 36 : 12,
+              height: _error != null ? 40 : 16,
               child: _error != null
                   ? Padding(
                       padding: const EdgeInsets.only(top: GSpacing.sm),
                       child: Text(_error!, style: GText.danger))
                   : const SizedBox.shrink(),
             ),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

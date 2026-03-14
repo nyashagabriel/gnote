@@ -1,20 +1,82 @@
-// ==========================================
-// FILE: ./pages/add_persons.dart
-// ==========================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
 
-class AddPersonPage extends ConsumerStatefulWidget {
-  const AddPersonPage({super.key});
-  @override
-  ConsumerState<AddPersonPage> createState() => _AddPersonPageState();
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — ADD PERSON SHEET
+//
+// Converted from full-page Scaffold to a bottom sheet widget.
+// Use showAddPersonSheet(context) to present it.
+//
+// Message template editing is simplified:
+//   - Template auto-fills on role selection and name entry.
+//   - The textarea is shown but not the sub-label or char counter.
+//     This keeps the flow focused on name + number + role.
+//
+// The route at /responsibility/add still exists in the router as a
+// fallback, but all internal navigation uses showAddPersonSheet().
+// ─────────────────────────────────────────────────────────────────────
+
+Future<void> showAddPersonSheet(BuildContext context) {
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: GColors.surface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => const _AddPersonSheetContent(),
+  );
 }
 
-class _AddPersonPageState extends ConsumerState<AddPersonPage> {
+class AddPersonPage extends StatelessWidget {
+  const AddPersonPage({super.key});
+
+  // Kept as a route-compatible page so the router entry at
+  // /responsibility/add continues to resolve without error.
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: GColors.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(GSpacing.pagePadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: const Icon(Icons.arrow_back,
+                        color: GColors.textPrimary, size: 20),
+                  ),
+                  Text(GStrings.addPersonHeader,
+                      style: GText.label.copyWith(fontSize: 14)),
+                ],
+              ),
+              const _AddPersonSheetContent(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ── Sheet content — shared between sheet and page ─────────────────────
+
+class _AddPersonSheetContent extends ConsumerStatefulWidget {
+  const _AddPersonSheetContent();
+
+  @override
+  ConsumerState<_AddPersonSheetContent> createState() =>
+      _AddPersonSheetContentState();
+}
+
+class _AddPersonSheetContentState
+    extends ConsumerState<_AddPersonSheetContent> {
   final _nameCtrl = TextEditingController();
   final _numberCtrl = TextEditingController();
   final _messageCtrl = TextEditingController();
@@ -99,6 +161,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
       _loading = true;
       _error = null;
     });
+
     await ref.read(responsibilityProvider.notifier).addPerson(
           name: name,
           whatsappNumber: number.replaceAll(' ', ''),
@@ -106,137 +169,129 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
           messageTemplate: message,
           userId: user.id,
         );
+
     if (!mounted) return;
-    context.pop();
+    Navigator.of(context).maybePop();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: GColors.background,
-      appBar: AppBar(
-        backgroundColor: GColors.background,
-        elevation: 0,
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: GColors.textPrimary),
-            onPressed: () => context.pop()),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: GSpacing.pagePadding,
+        right: GSpacing.pagePadding,
+        top: GSpacing.md,
+        bottom: GSpacing.pagePadding +
+            MediaQuery.of(context).viewInsets.bottom,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(GSpacing.pagePadding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(GStrings.addPersonHeader,
-                style: GText.label.copyWith(fontSize: 14)),
-            const SizedBox(height: GSpacing.xs),
-            Text(GStrings.addPersonTitle,
-                style:
-                    GText.heading.copyWith(fontSize: 22, color: GColors.azure)),
-            const SizedBox(height: GSpacing.xl),
-            Text(GStrings.addPersonNameLabel, style: GText.muted),
-            const SizedBox(height: GSpacing.sm),
-            _field(_nameCtrl, GStrings.addPersonNameHint),
-            const SizedBox(height: GSpacing.lg),
-            Text(GStrings.addPersonPhoneLabel, style: GText.muted),
-            const SizedBox(height: GSpacing.xs),
-            Text(GStrings.addPersonPhoneHint1,
-                style: GText.muted.copyWith(fontSize: 11)),
-            const SizedBox(height: GSpacing.sm),
-            _field(_numberCtrl, GStrings.addPersonPhoneHint2,
-                type: TextInputType.phone),
-            const SizedBox(height: GSpacing.lg),
-            Text(GStrings.addPersonRoleLabel, style: GText.label),
-            const SizedBox(height: GSpacing.sm),
-            Row(
-              children: [
-                _RoleChip(
-                    label: GStrings.roleMotivator,
-                    color: GColors.orange,
-                    selected: _role == GStrings.roleMotivator,
-                    onTap: () => _selectRole(GStrings.roleMotivator)),
-                const SizedBox(width: GSpacing.sm),
-                _RoleChip(
-                    label: GStrings.roleMeditator,
-                    color: GColors.azure,
-                    selected: _role == GStrings.roleMeditator,
-                    onTap: () => _selectRole(GStrings.roleMeditator)),
-              ],
-            ),
-            const SizedBox(height: GSpacing.lg),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(GStrings.addPersonMsgLabel, style: GText.muted),
-                Text('${_messageCtrl.text.length}/${GLimits.templateMaxChars}',
-                    style: GText.muted.copyWith(fontSize: 11)),
-              ],
-            ),
-            const SizedBox(height: GSpacing.xs),
-            Text(GStrings.addPersonMsgSub,
-                style: GText.muted.copyWith(fontSize: 11)),
-            const SizedBox(height: GSpacing.sm),
-            TextField(
-              controller: _messageCtrl,
-              style: GText.body,
-              maxLines: 5,
-              maxLength: GLimits.templateMaxChars,
-              onChanged: (_) => setState(() {}),
-              decoration: InputDecoration(
-                hintText: GStrings.addPersonMsgHint,
-                hintStyle: GText.body.copyWith(color: GColors.textDisabled),
-                filled: true,
-                fillColor: GColors.surface,
-                counterStyle: GText.muted.copyWith(fontSize: 10),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(GSpacing.inputRadius),
-                    borderSide: BorderSide.none),
-                focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(GSpacing.inputRadius),
-                    borderSide:
-                        const BorderSide(color: GColors.azure, width: 1.5)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Drag handle
+          Center(
+            child: Container(
+              width: 32,
+              height: 4,
+              decoration: BoxDecoration(
+                color: GColors.border,
+                borderRadius: BorderRadius.circular(2),
               ),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: _error != null ? 36 : 8,
-              child: _error != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: GSpacing.xs),
-                      child: Text(_error!, style: GText.danger))
-                  : const SizedBox.shrink(),
+          ),
+          const SizedBox(height: GSpacing.lg),
+
+          Text(GStrings.addPersonHeader,
+              style: GText.label.copyWith(fontSize: 14)),
+          const SizedBox(height: GSpacing.xs),
+          Text(
+            GStrings.addPersonTitle,
+            style: GText.heading.copyWith(fontSize: 20, color: GColors.azure),
+          ),
+          const SizedBox(height: GSpacing.xl),
+
+          // ── Name ─────────────────────────────────────────────
+          Text(GStrings.addPersonNameLabel, style: GText.muted),
+          const SizedBox(height: GSpacing.sm),
+          _field(_nameCtrl, GStrings.addPersonNameHint),
+
+          const SizedBox(height: GSpacing.lg),
+
+          // ── WhatsApp number ──────────────────────────────────
+          Text(GStrings.addPersonPhoneLabel, style: GText.muted),
+          const SizedBox(height: GSpacing.xs),
+          Text(GStrings.addPersonPhoneHint1,
+              style: GText.muted.copyWith(fontSize: 11)),
+          const SizedBox(height: GSpacing.sm),
+          _field(_numberCtrl, GStrings.addPersonPhoneHint2,
+              type: TextInputType.phone),
+
+          const SizedBox(height: GSpacing.lg),
+
+          // ── Role ─────────────────────────────────────────────
+          Text(GStrings.addPersonRoleLabel, style: GText.label),
+          const SizedBox(height: GSpacing.sm),
+          Row(
+            children: [
+              _RoleChip(
+                  label: GStrings.roleMotivator,
+                  color: GColors.orange,
+                  selected: _role == GStrings.roleMotivator,
+                  onTap: () => _selectRole(GStrings.roleMotivator)),
+              const SizedBox(width: GSpacing.sm),
+              _RoleChip(
+                  label: GStrings.roleMeditator,
+                  color: GColors.azure,
+                  selected: _role == GStrings.roleMeditator,
+                  onTap: () => _selectRole(GStrings.roleMeditator)),
+            ],
+          ),
+
+          const SizedBox(height: GSpacing.xl),
+
+          // ── Error ─────────────────────────────────────────────
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            height: _error != null ? 36 : 0,
+            child: _error != null
+                ? Padding(
+                    padding: const EdgeInsets.only(bottom: GSpacing.xs),
+                    child: Text(_error!, style: GText.danger))
+                : const SizedBox.shrink(),
+          ),
+
+          // ── Save ──────────────────────────────────────────────
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _loading ? null : _save,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: GColors.orange,
+                disabledBackgroundColor: GColors.surfaceHigh,
+                padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(GSpacing.buttonRadius)),
+              ),
+              child: _loading
+                  ? const SizedBox(
+                      height: 18,
+                      width: 18,
+                      child: CircularProgressIndicator(
+                          color: GColors.background, strokeWidth: 2))
+                  : Text(GStrings.addPersonSaveBtn,
+                      style: GText.subheading.copyWith(
+                          color: GColors.background,
+                          fontWeight: FontWeight.bold)),
             ),
-            SizedBox(
+          ),
+          const SizedBox(height: GSpacing.sm),
+          SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _loading ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: GColors.orange,
-                  disabledBackgroundColor: GColors.surfaceHigh,
-                  padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
-                  shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(GSpacing.buttonRadius)),
-                ),
-                child: _loading
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(
-                            color: GColors.background, strokeWidth: 2))
-                    : Text(GStrings.addPersonSaveBtn,
-                        style: GText.subheading.copyWith(
-                            color: GColors.background,
-                            fontWeight: FontWeight.bold)),
-              ),
-            ),
-            const SizedBox(height: GSpacing.sm),
-            SizedBox(
-                width: double.infinity,
-                child: TextButton(
-                    onPressed: () => context.pop(),
-                    child: Text(GStrings.cancel, style: GText.label))),
-          ],
-        ),
+              child: TextButton(
+                  onPressed: () => Navigator.of(context).maybePop(),
+                  child: Text(GStrings.cancel, style: GText.label))),
+        ],
       ),
     );
   }
@@ -252,7 +307,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
         hintText: hint,
         hintStyle: GText.body.copyWith(color: GColors.textDisabled),
         filled: true,
-        fillColor: GColors.surface,
+        fillColor: GColors.surfaceHigh,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(GSpacing.inputRadius),
             borderSide: BorderSide.none),

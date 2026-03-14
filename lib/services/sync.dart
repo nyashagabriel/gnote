@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
 import '../core/timezone.dart';
@@ -30,6 +32,9 @@ class SyncService {
   final _client = Supabase.instance.client;
   final _db = LocalDb.instance;
   final List<_PendingSyncOp> _pending = [];
+  Timer? _autoRetryTimer;
+  bool _isRetryingPending = false;
+  bool _isPullingAll = false;
 
   final ValueNotifier<SyncStatusSnapshot> status =
       ValueNotifier<SyncStatusSnapshot>(const SyncStatusSnapshot());
@@ -43,6 +48,7 @@ class SyncService {
       ..addAll(
         stored.map(_PendingSyncOp.fromJson).whereType<_PendingSyncOp>(),
       );
+    _syncAutoRetryLoop();
     _setStatus(
       phase: _pending.isEmpty ? SyncPhase.idle : SyncPhase.error,
       error: _pending.isEmpty ? null : 'Sync pending from previous session.',
@@ -63,11 +69,26 @@ class SyncService {
     _pending.removeWhere((existing) => existing.key == op.key);
     _pending.add(op);
     await _persistPending();
+    _syncAutoRetryLoop();
   }
 
   Future<void> _dequeue(_PendingSyncOp op) async {
     _pending.removeWhere((existing) => existing.key == op.key);
     await _persistPending();
+    _syncAutoRetryLoop();
+  }
+
+  void _syncAutoRetryLoop() {
+    if (_pending.isEmpty) {
+      _autoRetryTimer?.cancel();
+      _autoRetryTimer = null;
+      return;
+    }
+
+    _autoRetryTimer ??= Timer.periodic(
+      const Duration(seconds: 30),
+      (_) => retryPendingInBackground(),
+    );
   }
 
   void _setStatus({
@@ -140,7 +161,8 @@ class SyncService {
   // ─────────────────────────────────────────────────────────
 
   Future<void> pullAll() async {
-    if (_userId == null) return;
+    if (_userId == null || _isPullingAll) return;
+    _isPullingAll = true;
     _setStatus(phase: SyncPhase.syncing, error: null);
     try {
       await retryPending();
@@ -153,11 +175,14 @@ class SyncService {
       _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.error);
     } catch (e) {
       _setStatus(phase: SyncPhase.error, error: e.toString());
+    } finally {
+      _isPullingAll = false;
     }
   }
 
   Future<void> retryPending() async {
-    if (_userId == null || _pending.isEmpty) return;
+    if (_userId == null || _pending.isEmpty || _isRetryingPending) return;
+    _isRetryingPending = true;
     _setStatus(phase: SyncPhase.syncing, error: null);
 
     final snapshot = List<_PendingSyncOp>.from(_pending);
@@ -173,6 +198,16 @@ class SyncService {
     }
 
     _setStatus(phase: _pending.isEmpty ? SyncPhase.synced : SyncPhase.error);
+    _isRetryingPending = false;
+    _syncAutoRetryLoop();
+  }
+
+  void retryPendingInBackground() {
+    unawaited(retryPending());
+  }
+
+  void pullAllInBackground() {
+    unawaited(pullAll());
   }
 
   // BUG FIX: was `GAnchor.fromJson(row)` with no protection.

@@ -114,12 +114,21 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
     _loadProfileSafely();
   }
 
+  Future<void> _pullCloudSafely() async {
+    try {
+      await _sync.pullAll();
+    } catch (e, stackTrace) {
+      _logAuthFallback('startupPullAll', e, stackTrace);
+    }
+  }
+
   Future<void> _loadProfileSafely() async {
     try {
       final profile = await _auth.fetchProfile();
       if (profile != null) {
         await _db.saveCurrentUser(profile);
       }
+      await _pullCloudSafely();
       state = AsyncValue.data(profile);
     } catch (e, stackTrace) {
       _logAuthFallback('loadProfile', e, stackTrace);
@@ -137,6 +146,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
         lastSeen: localNow(),
       );
       await _db.saveCurrentUser(fallback);
+      await _pullCloudSafely();
       state = AsyncValue.data(fallback);
     }
   }

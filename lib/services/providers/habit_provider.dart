@@ -22,6 +22,7 @@ class HabitNotifier extends StateNotifier<GHabit?> {
   }
 
   Future<void> setHabit(String name, String userId) async {
+    final previous = state;
     final habit = GHabit(
       id: _uuid.v4(),
       userId: userId,
@@ -30,19 +31,39 @@ class HabitNotifier extends StateNotifier<GHabit?> {
       isActive: true,
       createdAt: localNow(),
     );
-    await _db.saveHabit(habit);
-    await _sync.pushHabit(habit);
-    _load();
+    state = habit;
+
+    try {
+      await _db.saveHabit(habit);
+      await _sync.pushHabit(habit);
+      _load();
+    } catch (_) {
+      state = previous;
+      rethrow;
+    }
   }
 
   Future<void> markDone() async {
-    if (state == null || state!.doneToday) return;
-    await _db.markHabitDone(state!.id);
-    final updated = _db.getActiveHabit();
-    if (updated != null) {
-      await _sync.pushHabit(updated);
+    final habit = state;
+    if (habit == null || habit.doneToday) return;
+
+    final previous = habit;
+    final optimistic = habit.copyWith(
+      streak: habit.streakAlive ? habit.streak + 1 : 1,
+      lastChecked: localNow(),
+    );
+
+    state = optimistic;
+
+    try {
+      await _db.markHabitDone(habit.id);
+      final persisted = _db.getActiveHabit() ?? optimistic;
+      state = persisted;
+      await _sync.pushHabit(persisted);
+    } catch (_) {
+      state = previous;
+      rethrow;
     }
-    _load();
   }
 }
 

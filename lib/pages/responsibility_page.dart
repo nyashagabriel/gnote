@@ -1,16 +1,23 @@
-// ==========================================
-// FILE: ./pages/responsibility_page.dart
-// ==========================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../core/timezone.dart';
 import '../models/person.dart';
+import '../pages/add_persons.dart';
 import '../services/providers.dart';
 
 part 'responsibility_page_sections.dart';
+
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — RESPONSIBILITY PAGE
+//
+// Changes for v1:
+//   - Add Person now opens as a bottom sheet (showAddPersonSheet) instead
+//     of pushing to a full-screen route. Consistent with Habit pattern.
+//   - Pick buttons are disabled once a pick has been made today.
+//     The guardian picks one person per day. Re-picking is not allowed.
+//     The button collapses to show who was picked and prompts to send.
+// ─────────────────────────────────────────────────────────────────────
 
 class ResponsibilityPage extends ConsumerStatefulWidget {
   const ResponsibilityPage({super.key});
@@ -37,6 +44,11 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
     final pickedMot = state.selectedMotivator;
     final pickedMed = state.selectedMeditator;
 
+    // A pick is final for the day once made.
+    // The button disables immediately and shows who was picked.
+    final motPickedToday = pickedMot != null && pickedMot.selectedToday;
+    final medPickedToday = pickedMed != null && pickedMed.selectedToday;
+
     return Scaffold(
       backgroundColor: GColors.background,
       body: SafeArea(
@@ -51,7 +63,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               Text(GStrings.respSub, style: GText.muted),
               const SizedBox(height: GSpacing.xl),
 
-              // ── MOTIVATORS ──────────────────────────────────
+              // ── MOTIVATORS ────────────────────────────────────
               _SectionHeader(
                 label: GStrings.respMotivatorsHeader,
                 count: motivators.length,
@@ -61,7 +73,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               if (motivators.isEmpty)
                 _EmptySection(
                   label: GStrings.respNoMotivators,
-                  onAdd: () => context.push(GRoutes.addPerson),
+                  onAdd: () => showAddPersonSheet(context),
                 )
               else
                 ...motivators.map((p) => _PersonCard(
@@ -74,7 +86,8 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               _PickButton(
                 label: GStrings.respPickMotivatorBtn,
                 color: GColors.orange,
-                onTap: motivators.isEmpty
+                // null disables the button once picked today
+                onTap: (motivators.isEmpty || motPickedToday)
                     ? null
                     : () => ref
                         .read(responsibilityProvider.notifier)
@@ -84,7 +97,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               ),
               const SizedBox(height: GSpacing.xl),
 
-              // ── MEDITATORS ──────────────────────────────────
+              // ── MEDITATORS ────────────────────────────────────
               _SectionHeader(
                 label: GStrings.respMeditatorsHeader,
                 count: meditators.length,
@@ -94,7 +107,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               if (meditators.isEmpty)
                 _EmptySection(
                   label: GStrings.respNoMeditators,
-                  onAdd: () => context.push(GRoutes.addPerson),
+                  onAdd: () => showAddPersonSheet(context),
                 )
               else
                 ...meditators.map((p) => _PersonCard(
@@ -107,7 +120,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
               _PickButton(
                 label: GStrings.respPickMeditatorBtn,
                 color: GColors.azure,
-                onTap: meditators.isEmpty
+                onTap: (meditators.isEmpty || medPickedToday)
                     ? null
                     : () => ref
                         .read(responsibilityProvider.notifier)
@@ -122,7 +135,7 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push(GRoutes.addPerson),
+        onPressed: () => showAddPersonSheet(context),
         backgroundColor: GColors.orange,
         child: const Icon(Icons.add, color: GColors.background),
       ),

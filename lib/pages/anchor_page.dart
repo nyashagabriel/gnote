@@ -1,7 +1,3 @@
-// ==========================================
-// FILE: ./pages/anchor_page.dart
-// ==========================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +7,16 @@ import '../core/timezone.dart';
 import '../models/anchor.dart';
 import '../services/local_db.dart';
 import '../services/providers.dart';
+
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — ANCHOR PAGE
+//
+// v1 changes:
+//   - Sun icon removed. The anchor is the focus — no decoration competes.
+//   - Orange CircleAvatar replaced with a muted settings icon.
+//     Profile access is preserved but de-emphasised.
+//     The anchor screen belongs to the user's intent, not the app's chrome.
+// ─────────────────────────────────────────────────────────────────────
 
 class AnchorPage extends ConsumerStatefulWidget {
   const AnchorPage({super.key});
@@ -88,11 +94,12 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
     await ref.read(anchorProvider.notifier).lockAnchor(text, user.id);
     await _db.clearAnchorDraft();
 
-    if (mounted)
+    if (mounted) {
       setState(() {
         _saving = false;
         _restored = false;
       });
+    }
   }
 
   @override
@@ -111,34 +118,30 @@ class _AnchorPageState extends ConsumerState<AnchorPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // ── Header row — label + muted settings icon ───────
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(GStrings.anchorHeader,
                       style: GText.label.copyWith(fontSize: 14)),
-                  _ProfileAvatar(
-                    initial:
-                        (ref.watch(currentUserProvider)?.displayName ?? '?')[0]
-                            .toUpperCase(),
-                    onTap: () => context.push(GRoutes.profile),
+                  IconButton(
+                    onPressed: () => context.push(GRoutes.profile),
+                    icon: const Icon(
+                      Icons.settings_outlined,
+                      color: GColors.textMuted,
+                      size: 20,
+                    ),
+                    padding: EdgeInsets.zero,
+                    visualDensity: VisualDensity.compact,
+                    tooltip: 'Profile & settings',
                   ),
                 ],
               ),
               const SizedBox(height: GSpacing.xs),
               Text(today, style: GText.muted),
               const SizedBox(height: GSpacing.xxl),
-              Center(
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 400),
-                  child: Icon(
-                    Icons.wb_sunny_outlined,
-                    key: ValueKey(isLocked),
-                    size: 56,
-                    color: isLocked ? GColors.orange : GColors.textMuted,
-                  ),
-                ),
-              ),
-              const SizedBox(height: GSpacing.xl),
+
+              // ── Content — no sun icon ───────────────────────────
               if (isLocked) _LockedCard(anchor: anchor),
               if (!isLocked)
                 _UnlockedInput(
@@ -278,34 +281,6 @@ class _UnlockedInput extends StatelessWidget {
             ),
           ),
       ],
-    );
-  }
-}
-
-class _ProfileAvatar extends StatelessWidget {
-  const _ProfileAvatar({required this.initial, required this.onTap});
-
-  final String initial;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      shape: const CircleBorder(),
-      child: InkWell(
-        onTap: onTap,
-        customBorder: const CircleBorder(),
-        child: CircleAvatar(
-          radius: 16,
-          backgroundColor: GColors.orange,
-          child: Text(
-            initial,
-            style:
-                GText.label.copyWith(color: GColors.background, fontSize: 12),
-          ),
-        ),
-      ),
     );
   }
 }

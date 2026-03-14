@@ -1,5 +1,14 @@
 part of 'router.dart';
 
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — SHELL / BOTTOM NAV
+//
+// v1 fix: showUnselectedLabels set to false.
+// Only the active tab gets a label — consistent with the theme intent
+// and the theme.dart BottomNavigationBarTheme declaration.
+// This reduces visual noise and reinforces hierarchy.
+// ─────────────────────────────────────────────────────────────────────
+
 class _GShell extends StatelessWidget {
   const _GShell({required this.child});
 
@@ -61,7 +70,7 @@ class _GShell extends StatelessWidget {
           unselectedItemColor: GColors.textMuted,
           type: BottomNavigationBarType.fixed,
           showSelectedLabels: true,
-          showUnselectedLabels: true,
+          showUnselectedLabels: false, // fixed: was true
           selectedLabelStyle: GText.label.copyWith(color: GColors.orange),
           unselectedLabelStyle: GText.label.copyWith(color: GColors.textMuted),
           elevation: 0,

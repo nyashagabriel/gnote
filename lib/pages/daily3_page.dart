@@ -1,7 +1,3 @@
-// ==========================================
-// FILE: ./pages/daily3_page.dart
-// ==========================================
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,8 +40,9 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
     final hours = diff.inHours;
     final minutes = diff.inMinutes.remainder(60);
 
-    if (hours > 0)
+    if (hours > 0) {
       return '${GStrings.daily3LocksIn}${hours}${GStrings.daily3H}${minutes}${GStrings.daily3M}';
+    }
     return '${GStrings.daily3LocksIn}${minutes}${GStrings.daily3M}';
   }
 
@@ -118,7 +115,7 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
                       label: [
                         GStrings.daily3Slot1,
                         GStrings.daily3Slot2,
-                        GStrings.daily3Slot3
+                        GStrings.daily3Slot3,
                       ][i],
                       locked: locked || (i > 0 && tasks.length < i),
                       onTap: (locked || isFull)
@@ -151,7 +148,8 @@ class _LockBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: GSpacing.sm, vertical: 4),
+      padding:
+          const EdgeInsets.symmetric(horizontal: GSpacing.sm, vertical: 4),
       decoration: BoxDecoration(
         color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(6),
@@ -165,6 +163,11 @@ class _LockBadge extends StatelessWidget {
   }
 }
 
+// ── _TaskCard — category chip removed ────────────────────────────────
+// Category is kept in the model and synced to Supabase.
+// It is simply no longer surfaced in the UI for v1.
+// This makes Daily 3 a pure forcing function: what + done-when + deadline.
+// ─────────────────────────────────────────────────────────────────────
 class _TaskCard extends StatelessWidget {
   const _TaskCard({required this.task, required this.onToggle});
   final GTask task;
@@ -172,8 +175,6 @@ class _TaskCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final catColor =
-        GColors.category[task.category.toLowerCase()] ?? GColors.textMuted;
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -193,7 +194,9 @@ class _TaskCard extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
+                task.isDone
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
                 color: task.isDone ? GColors.success : GColors.textMuted,
                 size: 22,
               ),
@@ -202,21 +205,11 @@ class _TaskCard extends StatelessWidget {
                 child: Text(
                   task.what,
                   style: GText.body.copyWith(
-                    decoration: task.isDone ? TextDecoration.lineThrough : null,
+                    decoration:
+                        task.isDone ? TextDecoration.lineThrough : null,
                     color:
                         task.isDone ? GColors.textMuted : GColors.textPrimary,
                   ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: catColor.withAlpha(40),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  task.category.toUpperCase(),
-                  style: GText.label.copyWith(fontSize: 9, color: catColor),
                 ),
               ),
             ],

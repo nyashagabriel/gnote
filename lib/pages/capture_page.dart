@@ -1,7 +1,3 @@
-// ==========================================
-// FILE: ./pages/capture_page.dart
-// ==========================================
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +5,17 @@ import '../core/constants.dart';
 import '../core/timezone.dart';
 import '../models/task.dart';
 import '../services/providers.dart';
+
+// ─────────────────────────────────────────────────────────────────────
+// GNOTE — CAPTURE PAGE
+//
+// v1 change: Sunday banner is now an actionable review prompt.
+// Previously it was a passive decoration. The guardian doesn't decorate
+// — it acts. On Sunday it asks: "Clear what no longer matters."
+// The user taps to mark all items reviewed (soft-clear), or dismisses.
+//
+// "Clear all" sweeps the capture list. The user makes the call.
+// ─────────────────────────────────────────────────────────────────────
 
 class CapturePage extends ConsumerStatefulWidget {
   const CapturePage({super.key});
@@ -34,6 +41,45 @@ class _CapturePageState extends ConsumerState<CapturePage> {
     final user = ref.read(currentUserProvider);
     if (user == null) return;
     await ref.read(captureProvider.notifier).addItem(text, user.id);
+  }
+
+  Future<void> _clearAll() async {
+    final items = ref.read(captureProvider);
+    for (final item in items) {
+      await ref.read(captureProvider.notifier).deleteItem(item.id);
+    }
+  }
+
+  void _showReviewDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: GColors.surface,
+        title: Text(
+          'Sunday Review',
+          style: GText.subheading.copyWith(color: GColors.azure),
+        ),
+        content: Text(
+          'Clear everything that no longer matters.\nKeep only what still deserves your attention.',
+          style: GText.muted,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child:
+                Text('Keep all', style: GText.label.copyWith(color: GColors.textMuted)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _clearAll();
+            },
+            child: Text('Clear all',
+                style: GText.label.copyWith(color: GColors.danger)),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -69,24 +115,47 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                         ),
                     ],
                   ),
-                  if (_isSunday) ...[
+
+                  // ── Sunday Review Banner — now a trigger ─────────
+                  if (_isSunday && items.isNotEmpty) ...[
                     const SizedBox(height: GSpacing.sm),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: GSpacing.md,
-                        vertical: GSpacing.sm,
-                      ),
-                      decoration: BoxDecoration(
-                        color: GColors.azureDim,
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _showReviewDialog,
                         borderRadius:
                             BorderRadius.circular(GSpacing.cardRadius),
-                        border: Border.all(color: GColors.azure.withAlpha(80)),
-                      ),
-                      child: Text(
-                        GStrings.captureReviewMsg,
-                        style: GText.muted
-                            .copyWith(color: GColors.azure, fontSize: 12),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: GSpacing.md,
+                            vertical: GSpacing.sm,
+                          ),
+                          decoration: BoxDecoration(
+                            color: GColors.azureDim,
+                            borderRadius:
+                                BorderRadius.circular(GSpacing.cardRadius),
+                            border:
+                                Border.all(color: GColors.azure.withAlpha(80)),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  GStrings.captureReviewMsg,
+                                  style: GText.muted.copyWith(
+                                      color: GColors.azure, fontSize: 12),
+                                ),
+                              ),
+                              const SizedBox(width: GSpacing.sm),
+                              Text(
+                                'REVIEW →',
+                                style: GText.label.copyWith(
+                                    color: GColors.azure, fontSize: 10),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ],

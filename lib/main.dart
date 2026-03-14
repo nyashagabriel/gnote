@@ -2,6 +2,8 @@
 // FILE: ./main.dart
 // ==========================================
 
+import 'dart:async';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -74,6 +76,25 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
     with WidgetsBindingObserver {
   DateTime _lastDate = localNow();
 
+  void _invalidateDayBoundProviders() {
+    ref.invalidate(anchorProvider);
+    ref.invalidate(daily3Provider);
+    ref.invalidate(captureProvider);
+    ref.invalidate(habitProvider);
+    ref.invalidate(responsibilityProvider);
+  }
+
+  void _refreshFromCloudOnResume() {
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+
+    unawaited(() async {
+      await ref.read(syncServiceProvider).pullAll();
+      if (!mounted) return;
+      _invalidateDayBoundProviders();
+    }());
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +109,12 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      ref.read(syncServiceProvider).retryPendingInBackground();
+      return;
+    }
+
     if (state != AppLifecycleState.resumed) return;
     final now = localNow();
     final newDay = now.year != _lastDate.year ||
@@ -96,12 +123,11 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
 
     if (newDay) {
       _lastDate = now;
-      ref.invalidate(anchorProvider);
-      ref.invalidate(daily3Provider);
-      ref.invalidate(captureProvider);
-      ref.invalidate(habitProvider);
-      ref.invalidate(responsibilityProvider);
+      _invalidateDayBoundProviders();
     }
+
+    _refreshFromCloudOnResume();
+
     final route = NotificationService.consumePendingRoute();
     if (route != null && mounted) goRouter.go(route);
   }
