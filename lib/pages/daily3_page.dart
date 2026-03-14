@@ -148,8 +148,7 @@ class _LockBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          const EdgeInsets.symmetric(horizontal: GSpacing.sm, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: GSpacing.sm, vertical: 4),
       decoration: BoxDecoration(
         color: color.withAlpha(25),
         borderRadius: BorderRadius.circular(6),
@@ -194,9 +193,7 @@ class _TaskCard extends StatelessWidget {
           child: Row(
             children: [
               Icon(
-                task.isDone
-                    ? Icons.check_circle
-                    : Icons.radio_button_unchecked,
+                task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
                 color: task.isDone ? GColors.success : GColors.textMuted,
                 size: 22,
               ),
@@ -205,8 +202,7 @@ class _TaskCard extends StatelessWidget {
                 child: Text(
                   task.what,
                   style: GText.body.copyWith(
-                    decoration:
-                        task.isDone ? TextDecoration.lineThrough : null,
+                    decoration: task.isDone ? TextDecoration.lineThrough : null,
                     color:
                         task.isDone ? GColors.textMuted : GColors.textPrimary,
                   ),

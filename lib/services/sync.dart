@@ -7,6 +7,7 @@ import '../models/task.dart';
 import '../models/anchor.dart';
 import '../models/habit.dart';
 import '../models/person.dart';
+import '../models/user.dart';
 import '../core/constants.dart';
 import 'local_db.dart';
 
@@ -32,12 +33,15 @@ class SyncService {
   final _client = Supabase.instance.client;
   final _db = LocalDb.instance;
   final List<_PendingSyncOp> _pending = [];
+  final List<RealtimeChannel> _realtimeChannels = [];
   Timer? _autoRetryTimer;
   bool _isRetryingPending = false;
   bool _isPullingAll = false;
+  String? _realtimeUserId;
 
   final ValueNotifier<SyncStatusSnapshot> status =
       ValueNotifier<SyncStatusSnapshot>(const SyncStatusSnapshot());
+  final ValueNotifier<int> realtimeRevision = ValueNotifier<int>(0);
 
   String? get _userId => _client.auth.currentUser?.id;
 
@@ -208,6 +212,144 @@ class SyncService {
 
   void pullAllInBackground() {
     unawaited(pullAll());
+  }
+
+  Future<void> enableRealtimeForCurrentUser() async {
+    final userId = _userId;
+    if (userId == null) return;
+    if (_realtimeUserId == userId && _realtimeChannels.isNotEmpty) return;
+
+    await disableRealtime();
+    _realtimeUserId = userId;
+
+    _subscribeOwnedTable(
+      channelName: 'anchors:$userId',
+      table: GTables.anchors,
+      onUpsert: (record) async => _db.saveAnchor(GAnchor.fromJson(record)),
+    );
+    _subscribeOwnedTable(
+      channelName: 'tasks:$userId',
+      table: GTables.tasks,
+      onUpsert: (record) async => _db.saveTask(GTask.fromJson(record)),
+      onDelete: (record) async {
+        final taskId = record['id']?.toString();
+        if (taskId != null) await _db.deleteTask(taskId);
+      },
+    );
+    _subscribeOwnedTable(
+      channelName: 'habits:$userId',
+      table: GTables.habits,
+      onUpsert: (record) async => _db.saveHabit(GHabit.fromJson(record)),
+    );
+    _subscribeOwnedTable(
+      channelName: 'people:$userId',
+      table: GTables.people,
+      onUpsert: (record) async => _db.savePerson(GPerson.fromJson(record)),
+      onDelete: (record) async {
+        final personId = record['id']?.toString();
+        if (personId != null) await _db.deletePerson(personId);
+      },
+    );
+
+    final profileChannel = _client
+        .channel('profiles:$userId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'profiles',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'id',
+            value: userId,
+          ),
+          callback: (payload) async {
+            try {
+              final record = _selectRealtimeRecord(payload);
+              if (record == null) return;
+              await _db.saveCurrentUser(GUser.fromJson(record));
+              _markRealtimeApplied();
+            } catch (e, stackTrace) {
+              debugPrint('Realtime profile event failed: $e');
+              debugPrintStack(stackTrace: stackTrace);
+            }
+          },
+        )
+        .subscribe();
+    _realtimeChannels.add(profileChannel);
+  }
+
+  Future<void> disableRealtime() async {
+    for (final channel in _realtimeChannels) {
+      await _client.removeChannel(channel);
+    }
+    _realtimeChannels.clear();
+    _realtimeUserId = null;
+  }
+
+  void _subscribeOwnedTable({
+    required String channelName,
+    required String table,
+    required Future<void> Function(Map<String, dynamic> record) onUpsert,
+    Future<void> Function(Map<String, dynamic> record)? onDelete,
+  }) {
+    final userId = _realtimeUserId;
+    if (userId == null) return;
+
+    final channel = _client
+        .channel(channelName)
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: table,
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'user_id',
+            value: userId,
+          ),
+          callback: (payload) async {
+            try {
+              if (payload.eventType == PostgresChangeEvent.delete) {
+                final oldRecord = _asRecord(payload.oldRecord);
+                if (oldRecord != null && onDelete != null) {
+                  await onDelete(oldRecord);
+                  _markRealtimeApplied();
+                }
+                return;
+              }
+
+              final record = _asRecord(payload.newRecord);
+              if (record == null) return;
+              await onUpsert(record);
+              _markRealtimeApplied();
+            } catch (e, stackTrace) {
+              debugPrint('Realtime $table event failed: $e');
+              debugPrintStack(stackTrace: stackTrace);
+            }
+          },
+        )
+        .subscribe();
+
+    _realtimeChannels.add(channel);
+  }
+
+  Map<String, dynamic>? _selectRealtimeRecord(PostgresChangePayload payload) {
+    if (payload.eventType == PostgresChangeEvent.delete) {
+      return _asRecord(payload.oldRecord);
+    }
+    return _asRecord(payload.newRecord);
+  }
+
+  Map<String, dynamic>? _asRecord(Object? record) {
+    if (record is Map) return Map<String, dynamic>.from(record);
+    return null;
+  }
+
+  void _markRealtimeApplied() {
+    realtimeRevision.value = realtimeRevision.value + 1;
+    status.value = status.value.copyWith(
+      lastSyncedAt: localNow(),
+      lastError: null,
+    );
   }
 
   // BUG FIX: was `GAnchor.fromJson(row)` with no protection.

@@ -131,8 +131,8 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 style: GText.label.copyWith(fontSize: 14)),
             const SizedBox(height: GSpacing.xs),
             Text(GStrings.addTaskTitle,
-                style:
-                    GText.heading.copyWith(fontSize: 22, color: GColors.orange)),
+                style: GText.heading
+                    .copyWith(fontSize: 22, color: GColors.orange)),
             const SizedBox(height: GSpacing.xl),
 
             // ── What ───────────────────────────────────────────

@@ -129,6 +129,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
         await _db.saveCurrentUser(profile);
       }
       await _pullCloudSafely();
+      await _sync.enableRealtimeForCurrentUser();
       state = AsyncValue.data(profile);
     } catch (e, stackTrace) {
       _logAuthFallback('loadProfile', e, stackTrace);
@@ -147,6 +148,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
       );
       await _db.saveCurrentUser(fallback);
       await _pullCloudSafely();
+      await _sync.enableRealtimeForCurrentUser();
       state = AsyncValue.data(fallback);
     }
   }
@@ -160,6 +162,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
         return const AuthFailure('Incorrect email or password.');
       }
       await _sync.pullAll();
+      await _sync.enableRealtimeForCurrentUser();
       await _db.saveCurrentUser(user);
       state = AsyncValue.data(user);
       return const AuthSuccess();
@@ -188,6 +191,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
       switch (outcome) {
         case SignUpSessionActive(:final user):
           await _sync.pullAll();
+          await _sync.enableRealtimeForCurrentUser();
           await _db.saveCurrentUser(user);
           state = AsyncValue.data(user);
           return const AuthSuccess();
@@ -214,6 +218,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
       }
 
       await _sync.pullAll();
+      await _sync.enableRealtimeForCurrentUser();
       await _db.saveCurrentUser(user);
       state = AsyncValue.data(user);
       return const AuthSuccess();
@@ -233,6 +238,7 @@ class AuthNotifier extends StateNotifier<AsyncValue<GUser?>> {
   }
 
   Future<void> signOut() async {
+    await _sync.disableRealtime();
     await _auth.signOut();
     try {
       await _db.clearAll();

@@ -75,6 +75,7 @@ class GnoteApp extends ConsumerStatefulWidget {
 class _GnoteAppState extends ConsumerState<GnoteApp>
     with WidgetsBindingObserver {
   DateTime _lastDate = localNow();
+  late final VoidCallback _realtimeListener;
 
   void _invalidateDayBoundProviders() {
     ref.invalidate(anchorProvider);
@@ -99,10 +100,23 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _realtimeListener = () {
+      if (!mounted) return;
+      _invalidateDayBoundProviders();
+      ref.invalidate(authProvider);
+    };
+    ref
+        .read(syncServiceProvider)
+        .realtimeRevision
+        .addListener(_realtimeListener);
   }
 
   @override
   void dispose() {
+    ref
+        .read(syncServiceProvider)
+        .realtimeRevision
+        .removeListener(_realtimeListener);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

@@ -66,8 +66,8 @@ class _CapturePageState extends ConsumerState<CapturePage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child:
-                Text('Keep all', style: GText.label.copyWith(color: GColors.textMuted)),
+            child: Text('Keep all',
+                style: GText.label.copyWith(color: GColors.textMuted)),
           ),
           TextButton(
             onPressed: () {

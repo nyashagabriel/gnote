@@ -172,3 +172,14 @@ $$ language plpgsql security definer;
 create or replace trigger on_auth_user_created
   after insert on auth.users
   for each row execute function public.handle_new_user();
+
+-- ──────────────────────────────────────────────────────────────
+-- REALTIME
+-- Required for near-live cross-device updates in the client.
+-- Run once on the Supabase project so these tables publish change events.
+-- ──────────────────────────────────────────────────────────────
+alter publication supabase_realtime add table public.profiles;
+alter publication supabase_realtime add table public.anchors;
+alter publication supabase_realtime add table public.tasks;
+alter publication supabase_realtime add table public.habits;
+alter publication supabase_realtime add table public.people;

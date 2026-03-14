@@ -181,8 +181,7 @@ class _AddPersonSheetContentState
         left: GSpacing.pagePadding,
         right: GSpacing.pagePadding,
         top: GSpacing.md,
-        bottom: GSpacing.pagePadding +
-            MediaQuery.of(context).viewInsets.bottom,
+        bottom: GSpacing.pagePadding + MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -270,8 +269,7 @@ class _AddPersonSheetContentState
                 disabledBackgroundColor: GColors.surfaceHigh,
                 padding: const EdgeInsets.symmetric(vertical: GSpacing.md),
                 shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(GSpacing.buttonRadius)),
+                    borderRadius: BorderRadius.circular(GSpacing.buttonRadius)),
               ),
               child: _loading
                   ? const SizedBox(
