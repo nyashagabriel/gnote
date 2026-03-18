@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import '../core/constants.dart';
 import '../services/providers.dart';
 
 // ─────────────────────────────────────────────────────────────────────
-// GNOTE — ADD TASK PAGE
+// GNOTE — ADD TASK SHEET
 //
 // Category field removed from UI for v1.
 // The model still stores category (defaults to 'other') and syncs
@@ -15,13 +14,59 @@ import '../services/providers.dart';
 // That is all the user needs to think about.
 // ─────────────────────────────────────────────────────────────────────
 
-class AddTaskPage extends ConsumerStatefulWidget {
-  const AddTaskPage({super.key});
-  @override
-  ConsumerState<AddTaskPage> createState() => _AddTaskPageState();
+Future<void> showAddTaskSheet(BuildContext context) {
+  return showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: GColors.surface,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (_) => const _AddTaskSheetContent(),
+  );
 }
 
-class _AddTaskPageState extends ConsumerState<AddTaskPage> {
+class AddTaskPage extends StatelessWidget {
+  const AddTaskPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: GColors.background,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(GSpacing.pagePadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).maybePop(),
+                    icon: const Icon(Icons.arrow_back,
+                        color: GColors.textPrimary, size: 20),
+                  ),
+                  Text(GStrings.addTaskHeader,
+                      style: GText.label.copyWith(fontSize: 14)),
+                ],
+              ),
+              const _AddTaskSheetContent(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddTaskSheetContent extends ConsumerStatefulWidget {
+  const _AddTaskSheetContent();
+
+  @override
+  ConsumerState<_AddTaskSheetContent> createState() => _AddTaskPageState();
+}
+
+class _AddTaskPageState extends ConsumerState<_AddTaskSheetContent> {
   final _whatCtrl = TextEditingController();
   final _doneWhenCtrl = TextEditingController();
 
@@ -104,7 +149,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     if (err != null) {
       setState(() => _error = err);
     } else {
-      context.pop();
+      Navigator.of(context).maybePop();
     }
   }
 
@@ -113,20 +158,28 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     final dateStr = DateFormat('EEE d MMM').format(_byDate);
     final timeStr = _byTime.format(context);
 
-    return Scaffold(
-      backgroundColor: GColors.background,
-      appBar: AppBar(
-        backgroundColor: GColors.background,
-        elevation: 0,
-        leading: IconButton(
-            icon: const Icon(Icons.arrow_back, color: GColors.textPrimary),
-            onPressed: () => context.pop()),
+    return Padding(
+      padding: EdgeInsets.only(
+        left: GSpacing.pagePadding,
+        right: GSpacing.pagePadding,
+        top: GSpacing.md,
+        bottom: GSpacing.pagePadding + MediaQuery.of(context).viewInsets.bottom,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(GSpacing.pagePadding),
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Center(
+              child: Container(
+                width: 32,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: GColors.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: GSpacing.lg),
             Text(GStrings.addTaskHeader,
                 style: GText.label.copyWith(fontSize: 14)),
             const SizedBox(height: GSpacing.xs),
@@ -217,7 +270,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             SizedBox(
                 width: double.infinity,
                 child: TextButton(
-                    onPressed: () => context.pop(),
+                    onPressed: () => Navigator.of(context).maybePop(),
                     child: Text(GStrings.cancel, style: GText.label))),
           ],
         ),

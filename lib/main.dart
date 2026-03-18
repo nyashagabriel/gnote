@@ -76,6 +76,7 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
     with WidgetsBindingObserver {
   DateTime _lastDate = localNow();
   late final VoidCallback _realtimeListener;
+  late final VoidCallback _profileRealtimeListener;
 
   void _invalidateDayBoundProviders() {
     ref.invalidate(anchorProvider);
@@ -103,12 +104,19 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
     _realtimeListener = () {
       if (!mounted) return;
       _invalidateDayBoundProviders();
+    };
+    _profileRealtimeListener = () {
+      if (!mounted) return;
       ref.invalidate(authProvider);
     };
     ref
         .read(syncServiceProvider)
         .realtimeRevision
         .addListener(_realtimeListener);
+    ref
+        .read(syncServiceProvider)
+        .profileRevision
+        .addListener(_profileRealtimeListener);
   }
 
   @override
@@ -117,18 +125,16 @@ class _GnoteAppState extends ConsumerState<GnoteApp>
         .read(syncServiceProvider)
         .realtimeRevision
         .removeListener(_realtimeListener);
+    ref
+        .read(syncServiceProvider)
+        .profileRevision
+        .removeListener(_profileRealtimeListener);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.inactive ||
-        state == AppLifecycleState.paused) {
-      ref.read(syncServiceProvider).retryPendingInBackground();
-      return;
-    }
-
     if (state != AppLifecycleState.resumed) return;
     final now = localNow();
     final newDay = now.year != _lastDate.year ||
@@ -197,27 +203,29 @@ class _SyncBanner extends StatelessWidget {
         ? l10n.syncFailed(status.pendingCount)
         : l10n.syncPendingWithCount(status.pendingCount);
 
+    final bottomInset =
+        MediaQuery.of(context).padding.bottom + kBottomNavigationBarHeight;
+
     return Positioned(
       left: 0,
       right: 0,
-      bottom: 0,
-      child: SafeArea(
-        top: false,
-        child: Material(
-          color: isError ? GColors.dangerDim : GColors.azureDim,
-          child: InkWell(
-            onTap: isError ? () => onRetry() : null,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: GSpacing.pagePadding,
-                vertical: GSpacing.sm,
-              ),
-              child: Text(
-                label,
-                textAlign: TextAlign.center,
-                style: GText.muted.copyWith(
-                  color: isError ? GColors.danger : GColors.azure,
-                ),
+      bottom: bottomInset,
+      child: Material(
+        color: isError ? GColors.dangerDim : GColors.azureDim,
+        borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(GSpacing.buttonRadius),
+          onTap: isError ? () => onRetry() : null,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: GSpacing.pagePadding,
+              vertical: GSpacing.sm,
+            ),
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              style: GText.muted.copyWith(
+                color: isError ? GColors.danger : GColors.azure,
               ),
             ),
           ),

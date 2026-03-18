@@ -44,10 +44,9 @@ class _ResponsibilityPageState extends ConsumerState<ResponsibilityPage> {
     final pickedMot = state.selectedMotivator;
     final pickedMed = state.selectedMeditator;
 
-    // A pick is final for the day once made.
-    // The button disables immediately and shows who was picked.
-    final motPickedToday = pickedMot != null && pickedMot.selectedToday;
-    final medPickedToday = pickedMed != null && pickedMed.selectedToday;
+    // A pick is final for the day once made, even before send.
+    final motPickedToday = pickedMot != null;
+    final medPickedToday = pickedMed != null;
 
     return Scaffold(
       backgroundColor: GColors.background,

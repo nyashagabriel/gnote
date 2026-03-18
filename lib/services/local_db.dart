@@ -25,9 +25,14 @@ class LocalDb {
   static const String _habitReminderHourKey = 'habit_reminder_hour';
   static const String _habitReminderMinuteKey = 'habit_reminder_minute';
   static const String _themeModeKey = 'theme_mode';
+  static const String _seenOnboardingKey = 'seen_onboarding';
   static const String _pendingSyncOpsKey = 'pending_sync_ops';
   static const String _pendingNotificationRouteKey =
       'pending_notification_route';
+  static const String _selectedMotivatorIdKey = 'selected_motivator_id';
+  static const String _selectedMotivatorDateKey = 'selected_motivator_date';
+  static const String _selectedMeditatorIdKey = 'selected_meditator_id';
+  static const String _selectedMeditatorDateKey = 'selected_meditator_date';
 
   // ANCHOR
 
@@ -177,6 +182,79 @@ class LocalDb {
     await person.save();
   }
 
+  String? getSelectedMotivatorIdForToday() =>
+      _getSelectedPersonIdForToday(
+        idKey: _selectedMotivatorIdKey,
+        dateKey: _selectedMotivatorDateKey,
+      );
+
+  String? getSelectedMeditatorIdForToday() =>
+      _getSelectedPersonIdForToday(
+        idKey: _selectedMeditatorIdKey,
+        dateKey: _selectedMeditatorDateKey,
+      );
+
+  Future<void> saveSelectedMotivatorId(String personId) =>
+      _saveSelectedPersonId(
+        personId,
+        idKey: _selectedMotivatorIdKey,
+        dateKey: _selectedMotivatorDateKey,
+      );
+
+  Future<void> saveSelectedMeditatorId(String personId) =>
+      _saveSelectedPersonId(
+        personId,
+        idKey: _selectedMeditatorIdKey,
+        dateKey: _selectedMeditatorDateKey,
+      );
+
+  Future<void> clearSelectedMotivatorId() =>
+      _clearSelectedPersonId(
+        idKey: _selectedMotivatorIdKey,
+        dateKey: _selectedMotivatorDateKey,
+      );
+
+  Future<void> clearSelectedMeditatorId() =>
+      _clearSelectedPersonId(
+        idKey: _selectedMeditatorIdKey,
+        dateKey: _selectedMeditatorDateKey,
+      );
+
+  String? _getSelectedPersonIdForToday({
+    required String idKey,
+    required String dateKey,
+  }) {
+    final id = _meta.get(idKey);
+    final dateValue = _meta.get(dateKey);
+    if (id is! String || id.isEmpty || dateValue is! String) return null;
+
+    final pickedAt = DateTime.tryParse(dateValue);
+    if (pickedAt == null || !isSameLocalDay(asLocal(pickedAt), localNow())) {
+      _meta.delete(idKey);
+      _meta.delete(dateKey);
+      return null;
+    }
+
+    return id;
+  }
+
+  Future<void> _saveSelectedPersonId(
+    String personId, {
+    required String idKey,
+    required String dateKey,
+  }) async {
+    await _meta.put(idKey, personId);
+    await _meta.put(dateKey, localNow().toIso8601String());
+  }
+
+  Future<void> _clearSelectedPersonId({
+    required String idKey,
+    required String dateKey,
+  }) async {
+    await _meta.delete(idKey);
+    await _meta.delete(dateKey);
+  }
+
   // ANCHOR DRAFT
 
   String? getAnchorDraft() {
@@ -230,6 +308,15 @@ class LocalDb {
 
   Future<void> saveThemeMode(String mode) async {
     await _meta.put(_themeModeKey, mode);
+  }
+
+  bool hasSeenOnboarding() {
+    final value = _meta.get(_seenOnboardingKey);
+    return value is bool ? value : false;
+  }
+
+  Future<void> markOnboardingSeen() async {
+    await _meta.put(_seenOnboardingKey, true);
   }
 
   List<Map<String, dynamic>> getPendingSyncOps() {

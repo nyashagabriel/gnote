@@ -34,11 +34,20 @@ class ResponsibilityNotifier extends StateNotifier<ResponsibilityState> {
   final SyncService _sync;
 
   void _load() {
+    final motivators = _db.getMotivators();
+    final meditators = _db.getMeditators();
+    final selectedMotivatorId = _db.getSelectedMotivatorIdForToday();
+    final selectedMeditatorId = _db.getSelectedMeditatorIdForToday();
+
     state = ResponsibilityState(
-      motivators: _db.getMotivators(),
-      meditators: _db.getMeditators(),
-      selectedMotivator: state.selectedMotivator,
-      selectedMeditator: state.selectedMeditator,
+      motivators: motivators,
+      meditators: meditators,
+      selectedMotivator: motivators
+          .where((person) => person.id == selectedMotivatorId)
+          .firstOrNull,
+      selectedMeditator: meditators
+          .where((person) => person.id == selectedMeditatorId)
+          .firstOrNull,
     );
   }
 
@@ -70,13 +79,17 @@ class ResponsibilityNotifier extends StateNotifier<ResponsibilityState> {
     _load();
   }
 
-  void pickMotivator() {
+  Future<void> pickMotivator() async {
     final pool = state.motivators.where((p) => !p.selectedToday).toList();
     final pick = pool.isNotEmpty
         ? (pool..shuffle()).first
         : ([...state.motivators]
               ..sort((a, b) => a.timesSelected.compareTo(b.timesSelected)))
             .firstOrNull;
+    if (pick == null) return;
+
+    await _db.saveSelectedMotivatorId(pick.id);
+
     state = ResponsibilityState(
       motivators: state.motivators,
       meditators: state.meditators,
@@ -85,13 +98,17 @@ class ResponsibilityNotifier extends StateNotifier<ResponsibilityState> {
     );
   }
 
-  void pickMeditator() {
+  Future<void> pickMeditator() async {
     final pool = state.meditators.where((p) => !p.selectedToday).toList();
     final pick = pool.isNotEmpty
         ? (pool..shuffle()).first
         : ([...state.meditators]
               ..sort((a, b) => a.timesSelected.compareTo(b.timesSelected)))
             .firstOrNull;
+    if (pick == null) return;
+
+    await _db.saveSelectedMeditatorId(pick.id);
+
     state = ResponsibilityState(
       motivators: state.motivators,
       meditators: state.meditators,
@@ -109,9 +126,11 @@ class ResponsibilityNotifier extends StateNotifier<ResponsibilityState> {
 
     await launchUrl(url, mode: LaunchMode.externalApplication);
     await _db.markPersonSelected(person.id);
-    await _sync.pushPerson(
-      _db.getAllPeople().firstWhere((p) => p.id == person.id),
-    );
+    final updated =
+        _db.getAllPeople().where((p) => p.id == person.id).firstOrNull;
+    if (updated != null) {
+      await _sync.pushPerson(updated);
+    }
     _load();
     return true;
   }

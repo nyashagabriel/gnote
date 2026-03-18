@@ -363,3 +363,99 @@ class _SectionDivider extends StatelessWidget {
     );
   }
 }
+
+class _HelpSheet extends StatelessWidget {
+  const _HelpSheet();
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          GSpacing.pagePadding,
+          GSpacing.md,
+          GSpacing.pagePadding,
+          GSpacing.xl,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Container(
+                width: 32,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: GColors.border,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
+            const SizedBox(height: GSpacing.lg),
+            Text(
+              GStrings.profileHelpFaq,
+              style: GText.heading.copyWith(fontSize: 22),
+            ),
+            const SizedBox(height: GSpacing.lg),
+            const _HelpItem(
+              title: GStrings.profileHelpAnchorTitle,
+              body: GStrings.profileHelpAnchorBody,
+            ),
+            const SizedBox(height: GSpacing.md),
+            const _HelpItem(
+              title: GStrings.profileHelpDaily3Title,
+              body: GStrings.profileHelpDaily3Body,
+            ),
+            const SizedBox(height: GSpacing.md),
+            const _HelpItem(
+              title: GStrings.profileHelpCaptureTitle,
+              body: GStrings.profileHelpCaptureBody,
+            ),
+            const SizedBox(height: GSpacing.md),
+            const _HelpItem(
+              title: GStrings.profileHelpHabitTitle,
+              body: GStrings.profileHelpHabitBody,
+            ),
+            const SizedBox(height: GSpacing.md),
+            const _HelpItem(
+              title: GStrings.profileHelpPeopleTitle,
+              body: GStrings.profileHelpPeopleBody,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _HelpItem extends StatelessWidget {
+  const _HelpItem({
+    required this.title,
+    required this.body,
+  });
+
+  final String title;
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(GSpacing.md),
+      decoration: BoxDecoration(
+        color: GColors.surfaceHigh,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        border: Border.all(color: GColors.border),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: GText.subheading.copyWith(fontSize: 16)),
+          const SizedBox(height: GSpacing.xs),
+          Text(body, style: GText.muted),
+        ],
+      ),
+    );
+  }
+}

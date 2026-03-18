@@ -1,6 +1,7 @@
 class GRoutes {
   GRoutes._();
 
+  static const String onboarding = '/onboarding';
   static const String anchor = '/';
   static const String daily3 = '/daily3';
   static const String capture = '/capture';
@@ -86,6 +87,13 @@ class GLimits {
   static const int templateMaxChars = 300;
   static const Duration syncDebounce = Duration(seconds: 3);
   static const Duration notifCheckInterval = Duration(minutes: 15);
+}
+
+class GSupport {
+  GSupport._();
+
+  static const String email = 'gabwixgamesite2024@gmail.com';
+  static const String subject = 'Gnote support';
 }
 
 class GJson {

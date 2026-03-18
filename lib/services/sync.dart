@@ -42,6 +42,7 @@ class SyncService {
   final ValueNotifier<SyncStatusSnapshot> status =
       ValueNotifier<SyncStatusSnapshot>(const SyncStatusSnapshot());
   final ValueNotifier<int> realtimeRevision = ValueNotifier<int>(0);
+  final ValueNotifier<int> profileRevision = ValueNotifier<int>(0);
 
   String? get _userId => _client.auth.currentUser?.id;
 
@@ -267,7 +268,7 @@ class SyncService {
               final record = _selectRealtimeRecord(payload);
               if (record == null) return;
               await _db.saveCurrentUser(GUser.fromJson(record));
-              _markRealtimeApplied();
+              _markRealtimeApplied(profileChanged: true);
             } catch (e, stackTrace) {
               debugPrint('Realtime profile event failed: $e');
               debugPrintStack(stackTrace: stackTrace);
@@ -344,8 +345,11 @@ class SyncService {
     return null;
   }
 
-  void _markRealtimeApplied() {
+  void _markRealtimeApplied({bool profileChanged = false}) {
     realtimeRevision.value = realtimeRevision.value + 1;
+    if (profileChanged) {
+      profileRevision.value = profileRevision.value + 1;
+    }
     status.value = status.value.copyWith(
       lastSyncedAt: localNow(),
       lastError: null,

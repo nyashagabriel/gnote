@@ -1,6 +1,6 @@
 part of 'router.dart';
 
-const _publicRoutes = {GRoutes.login, GRoutes.signup};
+const _publicRoutes = {GRoutes.onboarding, GRoutes.login, GRoutes.signup};
 
 const _gatedRoutes = {
   GRoutes.daily3,
@@ -13,7 +13,11 @@ String? _authGuard(GoRouterState state) {
   final loggedIn = Supabase.instance.client.auth.currentUser != null;
   final path = state.uri.path;
   final onPublic = _publicRoutes.contains(path);
+  final seenOnboarding = LocalDb.instance.hasSeenOnboarding();
 
+  if (!loggedIn && !seenOnboarding && path != GRoutes.onboarding) {
+    return GRoutes.onboarding;
+  }
   if (!loggedIn && !onPublic) return GRoutes.login;
   if (loggedIn && onPublic) return GRoutes.anchor;
 

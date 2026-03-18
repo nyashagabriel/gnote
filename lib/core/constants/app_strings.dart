@@ -6,11 +6,12 @@ class GStrings {
 
   static const String anchorHeader = 'ANCHOR';
   static const String anchorTitle = 'Why did you wake up today?';
-  static const String anchorHint = 'Write one honest sentence...';
-  static const String anchorSave = 'Lock it in';
+  static const String anchorHint = 'Write the reason plainly.';
+  static const String anchorSave = 'Lock anchor';
   static const String anchorEmpty = 'No anchor set. Start here.';
-  static const String anchorSub = 'One sentence. Be honest.';
+  static const String anchorSub = 'One honest sentence. Locked after you save it.';
   static const String anchorLockedAt = 'Locked · ';
+  static const String anchorLockedLabel = 'Locked for today';
   static const String anchorRestored = 'Draft restored';
 
   static const String daily3Header = 'DAILY 3';
@@ -36,7 +37,6 @@ class GStrings {
   static const String addTaskByLabel = 'COMPLETE BY';
   static const String addTaskDateLabel = 'DATE';
   static const String addTaskTimeLabel = 'TIME';
-  static const String addTaskCategoryLabel = 'CATEGORY';
   static const String addTaskErrWhat = 'Tell me what you will do.';
   static const String addTaskErrDone = "Tell me how you'll know it's done.";
   static const String addTaskSaveBtn = 'Save task';
@@ -44,7 +44,6 @@ class GStrings {
   static const String smartWhat = 'What exactly will you do?';
   static const String smartDoneWhen = 'How will you know it is done?';
   static const String smartBy = 'By what time today?';
-  static const String smartCategory = 'Category';
 
   static const String captureHeader = 'CAPTURE';
   static const String captureTitle = 'Capture';
@@ -55,7 +54,15 @@ class GStrings {
   static const String captureEmptySub = "Things that aren't today live here.";
   static const String captureShare = 'Share list';
   static const String captureReviewMsg =
-      'Review day — clear what no longer matters.';
+      'Sunday review — clear what no longer matters.';
+  static const String captureReviewAction = 'REVIEW →';
+  static const String captureReviewTitle = 'Sunday Review';
+  static const String captureReviewBody =
+      'Clear everything that no longer matters.\nKeep only what still deserves your attention.';
+  static const String captureReviewKeepAll = 'Keep all';
+  static const String captureReviewClearAll = 'Clear all';
+  static const String captureDeleted = 'Item deleted';
+  static const String undo = 'UNDO';
 
   static const String habitTitle = 'HABIT';
   static const String habitSub = 'One habit. Did it or didn\'t.';
@@ -174,11 +181,31 @@ class GStrings {
   static const String profileEmail = 'Email';
   static const String profileTimezone = 'Timezone';
   static const String profileSecPrefs = 'Preferences';
+  static const String profileSecHelp = 'Help';
   static const String profileThemeMode = 'Theme mode';
   static const String profileThemeSystem = 'System';
   static const String profileThemeLight = 'Light';
   static const String profileThemeDark = 'Dark';
   static const String profileHabitRem = 'Habit reminder';
+  static const String profileHelpFaq = 'How Gnote works';
+  static const String profileHelpContact = 'Contact developer';
+  static const String profileHelpEmailCopied = 'Support email ready to send.';
+  static const String profileHelpEmailError = 'Could not open email app.';
+  static const String profileHelpAnchorTitle = 'Anchor';
+  static const String profileHelpAnchorBody =
+      'Start the day with one honest sentence. Once locked, it stays locked.';
+  static const String profileHelpDaily3Title = 'Daily 3';
+  static const String profileHelpDaily3Body =
+      'Choose only three tasks for today. The list locks at 09:00.';
+  static const String profileHelpCaptureTitle = 'Capture';
+  static const String profileHelpCaptureBody =
+      'Drop thoughts quickly. Review them on Sunday and clear what does not matter.';
+  static const String profileHelpHabitTitle = 'Habit';
+  static const String profileHelpHabitBody =
+      'Track one habit only. Check in once a day. Miss a day and the streak resets.';
+  static const String profileHelpPeopleTitle = 'People';
+  static const String profileHelpPeopleBody =
+      'Pick one motivator and one meditator each day. Once picked, the choice is final for the day.';
   static const String profileSecSession = 'Session';
   static const String profileSignOutBtn = 'Sign out';
   static const String profileVersion = 'Gnote v1.0.0';

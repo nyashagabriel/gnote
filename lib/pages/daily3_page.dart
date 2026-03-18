@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import '../core/constants.dart';
 import '../core/timezone.dart';
 import '../models/task.dart';
+import 'add_tasks.dart';
 import '../services/providers.dart';
 
 class Daily3Page extends ConsumerStatefulWidget {
@@ -59,24 +59,20 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
       backgroundColor: GColors.background,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(GSpacing.pagePadding),
+          padding: const EdgeInsets.fromLTRB(
+            GSpacing.pagePadding,
+            GSpacing.pagePadding,
+            GSpacing.pagePadding,
+            0,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(GStrings.daily3Header,
-                      style: GText.label.copyWith(fontSize: 14)),
-                  if (locked)
-                    _LockBadge(
-                        label: GStrings.daily3Locked, color: GColors.orange)
-                  else if (countdown != null)
-                    _LockBadge(label: countdown, color: GColors.textMuted),
-                ],
+              _Daily3Header(
+                locked: locked,
+                countdown: countdown,
+                doneCount: state.doneCount,
               ),
-              const SizedBox(height: GSpacing.xs),
-              Text(GStrings.daily3Limit, style: GText.muted),
               const SizedBox(height: GSpacing.xl),
               if (allDone)
                 Padding(
@@ -99,12 +95,12 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
               Expanded(
                 child: ListView.separated(
                   itemCount: 3,
-                  physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (_, __) =>
                       const SizedBox(height: GSpacing.md),
                   itemBuilder: (context, i) {
                     if (i < tasks.length) {
                       return _TaskCard(
+                        index: i + 1,
                         task: tasks[i],
                         onToggle: () => ref
                             .read(daily3Provider.notifier)
@@ -112,6 +108,7 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
                       );
                     }
                     return _GhostSlot(
+                      index: i + 1,
                       label: [
                         GStrings.daily3Slot1,
                         GStrings.daily3Slot2,
@@ -120,22 +117,108 @@ class _Daily3PageState extends ConsumerState<Daily3Page> {
                       locked: locked || (i > 0 && tasks.length < i),
                       onTap: (locked || isFull)
                           ? null
-                          : () => context.push(GRoutes.addTask),
+                          : () => showAddTaskSheet(context),
                     );
                   },
                 ),
               ),
+              if (!locked && !isFull)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: GSpacing.md,
+                    bottom: GSpacing.pagePadding,
+                  ),
+                  child: _BottomActionShell(
+                    label: GStrings.daily3Add,
+                    onTap: () => showAddTaskSheet(context),
+                  ),
+                )
+              else
+                const SizedBox(height: GSpacing.pagePadding),
             ],
           ),
         ),
       ),
-      floatingActionButton: (!locked && !isFull)
-          ? FloatingActionButton(
-              onPressed: () => context.push(GRoutes.addTask),
-              backgroundColor: GColors.orange,
-              child: const Icon(Icons.add, color: GColors.background),
-            )
-          : null,
+    );
+  }
+}
+
+class _Daily3Header extends StatelessWidget {
+  const _Daily3Header({
+    required this.locked,
+    required this.countdown,
+    required this.doneCount,
+  });
+
+  final bool locked;
+  final String? countdown;
+  final int doneCount;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(GSpacing.lg),
+      decoration: BoxDecoration(
+        color: GColors.surface,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        border: Border.all(color: GColors.border.withAlpha(140)),
+        boxShadow: [
+          BoxShadow(
+            color: GColors.orange.withAlpha(14),
+            blurRadius: 24,
+            spreadRadius: -6,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      GStrings.daily3Header,
+                      style: GText.label.copyWith(
+                        fontSize: 11,
+                        color: GColors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: GSpacing.sm),
+                    Text(
+                      GStrings.daily3Limit,
+                      style: GText.heading.copyWith(
+                        fontSize: 30,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: GSpacing.sm),
+                    Text(
+                      '$doneCount of 3 complete',
+                      style: GText.muted.copyWith(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+              if (locked)
+                _LockBadge(label: GStrings.daily3Locked, color: GColors.orange)
+              else if (countdown != null)
+                _LockBadge(label: countdown!, color: GColors.textMuted),
+            ],
+          ),
+          const SizedBox(height: GSpacing.lg),
+          Text(
+            GStrings.daily3Sub,
+            style: GText.muted.copyWith(fontSize: 13),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -168,7 +251,13 @@ class _LockBadge extends StatelessWidget {
 // This makes Daily 3 a pure forcing function: what + done-when + deadline.
 // ─────────────────────────────────────────────────────────────────────
 class _TaskCard extends StatelessWidget {
-  const _TaskCard({required this.task, required this.onToggle});
+  const _TaskCard({
+    required this.index,
+    required this.task,
+    required this.onToggle,
+  });
+
+  final int index;
   final GTask task;
   final VoidCallback onToggle;
 
@@ -181,7 +270,7 @@ class _TaskCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(GSpacing.cardRadius),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.all(GSpacing.md),
+          padding: const EdgeInsets.all(GSpacing.lg),
           decoration: BoxDecoration(
             color: task.isDone ? GColors.successDim : GColors.surface,
             borderRadius: BorderRadius.circular(GSpacing.cardRadius),
@@ -191,6 +280,7 @@ class _TaskCard extends StatelessWidget {
             ),
           ),
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Icon(
                 task.isDone ? Icons.check_circle : Icons.radio_button_unchecked,
@@ -199,13 +289,47 @@ class _TaskCard extends StatelessWidget {
               ),
               const SizedBox(width: GSpacing.md),
               Expanded(
-                child: Text(
-                  task.what,
-                  style: GText.body.copyWith(
-                    decoration: task.isDone ? TextDecoration.lineThrough : null,
-                    color:
-                        task.isDone ? GColors.textMuted : GColors.textPrimary,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Task $index',
+                      style: GText.label.copyWith(
+                        fontSize: 10,
+                        color: task.isDone ? GColors.success : GColors.textMuted,
+                      ),
+                    ),
+                    const SizedBox(height: GSpacing.sm),
+                    Text(
+                      task.what,
+                      style: GText.body.copyWith(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        decoration:
+                            task.isDone ? TextDecoration.lineThrough : null,
+                        color: task.isDone
+                            ? GColors.textMuted
+                            : GColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: GSpacing.sm),
+                    Text(
+                      task.doneWhen,
+                      style: GText.muted.copyWith(
+                        color: task.isDone
+                            ? GColors.textDisabled
+                            : GColors.textMuted,
+                      ),
+                    ),
+                    const SizedBox(height: GSpacing.sm),
+                    Text(
+                      'Due ${_formatDue(task.by)}',
+                      style: GText.label.copyWith(
+                        fontSize: 10,
+                        color: task.isDone ? GColors.textDisabled : GColors.orange,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -217,7 +341,14 @@ class _TaskCard extends StatelessWidget {
 }
 
 class _GhostSlot extends StatelessWidget {
-  const _GhostSlot({required this.label, required this.locked, this.onTap});
+  const _GhostSlot({
+    required this.index,
+    required this.label,
+    required this.locked,
+    this.onTap,
+  });
+
+  final int index;
   final String label;
   final bool locked;
   final VoidCallback? onTap;
@@ -233,18 +364,30 @@ class _GhostSlot extends StatelessWidget {
           opacity: locked ? 0.35 : 1.0,
           duration: const Duration(milliseconds: 200),
           child: Container(
-            padding: const EdgeInsets.all(GSpacing.md),
+            padding: const EdgeInsets.all(GSpacing.lg),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(GSpacing.cardRadius),
-              border: Border.all(color: GColors.border),
+              border: Border.all(
+                color: GColors.border,
+                style: BorderStyle.solid,
+              ),
             ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Icon(Icons.add_circle_outline,
-                    color: GColors.textMuted, size: 20),
-                const SizedBox(width: GSpacing.sm),
-                Text(label, style: GText.muted),
+                Text(
+                  'Task $index',
+                  style: GText.label.copyWith(fontSize: 10),
+                ),
+                const SizedBox(height: GSpacing.md),
+                Row(
+                  children: [
+                    const Icon(Icons.add_circle_outline,
+                        color: GColors.textMuted, size: 20),
+                    const SizedBox(width: GSpacing.sm),
+                    Expanded(child: Text(label, style: GText.muted)),
+                  ],
+                ),
               ],
             ),
           ),
@@ -252,4 +395,45 @@ class _GhostSlot extends StatelessWidget {
       ),
     );
   }
+}
+
+class _BottomActionShell extends StatelessWidget {
+  const _BottomActionShell({
+    required this.label,
+    required this.onTap,
+  });
+
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(GSpacing.sm),
+      decoration: BoxDecoration(
+        color: GColors.surface,
+        borderRadius: BorderRadius.circular(GSpacing.cardRadius),
+        border: Border.all(color: GColors.border),
+      ),
+      child: SizedBox(
+        width: double.infinity,
+        child: ElevatedButton.icon(
+          onPressed: onTap,
+          icon: const Icon(Icons.add, size: 18),
+          label: Text(label),
+          style: ElevatedButton.styleFrom(
+            minimumSize: const Size.fromHeight(52),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+String _formatDue(DateTime by) {
+  final hour = by.hour % 12 == 0 ? 12 : by.hour % 12;
+  final minute = by.minute.toString().padLeft(2, '0');
+  final suffix = by.hour >= 12 ? 'PM' : 'AM';
+  return '${by.day}/${by.month} · $hour:$minute $suffix';
 }

@@ -10,6 +10,7 @@ import '../pages/habit_page.dart';
 import '../pages/responsibility_page.dart';
 import '../pages/add_tasks.dart';
 import '../pages/add_persons.dart';
+import '../pages/onboarding_page.dart';
 import '../pages/login_page.dart';
 import '../pages/signup_page.dart';
 import '../pages/profile_page.dart';
@@ -29,6 +30,11 @@ final goRouter = GoRouter(
 );
 
 final _appRoutes = <RouteBase>[
+  GoRoute(
+    path: GRoutes.onboarding,
+    name: 'onboarding',
+    builder: (_, __) => const OnboardingPage(),
+  ),
   GoRoute(
     path: GRoutes.login,
     name: 'login',

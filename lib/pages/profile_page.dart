@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../core/constants.dart';
 import '../core/timezone.dart';
@@ -161,6 +162,36 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     await ref.read(themeModeProvider.notifier).setThemeMode(selected);
   }
 
+  void _showHelpSheet() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: GColors.surface,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => const _HelpSheet(),
+    );
+  }
+
+  Future<void> _contactDeveloper() async {
+    final uri = Uri(
+      scheme: 'mailto',
+      path: GSupport.email,
+      queryParameters: {'subject': GSupport.subject},
+    );
+
+    try {
+      final opened = await launchUrl(uri);
+      if (!opened && mounted) {
+        _showErrorSnack(GStrings.profileHelpEmailError);
+      }
+    } catch (e, stackTrace) {
+      _logProfileIssue('contactDeveloper', e, stackTrace);
+      _showErrorSnack(GStrings.profileHelpEmailError);
+    }
+  }
+
   Future<bool> _confirmSignOut() async {
     return await showDialog<bool>(
           context: context,
@@ -279,6 +310,28 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         value: _habitTime.format(context),
                         accent: GColors.orange,
                         onTap: _pickHabitTime,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: GSpacing.xl),
+                  const _SectionTitle(GStrings.profileSecHelp),
+                  const SizedBox(height: GSpacing.sm),
+                  _CardSection(
+                    children: [
+                      _ActionRow(
+                        icon: Icons.help_outline_rounded,
+                        label: GStrings.profileHelpFaq,
+                        value: '',
+                        accent: GColors.textPrimary,
+                        onTap: _showHelpSheet,
+                      ),
+                      const _SectionDivider(),
+                      _ActionRow(
+                        icon: Icons.mail_outline_rounded,
+                        label: GStrings.profileHelpContact,
+                        value: GSupport.email,
+                        accent: GColors.azure,
+                        onTap: _contactDeveloper,
                       ),
                     ],
                   ),

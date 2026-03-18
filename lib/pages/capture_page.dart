@@ -53,20 +53,20 @@ class _CapturePageState extends ConsumerState<CapturePage> {
   void _showReviewDialog() {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
+        builder: (ctx) => AlertDialog(
         backgroundColor: GColors.surface,
         title: Text(
-          'Sunday Review',
+          GStrings.captureReviewTitle,
           style: GText.subheading.copyWith(color: GColors.azure),
         ),
         content: Text(
-          'Clear everything that no longer matters.\nKeep only what still deserves your attention.',
+          GStrings.captureReviewBody,
           style: GText.muted,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: Text('Keep all',
+            child: Text(GStrings.captureReviewKeepAll,
                 style: GText.label.copyWith(color: GColors.textMuted)),
           ),
           TextButton(
@@ -74,7 +74,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
               Navigator.of(ctx).pop();
               _clearAll();
             },
-            child: Text('Clear all',
+            child: Text(GStrings.captureReviewClearAll,
                 style: GText.label.copyWith(color: GColors.danger)),
           ),
         ],
@@ -149,7 +149,7 @@ class _CapturePageState extends ConsumerState<CapturePage> {
                               ),
                               const SizedBox(width: GSpacing.sm),
                               Text(
-                                'REVIEW →',
+                                GStrings.captureReviewAction,
                                 style: GText.label.copyWith(
                                     color: GColors.azure, fontSize: 10),
                               ),
@@ -215,9 +215,9 @@ class _CapturePageState extends ConsumerState<CapturePage> {
             messenger.clearSnackBars();
             messenger.showSnackBar(
               SnackBar(
-                content: const Text('Item deleted'),
+                content: const Text(GStrings.captureDeleted),
                 action: SnackBarAction(
-                  label: 'UNDO',
+                  label: GStrings.undo,
                   onPressed: () {
                     ref.read(captureProvider.notifier).restoreItem(item);
                   },
